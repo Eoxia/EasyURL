@@ -57,6 +57,28 @@ saturne_check_access($permissionToRead);
  * Actions
  */
 
+if ($action == 'set_config') {
+    $userNameYourlsAPI       = GETPOST('username_yourls_api');
+    $keyYourlsAPI            = GETPOST('key_yourls_api');
+    $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
+
+    if (dol_strlen($userNameYourlsAPI) > 0) {
+        dolibarr_set_const($db, 'TINYURL_USERNAME_YOURLS_API', $userNameYourlsAPI, 'chaine', 0, '', $conf->entity);
+    }
+    if (dol_strlen($keyYourlsAPI) > 0) {
+        dolibarr_set_const($db, 'TINYURL_KEY_YOURLS_API', $keyYourlsAPI, 'chaine', 0, '', $conf->entity);
+    }
+    if (dol_strlen($signatureTokenYourlsAPI) > 0) {
+        dolibarr_set_const($db, 'TINYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
+    }
+
+    setEventMessage('SavedConfig');
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
+}
+
+
+
 /*
  * View
  */
@@ -68,11 +90,43 @@ saturne_header(0,'', $title, $help_url);
 
 // Subheader
 $linkback = '<a href="' . ($backtopage ?: DOL_URL_ROOT . '/admin/modules.php?restore_lastsearch_values=1') . '">' . $langs->trans('BackToModuleList') . '</a>';
-print load_fiche_titre($title, $linkback, 'tinyurl_color@tinyurl');
+print load_fiche_titre($title, $linkback, 'title_setup');
 
 // Configuration header
 $head = tinyurl_admin_prepare_head();
 print dol_get_fiche_head($head, 'settings', $title, -1, 'tinyurl_color@tinyurl');
+
+print load_fiche_titre($langs->trans('Config'), '', '');
+
+print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">';
+print '<input type="hidden" name="token" value="' . newToken() . '">';
+print '<input type="hidden" name="action" value="set_config">';
+
+print '<table class="noborder centpercent">';
+print '<tr class="liste_titre">';
+print '<td>' . $langs->trans('Parameters') . '</td>';
+print '<td>' . $langs->trans('Description') . '</td>';
+print '<td>' . $langs->trans('Value') . '</td>';
+print '</tr>';
+
+print '<tr class="oddeven"><td><label for="username_yourls_api">' . $langs->trans('UserNameYourlsAPI') . '</label></td>';
+print '<td>' . $langs->trans('UserNameYourlsAPIDescription') . '</td>';
+print '<td><input type="text" name="username_yourls_api" value="' . $conf->global->TINYURL_USERNAME_YOURLS_API . '"></td>';
+print '</td></tr>';
+
+print '<tr class="oddeven"><td><label for="key_yourls_api">' . $langs->trans('KeyYourlsAPI') . '</label></td>';
+print '<td>' . $langs->trans('KeyYourlsAPIDescription') . '</td>';
+print '<td><input type="text" name="key_yourls_api" value="' . $conf->global->TINYURL_KEY_YOURLS_API . '"></td>';
+print '</td></tr>';
+
+print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
+print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
+print '<td><input type="text" name="signature_token_yourls_api" value="' . $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '</td></tr>';
+
+print '</table>';
+print $form->buttonsSaveCancel('Save', '', [], 0, 'butAction');
+print '</form>';
 
 $db->close();
 llxFooter();
