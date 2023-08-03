@@ -89,8 +89,6 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
             return 0; // If module is not enabled, we do nothing
         }
 
-        saturne_load_langs();
-
         // Data and type of action are stored into $object and $action
         dol_syslog("Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . '. id=' . $object->id);
 
