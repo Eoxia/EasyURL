@@ -95,7 +95,46 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
         dol_syslog("Trigger '" . $this->name . "' for action '$action' launched by " . __FILE__ . '. id=' . $object->id);
 
         switch ($action) {
+            case 'PROPAL_VALIDATE':
+            case 'ORDER_VALIDATE':
             case 'BILL_VALIDATE':
+                $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
+                $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
+                if ($useOnlinePayment && $checkConf) {
+                    require_once DOL_DOCUMENT_ROOT . '/core/lib/payments.lib.php';
+                    require_once DOL_DOCUMENT_ROOT . '/core/lib/ticket.lib.php';
+
+                    $object->fetch($object->id);
+                    $onlinePaymentURL = getOnlinePaymentUrl(0, 'invoice', $object->ref);
+
+                    $title = dol_sanitizeFileName($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+
+                    // Init the CURL session
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $conf->global->TINYURL_URL_YOURLS_API);
+                    curl_setopt($ch, CURLOPT_HEADER, 0);            // No header in the result
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return, do not echo result
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    curl_setopt($ch, CURLOPT_POST, 1);              // This is a POST request
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, [               // Data to POST
+                        'action'    => 'shorturl',
+                        'signature' => $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API,
+                        'format'    => 'json',
+                        'title'     => $title,
+                        'keyword'   => $title,
+                        'url'       => $onlinePaymentURL
+                    ]);
+
+                    // Fetch and return content
+                    $data = curl_exec($ch);
+                    curl_close($ch);
+
+                    // Do something with the result
+                    $data = json_decode($data);
+                    $object->array_options['options_tiny_url_link'] = $data->shorturl;
+                    $object->update($user, false);
+                }
+
                 break;
         }
         return 0;
