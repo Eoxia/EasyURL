@@ -39,7 +39,7 @@ function set_tiny_url_link(CommonObject $object) {
         $object->fetch($object->id);
         $onlinePaymentURL = getOnlinePaymentUrl(0, 'invoice', $object->ref);
 
-        $title = dol_sanitizeFileName($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        $title = dol_sanitizeFileName(strtolower($conf->global->MAIN_INFO_SOCIETE_NOM) . '-' . strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
 
         // Init the CURL session
         $ch = curl_init();
