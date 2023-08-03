@@ -237,11 +237,15 @@ class modTinyURL extends DolibarrModules
         dolibarr_set_const($this->db, 'TINYURL_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
 
         // Create extrafields during init
-//        require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
-//        $extraFields = new ExtraFields($this->db);
-//
-//        //$extraFields->update('label', $langs->transnoentities('Label'), 'varchar', '', 'contrat', 0, 0, 1040, '', '', '', 1);
-//        //$extraFields->addExtraField('label', $langs->transnoentities('Label'), 'varchar', 1040, '', 'contrat', 0, 0, '', '', '', '', 1);
+        require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
+        $extraFields = new ExtraFields($this->db);
+
+        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'propal', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'propal', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'commande', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'commande', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'facture', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'facture', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
 
         return $this->_init($sql, $options);
     }
