@@ -58,15 +58,11 @@ saturne_check_access($permissionToRead);
  */
 
 if ($action == 'set_config') {
-    $userNameYourlsAPI       = GETPOST('username_yourls_api');
-    $keyYourlsAPI            = GETPOST('key_yourls_api');
+    $URLYourlsAPI            = GETPOST('url_yourls_api');
     $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
 
-    if (dol_strlen($userNameYourlsAPI) > 0) {
-        dolibarr_set_const($db, 'TINYURL_USERNAME_YOURLS_API', $userNameYourlsAPI, 'chaine', 0, '', $conf->entity);
-    }
-    if (dol_strlen($keyYourlsAPI) > 0) {
-        dolibarr_set_const($db, 'TINYURL_KEY_YOURLS_API', $keyYourlsAPI, 'chaine', 0, '', $conf->entity);
+    if (dol_strlen($URLYourlsAPI) > 0) {
+        dolibarr_set_const($db, 'TINYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
     if (dol_strlen($signatureTokenYourlsAPI) > 0) {
         dolibarr_set_const($db, 'TINYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
@@ -109,14 +105,9 @@ print '<td>' . $langs->trans('Description') . '</td>';
 print '<td>' . $langs->trans('Value') . '</td>';
 print '</tr>';
 
-print '<tr class="oddeven"><td><label for="username_yourls_api">' . $langs->trans('UserNameYourlsAPI') . '</label></td>';
-print '<td>' . $langs->trans('UserNameYourlsAPIDescription') . '</td>';
-print '<td><input type="text" name="username_yourls_api" value="' . $conf->global->TINYURL_USERNAME_YOURLS_API . '"></td>';
-print '</td></tr>';
-
-print '<tr class="oddeven"><td><label for="key_yourls_api">' . $langs->trans('KeyYourlsAPI') . '</label></td>';
-print '<td>' . $langs->trans('KeyYourlsAPIDescription') . '</td>';
-print '<td><input type="text" name="key_yourls_api" value="' . $conf->global->TINYURL_KEY_YOURLS_API . '"></td>';
+print '<tr class="oddeven"><td><label for="url_yourls_api">' . $langs->trans('URLYourlsAPI') . '</label></td>';
+print '<td>' . $langs->trans('URLYourlsAPIDescription') . '</td>';
+print '<td><input type="text" name="url_yourls_api" value="' . $conf->global->TINYURL_URL_YOURLS_API . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
@@ -124,8 +115,14 @@ print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
 print '<td><input type="text" name="signature_token_yourls_api" value="' . $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
 print '</td></tr>';
 
+print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';
+print '<td>' . $langs->trans('UseShaUrlDescription') . '</td>';
+print '<td>';
+print ajax_constantonoff('TINYURL_USE_SHA_URL');
+print '</td></tr>';
+
 print '</table>';
-print $form->buttonsSaveCancel('Save', '', [], 0, 'butAction');
+print $form->buttonsSaveCancel('Save', '');
 print '</form>';
 
 $db->close();

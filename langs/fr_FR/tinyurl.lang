@@ -28,10 +28,18 @@ TinyURLDescriptionLong = Création d'urls raccourcies pour YOURLS et Dolibarr
 #
 
 # Data - Donnée
+URLYourlsAPI                       = URL API YOURLS
+URLYourlsAPIDescription            = Cette option permet de configurer l'url d'API YOURLS
+SignatureTokenYourlsAPI            = Token de signature
+SignatureTokenYourlsAPIDescription = Cette option permet de configurer le token de signature d'API YOURLS
+UseShaUrl                          = SHA dans la short URL
+UseShaUrlDescription               = Cette option permet de d'utiliser un SHA (8 caractères) dans la transformation d'une URL en short URL
 
 
 #
-# Other - Autre
+# TinyURL - TinyURL
 #
 
 # Data - Donnée
+TinyUrlLink     = Short URL
+TinyUrlLinkHelp = Transformation d'une URL en short URL (Lien de paiement)
