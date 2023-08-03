@@ -41,5 +41,8 @@ UseShaUrlDescription               = Cette option permet de d'utiliser un SHA (8
 #
 
 # Data - Donnée
-TinyUrlLink     = Short URL
-TinyUrlLinkHelp = Transformation d'une URL en short URL (Lien de paiement)
+TinyUrlLink       = Short URL
+TinyUrlLinkHelp   = Transformation d'une URL en short URL (Lien de paiement)
+SetTinyURLLink    = Créer short URL
+SetTinyURLSuccess = Création réussie d'une short URL
+SetTinyURLErrors  = Erreur : création d'une short URL
