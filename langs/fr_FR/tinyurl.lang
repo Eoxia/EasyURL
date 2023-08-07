@@ -32,12 +32,12 @@ URLYourlsAPI                          = URL API YOURLS
 URLYourlsAPIDescription               = Cette option permet de configurer l'url d'API YOURLS
 SignatureTokenYourlsAPI               = Token de signature
 SignatureTokenYourlsAPIDescription    = Cette option permet de configurer le token de signature d'API YOURLS
-UseShaUrl                             = SHA dans la short URL
-UseShaUrlDescription                  = Cette option permet de d'utiliser un SHA (8 caractères) dans la transformation d'une URL en short URL
-AutomaticTinyUrlGeneration            = Génération automatique des shorts URL
-AutomaticTinyUrlGenerationDescription = Crée automatiquement la short URL lors de la validation d'un objet <br> (propositon commerciale, commande, facture)
-ManualTinyUrlGeneration               = Génération manuelle des shorts URL
-ManualTinyUrlGenerationDescription    = Ajout d'un bouton pour créer une short URL sur un objet <br> (propositon commerciale, commande, facture)
+UseShaUrl                             = SHA dans l'URL raccourcie
+UseShaUrlDescription                  = Cette option permet d'ajouter un SHA (8 caractères) dans le raccourcicement des URLs
+AutomaticTinyUrlGeneration            = Génération automatique des URLs raccourcies
+AutomaticTinyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (propositon commerciale, commande, facture)
+ManualTinyUrlGeneration               = Génération manuelle des URLs raccourcies
+ManualTinyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (propositon commerciale, commande, facture)
 
 
 
@@ -46,11 +46,11 @@ ManualTinyUrlGenerationDescription    = Ajout d'un bouton pour créer une short 
 #
 
 # Data - Donnée
-TinyUrlPaymentLink   = Short URL de paiement
-TinyUrlSignatureLink = Short URL de signature
-TinyUrlLinkHelp      = Transformation d'une URL en short URL (lien de paiement, lien de signature)
-SetTinyURLLink       = Créer short URL
-SetTinyURLSuccess    = Création réussie d'une short URL
-SetTinyURLErrors     = Erreur : création d'une short URL
-GetTinyURLErrors     = Erreur : short URL non trouvée
+TinyUrlPaymentLink   = TinyURL-paiement
+TinyUrlSignatureLink = TinyURL-signature
+TinyUrlLinkHelp      = Transformation d'une URL en URL raccourcie (lien de paiement, lien de signature)
+SetTinyURLLink       = Créer URL raccourcie
+SetTinyURLSuccess    = Création réussie de l'URL raccourcie
+SetTinyURLErrors     = Erreur : création de l'URL raccourcie
+GetTinyURLErrors     = Erreur : URL raccourcie non trouvée
 

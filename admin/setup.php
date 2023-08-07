@@ -112,7 +112,7 @@ print '</td></tr>';
 
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
-print '<td><input type="text" name="signature_token_yourls_api" value="' . $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '<td><input type="password" name="signature_token_yourls_api" value="' . $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';
