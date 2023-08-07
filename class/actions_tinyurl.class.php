@@ -75,7 +75,7 @@ class ActionsTinyurl
     {
         global $object, $langs;
 
-        if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard'])) {
+        if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($object->status > $object::STATUS_DRAFT) {
                 $urlTypes = ['payment', 'signature'];
                 foreach ($urlTypes as $urlType) {
@@ -111,7 +111,7 @@ class ActionsTinyurl
      */
     public function doActions(array $parameters, $object, string $action): int
     {
-        if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard'])) {
+        if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($action == 'set_tiny_url') {
                 set_tiny_url_link($object, GETPOST('url_type'));
 

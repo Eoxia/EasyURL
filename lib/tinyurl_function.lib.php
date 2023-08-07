@@ -50,6 +50,9 @@ function set_tiny_url_link(CommonObject $object, string $urlType)
             case 'facture' :
                 $type = 'invoice';
                 break;
+            case 'contrat' :
+                $type = 'contract';
+                break;
             default :
                 $type = $object->element;
                 break;

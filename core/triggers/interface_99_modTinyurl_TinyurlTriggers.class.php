@@ -97,6 +97,8 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
 
         switch ($action) {
             case 'PROPAL_VALIDATE':
+            case 'CONTRACT_VALIDATE':
+            case 'FICHINTER_VALIDATE':
                 if (getDolGlobalInt('TINYURL_AUTOMATIC_GENERATION')) {
                     set_tiny_url_link($object, 'signature');
                 }

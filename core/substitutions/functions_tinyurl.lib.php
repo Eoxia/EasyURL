@@ -34,11 +34,14 @@
 function tinyurl_completesubstitutionarray(&$substitutionarray, $langs, $object)
 {
     switch ($object->element) {
-        case 'propal':
-        case 'commande':
-        case 'facture':
-            $substitutionarray['__TINY_URL_PAYMENT_LINK__']   = $object->array_options['options_tiny_url_payment_link'];
+        case 'propal' :
+        case 'contrat' :
+        case 'fichinter' :
             $substitutionarray['__TINY_URL_SIGNATURE_LINK__'] = $object->array_options['options_tiny_url_signature_link'];
+            break;
+        case 'commande' :
+        case 'facture' :
+            $substitutionarray['__TINY_URL_PAYMENT_LINK__']   = $object->array_options['options_tiny_url_payment_link'];
             break;
     }
 }
