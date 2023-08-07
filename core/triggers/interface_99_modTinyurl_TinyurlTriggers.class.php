@@ -99,7 +99,9 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
             case 'PROPAL_VALIDATE':
             case 'ORDER_VALIDATE':
             case 'BILL_VALIDATE':
-                set_tiny_url_link($object);
+                if (getDolGlobalInt('TINYURL_AUTOMATIC_GENERATION')) {
+                    set_tiny_url_link($object);
+                }
                 break;
         }
         return 0;

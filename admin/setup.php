@@ -121,6 +121,18 @@ print '<td>';
 print ajax_constantonoff('TINYURL_USE_SHA_URL');
 print '</td></tr>';
 
+print '<tr class="oddeven"><td>' . $langs->trans('AutomaticTinyUrlGeneration') . '</td>';
+print '<td>' . $langs->trans('AutomaticTinyUrlGenerationDescription') . '</td>';
+print '<td>';
+print ajax_constantonoff('TINYURL_AUTOMATIC_GENERATION');
+print '</td></tr>';
+
+print '<tr class="oddeven"><td>' . $langs->trans('ManualTinyUrlGeneration') . '</td>';
+print '<td>' . $langs->trans('ManualTinyUrlGenerationDescription') . '</td>';
+print '<td>';
+print ajax_constantonoff('TINYURL_MANUAL_GENERATION');
+print '</td></tr>';
+
 print '</table>';
 print $form->buttonsSaveCancel('Save', '');
 print '</form>';

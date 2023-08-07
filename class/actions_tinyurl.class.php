@@ -76,7 +76,7 @@ class ActionsTinyurl
         global $object, $langs;
 
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard'])) {
-            if ($object->status > $object::STATUS_DRAFT) {
+            if ($object->status > $object::STATUS_DRAFT && getDolGlobalInt('TINYURL_MANUAL_GENERATION')) {
                 $checkTinyUrlLink = get_tiny_url_link($object);
                 if ($checkTinyUrlLink == 0) {
                     $jQueryElement = '.' . $object->element . '_extras_tiny_url_link';

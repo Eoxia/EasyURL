@@ -162,6 +162,10 @@ class modTinyURL extends DolibarrModules
         // );
         $i = 0;
         $this->const = [
+            // CONST CONFIGURATION
+            $i++ => ['TINYURL_AUTOMATIC_GENERATION','integer', 1, '', 0, 'current'],
+            $i++ => ['TINYURL_MANUAL_GENERATION', 'integer', 1, '', 0, 'current'],
+
             // CONST MODULE
             $i++ => ['TINYURL_VERSION','chaine', $this->version, '', 0, 'current'],
             $i++ => ['TINYURL_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
