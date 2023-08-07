@@ -46,3 +46,5 @@ TinyUrlLinkHelp   = Transformation d'une URL en short URL (Lien de paiement)
 SetTinyURLLink    = Créer short URL
 SetTinyURLSuccess = Création réussie d'une short URL
 SetTinyURLErrors  = Erreur : création d'une short URL
+GetTinyURLErrors  = Erreur : short URL non trouvée
+

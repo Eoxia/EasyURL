@@ -21,6 +21,9 @@
  * \brief   TinyURL hook overload
  */
 
+// Load TinyURL libraries
+require_once __DIR__ . '/../lib/tinyurl_function.lib.php';
+
 /**
  * Class ActionsTinyurl
  */
@@ -74,14 +77,18 @@ class ActionsTinyurl
 
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard'])) {
             if ($object->status > $object::STATUS_DRAFT) {
-                $jQueryElement = '.' . $object->element . '_extras_tiny_url_link';
-                $output = '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_tiny_url&token=' . newToken() . '">';
-                $output .= img_picto($langs->trans('SetTinyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>'; ?>
-                <script>
-                    let objectElement = <?php echo "'" . $jQueryElement . "'"; ?>;
-                    jQuery(objectElement).prepend(<?php echo json_encode($output); ?>);
-                </script>
-                <?php
+                $checkTinyUrlLink = get_tiny_url_link($object);
+                if ($checkTinyUrlLink == 0) {
+                    $jQueryElement = '.' . $object->element . '_extras_tiny_url_link';
+                    $output = '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_tiny_url&token=' . newToken() . '">';
+                    $output .= img_picto($langs->trans('SetTinyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>';
+                    $output .= '</span>' . img_picto($langs->trans('GetTinyURLErrors'), 'fontawesome_fa-exclamation-triangle_fas_#bc9526') . '</span>'; ?>
+                    <script>
+                        let objectElement = <?php echo "'" . $jQueryElement . "'"; ?>;
+                        jQuery(objectElement).prepend(<?php echo json_encode($output); ?>);
+                    </script>
+                    <?php
+                }
             }
         }
 
@@ -100,9 +107,6 @@ class ActionsTinyurl
     {
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard'])) {
             if ($action == 'set_tiny_url') {
-                // Load TinyURL libraries
-                require_once __DIR__ . '/../lib/tinyurl_function.lib.php';
-
                 set_tiny_url_link($object);
 
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
