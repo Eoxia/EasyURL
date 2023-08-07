@@ -24,20 +24,26 @@
 /**
  * Set tiny url link
  *
- * @param CommonObject $object Object
+ * @param CommonObject $object  Object
+ * @param string       $urlType Url type
  */
-function set_tiny_url_link(CommonObject $object) {
+function set_tiny_url_link(CommonObject $object, string $urlType)
+{
     global $conf, $langs, $user;
 
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
     $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
-    if ($useOnlinePayment && $checkConf) {
+    if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature') && $checkConf) {
         // Load Dolibarr libraries
         require_once DOL_DOCUMENT_ROOT . '/core/lib/payments.lib.php';
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/signature.lib.php';
         require_once DOL_DOCUMENT_ROOT . '/core/lib/ticket.lib.php';
 
         $object->fetch($object->id);
         switch ($object->element) {
+            case 'propal' :
+                $type = 'proposal';
+                break;
             case 'commande' :
                 $type = 'order';
                 break;
@@ -48,9 +54,19 @@ function set_tiny_url_link(CommonObject $object) {
                 $type = $object->element;
                 break;
         }
-        $onlinePaymentURL = getOnlinePaymentUrl(0, $type, $object->ref);
+        switch ($urlType) {
+            case 'payment' :
+                $onlineUrl = getOnlinePaymentUrl(0, $type, $object->ref);
+                break;
+            case 'signature' :
+                $onlineUrl = getOnlineSignatureUrl(0, $type, $object->ref);
+                break;
+            default :
+                $onlineUrl = '';
+                break;
+        }
 
-        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM) . '-' . strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM) . '-' . dol_strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
 
         // Init the CURL session
         $ch = curl_init();
@@ -65,7 +81,7 @@ function set_tiny_url_link(CommonObject $object) {
             'format'    => 'json',
             'title'     => $title,
             'keyword'   => $title,
-            'url'       => $onlinePaymentURL
+            'url'       => $onlineUrl
         ]);
 
         // Fetch and return content
@@ -75,7 +91,7 @@ function set_tiny_url_link(CommonObject $object) {
         // Do something with the result
         $data = json_decode($data);
         if ($data->status == 'success') {
-            $object->array_options['options_tiny_url_link'] = $data->shorturl;
+            $object->array_options['options_tiny_url_' . $urlType . '_link'] = $data->shorturl;
             $object->update($user, false);
             setEventMessage($langs->trans('SetTinyURLSuccess'));
         } else {
@@ -88,14 +104,16 @@ function set_tiny_url_link(CommonObject $object) {
  * get tiny url link
  *
  * @param  CommonObject $object  Object
+ * @param  string       $urlType Url type
  * @return int                   0 < on error, 1 = statusCode 200, 0 = other statusCode (ex : 404)
  */
-function get_tiny_url_link(CommonObject $object) {
+function get_tiny_url_link(CommonObject $object, string $urlType): int
+{
     global $conf;
 
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
     $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
-    if ($useOnlinePayment && $checkConf) {
+    if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature') && $checkConf) {
         $object->fetch($object->id);
 
         // Init the CURL session
@@ -109,7 +127,7 @@ function get_tiny_url_link(CommonObject $object) {
             'action'    => 'url-stats',
             'signature' => $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API,
             'format'    => 'json',
-            'shorturl'  => $object->array_options['options_tiny_url_link']
+            'shorturl'  => $object->array_options['options_tiny_url_' . $urlType . '_link']
         ]);
 
         // Fetch and return content

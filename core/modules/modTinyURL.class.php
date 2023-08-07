@@ -248,12 +248,21 @@ class modTinyURL extends DolibarrModules
         require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
         $extraFields = new ExtraFields($this->db);
 
-        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'propal', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'propal', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
-        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'commande', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'commande', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
-        $extraFields->update('tiny_url_link', 'TinyUrlLink', 'url', '', 'facture', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_link', 'TinyUrlLink', 'url', 2000, '', 'facture', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        // Propal extrafiels
+        $extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'propal', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2000, '', 'propal', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+
+        // Order extrafiels
+        $extraFields->update('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', '', 'commande', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', 2000, '', 'commande', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        //$extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'commande', 0, 0, 2010, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        //$extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2010, '', 'commande', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+
+        // Invoice extrafiels
+        $extraFields->update('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', '', 'facture', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        $extraFields->addExtraField('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', 2000, '', 'facture', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        //$extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'facture', 0, 0, 2010, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
+        //$extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2010, '', 'facture', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
 
         return $this->_init($sql, $options);
     }

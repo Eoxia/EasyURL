@@ -46,10 +46,11 @@ ManualTinyUrlGenerationDescription    = Ajout d'un bouton pour créer une short 
 #
 
 # Data - Donnée
-TinyUrlLink       = Short URL
-TinyUrlLinkHelp   = Transformation d'une URL en short URL (Lien de paiement)
-SetTinyURLLink    = Créer short URL
-SetTinyURLSuccess = Création réussie d'une short URL
-SetTinyURLErrors  = Erreur : création d'une short URL
-GetTinyURLErrors  = Erreur : short URL non trouvée
+TinyUrlPaymentLink   = Short URL de paiement
+TinyUrlSignatureLink = Short URL de signature
+TinyUrlLinkHelp      = Transformation d'une URL en short URL (lien de paiement, lien de signature)
+SetTinyURLLink       = Créer short URL
+SetTinyURLSuccess    = Création réussie d'une short URL
+SetTinyURLErrors     = Erreur : création d'une short URL
+GetTinyURLErrors     = Erreur : short URL non trouvée
 
