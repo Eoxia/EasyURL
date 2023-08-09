@@ -125,7 +125,7 @@ class modTinyURL extends DolibarrModules
                 'interventioncard'
             ],
             // Set this to 1 if features of module are opened to external users
-            'moduleforexternal' => 1,
+            'moduleforexternal' => 0
         ];
 
         // Data directories to create when module is enabled
@@ -190,7 +190,7 @@ class modTinyURL extends DolibarrModules
         }
 
         // Array to add new pages in new tabs
-        $this->tabs   = [];
+        $this->tabs = [];
 
         // Dictionaries.
         $this->dictionaries = [];

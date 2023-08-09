@@ -69,7 +69,7 @@ function set_tiny_url_link(CommonObject $object, string $urlType)
                 break;
         }
 
-        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM) . '-' . dol_strtolower($object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
 
         // Init the CURL session
         $ch = curl_init();

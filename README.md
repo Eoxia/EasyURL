@@ -26,7 +26,7 @@
 
 ## Fonctionnalités
 
-- Création d'urls raccourcies pour YOURLS et Dolibarr
+- Création d'URLs raccourcies pour YOURLS et Dolibarr
 
 ## Traductions
 

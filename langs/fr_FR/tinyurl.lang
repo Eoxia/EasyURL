@@ -19,9 +19,9 @@
 
 # Data - Donnée
 ModuleTinyURLName      = TinyURL
-ModuleTinyURLDesc      = Création d'urls raccourcies pour YOURLS et Dolibarr
-TinyURLDescription     = Création d'urls raccourcies pour YOURLS et Dolibarr
-TinyURLDescriptionLong = Création d'urls raccourcies pour YOURLS et Dolibarr
+ModuleTinyURLDesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
+TinyURLDescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
+TinyURLDescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
 
 #
 # Config page - Page d'administration
