@@ -29,7 +29,7 @@
  */
 function set_tiny_url_link(CommonObject $object, string $urlType)
 {
-    global $conf, $langs, $user;
+    global $conf, $langs;
 
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
     $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
