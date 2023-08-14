@@ -95,7 +95,7 @@ function set_tiny_url_link(CommonObject $object, string $urlType)
         $data = json_decode($data);
         if ($data->status == 'success') {
             $object->array_options['options_tiny_url_' . $urlType . '_link'] = $data->shorturl;
-            $object->update($user, false);
+            $object->updateExtraField('tiny_url_' . $urlType . '_link');
             setEventMessage($langs->trans('SetTinyURLSuccess'));
         } else {
             setEventMessage($langs->trans('SetTinyURLErrors'), 'errors');

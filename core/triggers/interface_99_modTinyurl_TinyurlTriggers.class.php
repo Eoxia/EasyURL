@@ -16,7 +16,7 @@
  */
 
 /**
- * \file    core/triggers/interface_99_modTinyURL_DolisirhTriggers.class.php
+ * \file    core/triggers/interface_99_modTinyurl_TinyurlTriggers.class.php
  * \ingroup tinyurl
  * \brief   TinyURL trigger
  */
@@ -48,7 +48,7 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
 
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
-        $this->description = 'TinyURL triggers.';
+        $this->description = 'TinyURL triggers';
         $this->version     = '1.0.0';
         $this->picto       = 'tinyurl@tinyurl';
     }
