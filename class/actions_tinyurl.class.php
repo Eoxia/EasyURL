@@ -77,12 +77,17 @@ class ActionsTinyurl
 
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($object->status > $object::STATUS_DRAFT) {
-                $urlTypes = ['payment', 'signature'];
+                print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
+
+                $pictoPath = dol_buildpath('/tinyurl/img/tinyurl_color.png', 1);
+                $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
+                $urlTypes  = ['payment', 'signature'];
                 foreach ($urlTypes as $urlType) {
                     $checkTinyUrlLink = get_tiny_url_link($object, $urlType);
                     $jQueryElement    = '.' . $object->element . '_extras_tiny_url_' . $urlType . '_link';
                     if ($checkTinyUrlLink == 0 && getDolGlobalInt('TINYURL_MANUAL_GENERATION')) {
-                        $output  = '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_tiny_url&url_type=' . $urlType . '&token=' . newToken() . '">';
+                        $output  = $picto;
+                        $output .= '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_tiny_url&url_type=' . $urlType . '&token=' . newToken() . '">';
                         $output .= img_picto($langs->trans('SetTinyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>';
                         $output .= '</span>' . img_picto($langs->trans('GetTinyURLErrors'), 'fontawesome_fa-exclamation-triangle_fas_#bc9526') . '</span>';
                     }
@@ -95,6 +100,25 @@ class ActionsTinyurl
                     </script>
                     <?php
                 }
+            }
+        }
+
+        if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
+            print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
+
+            $pictoPath = dol_buildpath('/tinyurl/img/tinyurl_color.png', 1);
+            $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
+            $urlTypes  = ['payment', 'signature'];
+            foreach ($urlTypes as $urlType) {
+                $jQueryElement = 'tiny_url_' . $urlType . '_link'; ?>
+
+                <script>
+                    var objectElement = <?php echo "'" . $jQueryElement . "'"; ?>;
+                    var outJS         = <?php echo json_encode($picto); ?>;
+                    var cell          = $('.liste > tbody > tr.liste_titre').find('th[data-titlekey="' + objectElement + '"]');
+                    cell.prepend(outJS);
+                </script>
+                <?php
             }
         }
 

@@ -122,7 +122,10 @@ class modTinyURL extends DolibarrModules
                 'ordercard',
                 'invoicecard',
                 'contractcard',
-                'interventioncard'
+                'interventioncard',
+                'propallist',
+                'orderlist',
+                'invoicelist'
             ],
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
