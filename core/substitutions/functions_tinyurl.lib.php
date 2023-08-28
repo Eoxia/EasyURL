@@ -33,6 +33,8 @@
  */
 function tinyurl_completesubstitutionarray(&$substitutionarray, $langs, $object)
 {
+    $langs->load('tinyurl@tinyurl');
+
     switch ($object->element) {
         case 'propal' :
         case 'contrat' :
@@ -41,7 +43,11 @@ function tinyurl_completesubstitutionarray(&$substitutionarray, $langs, $object)
             break;
         case 'commande' :
         case 'facture' :
-            $substitutionarray['__TINY_URL_PAYMENT_LINK__']   = $object->array_options['options_tiny_url_payment_link'];
+            $substitutionarray['__TINY_URL_PAYMENT_LINK__'] = $object->array_options['options_tiny_url_payment_link'];
+            break;
+        default :
+            $substitutionarray['__TINY_URL_SIGNATURE_LINK__'] = $langs->trans('TinyUrlSignatureLink');
+            $substitutionarray['__TINY_URL_PAYMENT_LINK__']   = $langs->trans('TinyUrlPaymentLink');
             break;
     }
 }
