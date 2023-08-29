@@ -29,7 +29,7 @@
 function tinyurl_admin_prepare_head(): array
 {
     // Global variables definitions
-    global $langs, $conf;
+    global $conf, $langs;
 
     // Load translation files required by the page
     saturne_load_langs();
@@ -39,12 +39,12 @@ function tinyurl_admin_prepare_head(): array
     $head = [];
 
     $head[$h][0] = dol_buildpath('/tinyurl/admin/setup.php', 1);
-    $head[$h][1] = '<i class="fas fa-cog pictofixedwidth"></i>' . $langs->trans('ModuleSettings');
+    $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fas fa-cog pictofixedwidth"></i>' . $langs->trans('ModuleSettings') : '<i class="fas fa-cog"></i>';
     $head[$h][2] = 'settings';
     $h++;
 
     $head[$h][0] = dol_buildpath('/saturne/admin/about.php', 1) . '?module_name=TinyURL';
-    $head[$h][1] = '<i class="fab fa-readme pictofixedwidth"></i>' . $langs->trans('About');
+    $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fab fa-readme pictofixedwidth"></i>' . $langs->trans('About') : '<i class="fab fa-readme"></i>';
     $head[$h][2] = 'about';
     $h++;
 
