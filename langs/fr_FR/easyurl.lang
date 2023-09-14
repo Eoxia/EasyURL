@@ -18,10 +18,10 @@
 #
 
 # Data - Donnée
-ModuleTinyURLName      = TinyURL
-ModuleTinyURLDesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
-TinyURLDescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
-TinyURLDescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
+ModuleEasyURLName      = EasyURL
+ModuleEasyURLDesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
+EasyURLDescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
+EasyURLDescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
 
 #
 # Config page - Page d'administration
@@ -34,23 +34,23 @@ SignatureTokenYourlsAPI               = Token de signature
 SignatureTokenYourlsAPIDescription    = Cette option permet de configurer le token de signature d'API YOURLS
 UseShaUrl                             = SHA dans l'URL raccourcie
 UseShaUrlDescription                  = Cette option permet d'ajouter un SHA (8 caractères) dans le raccourcicement des URLs
-AutomaticTinyUrlGeneration            = Génération automatique des URLs raccourcies
-AutomaticTinyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (propositon commerciale, commande, facture)
-ManualTinyUrlGeneration               = Génération manuelle des URLs raccourcies
-ManualTinyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (propositon commerciale, commande, facture)
+AutomaticEasyUrlGeneration            = Génération automatique des URLs raccourcies
+AutomaticEasyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (propositon commerciale, commande, facture)
+ManualEasyUrlGeneration               = Génération manuelle des URLs raccourcies
+ManualEasyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (propositon commerciale, commande, facture)
 
 
 
 #
-# TinyURL - TinyURL
+# EasyURL - EasyURL
 #
 
 # Data - Donnée
-TinyUrlPaymentLink   = TinyURL-paiement
-TinyUrlSignatureLink = TinyURL-signature
-TinyUrlLinkHelp      = Transformation d'une URL en URL raccourcie (lien de paiement, lien de signature)
-SetTinyURLLink       = Créer URL raccourcie
-SetTinyURLSuccess    = Création réussie de l'URL raccourcie
-SetTinyURLErrors     = Erreur : création de l'URL raccourcie
-GetTinyURLErrors     = Erreur : URL raccourcie non trouvée
+EasyUrlPaymentLink   = EasyURL-paiement
+EasyUrlSignatureLink = EasyURL-signature
+EasyUrlLinkHelp      = Transformation d'une URL en URL raccourcie (lien de paiement, lien de signature)
+SetEasyURLLink       = Créer URL raccourcie
+SetEasyURLSuccess    = Création réussie de l'URL raccourcie
+SetEasyURLErrors     = Erreur : création de l'URL raccourcie
+GetEasyURLErrors     = Erreur : URL raccourcie non trouvée
 

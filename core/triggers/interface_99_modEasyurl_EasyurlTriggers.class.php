@@ -16,21 +16,21 @@
  */
 
 /**
- * \file    core/triggers/interface_99_modTinyurl_TinyurlTriggers.class.php
- * \ingroup tinyurl
- * \brief   TinyURL trigger
+ * \file    core/triggers/interface_99_modEasyurl_EasyurlTriggers.class.php
+ * \ingroup easyurl
+ * \brief   EasyURL trigger
  */
 
 // Load Dolibarr libraries
 require_once DOL_DOCUMENT_ROOT . '/core/triggers/dolibarrtriggers.class.php';
 
-// Load TinyURL libraries
-require_once __DIR__ . '/../../lib/tinyurl_function.lib.php';
+// Load EasyURL libraries
+require_once __DIR__ . '/../../lib/easyurl_function.lib.php';
 
 /**
- * Class of triggers for TinyURL module
+ * Class of triggers for EasyURL module
  */
-class InterfaceTinyURLTriggers extends DolibarrTriggers
+class InterfaceEasyURLTriggers extends DolibarrTriggers
 {
     /**
      * @var DoliDB Database handler
@@ -48,9 +48,9 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
 
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
-        $this->description = 'TinyURL triggers';
+        $this->description = 'EasyURL triggers';
         $this->version     = '1.0.0';
-        $this->picto       = 'tinyurl@tinyurl';
+        $this->picto       = 'easyurl@easyurl';
     }
 
     /**
@@ -88,7 +88,7 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
      */
     public function runTrigger($action, $object, User $user, Translate $langs, Conf $conf): int
     {
-        if (!isModEnabled('tinyurl')) {
+        if (!isModEnabled('easyurl')) {
             return 0; // If module is not enabled, we do nothing
         }
 
@@ -99,14 +99,14 @@ class InterfaceTinyURLTriggers extends DolibarrTriggers
             case 'PROPAL_VALIDATE':
             case 'CONTRACT_VALIDATE':
             case 'FICHINTER_VALIDATE':
-                if (getDolGlobalInt('TINYURL_AUTOMATIC_GENERATION')) {
-                    set_tiny_url_link($object, 'signature');
+                if (getDolGlobalInt('EASYURL_AUTOMATIC_GENERATION')) {
+                    set_easy_url_link($object, 'signature');
                 }
                 break;
             case 'ORDER_VALIDATE':
             case 'BILL_VALIDATE':
-                if (getDolGlobalInt('TINYURL_AUTOMATIC_GENERATION')) {
-                    set_tiny_url_link($object, 'payment');
+                if (getDolGlobalInt('EASYURL_AUTOMATIC_GENERATION')) {
+                    set_easy_url_link($object, 'payment');
                 }
                 break;
         }

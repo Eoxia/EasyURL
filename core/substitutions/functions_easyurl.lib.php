@@ -17,8 +17,8 @@
  */
 
 /**
- * \file    core/substitutions/functions_tinyurl.lib.php
- * \ingroup functions_tinyurl
+ * \file    core/substitutions/functions_easyurl.lib.php
+ * \ingroup functions_easyurl
  * \brief   File of functions to substitutions array
  */
 
@@ -31,23 +31,23 @@
  * @param  Object    $object            Object to use to get values
  * @return void                         The entry parameter $substitutionarray is modified
  */
-function tinyurl_completesubstitutionarray(&$substitutionarray, $langs, $object)
+function easyurl_completesubstitutionarray(&$substitutionarray, $langs, $object)
 {
-    $langs->load('tinyurl@tinyurl');
+    $langs->load('easyurl@easyurl');
 
     switch ($object->element) {
         case 'propal' :
         case 'contrat' :
         case 'fichinter' :
-            $substitutionarray['__TINY_URL_SIGNATURE_LINK__'] = $object->array_options['options_tiny_url_signature_link'];
+            $substitutionarray['__EASY_URL_SIGNATURE_LINK__'] = $object->array_options['options_easy_url_signature_link'];
             break;
         case 'commande' :
         case 'facture' :
-            $substitutionarray['__TINY_URL_PAYMENT_LINK__'] = $object->array_options['options_tiny_url_payment_link'];
+            $substitutionarray['__EASY_URL_PAYMENT_LINK__'] = $object->array_options['options_easy_url_payment_link'];
             break;
         default :
-            $substitutionarray['__TINY_URL_SIGNATURE_LINK__'] = $langs->trans('TinyUrlSignatureLink');
-            $substitutionarray['__TINY_URL_PAYMENT_LINK__']   = $langs->trans('TinyUrlPaymentLink');
+            $substitutionarray['__EASY_URL_SIGNATURE_LINK__'] = $langs->trans('EasyUrlSignatureLink');
+            $substitutionarray['__EASY_URL_PAYMENT_LINK__']   = $langs->trans('EasyUrlPaymentLink');
             break;
     }
 }

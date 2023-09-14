@@ -16,23 +16,23 @@
  */
 
 /**
-* \file    lib/tinyurl_function.lib.php
-* \ingroup tinyurl
-* \brief   Library files with common functions for TinyURL
+* \file    lib/easyurl_function.lib.php
+* \ingroup easyurl
+* \brief   Library files with common functions for EasyURL
 */
 
 /**
- * Set tiny url link
+ * Set easy url link
  *
  * @param CommonObject $object  Object
  * @param string       $urlType Url type
  */
-function set_tiny_url_link(CommonObject $object, string $urlType)
+function set_easy_url_link(CommonObject $object, string $urlType)
 {
     global $conf, $langs;
 
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
-    $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
+    $checkConf        = getDolGlobalString('EASYURL_URL_YOURLS_API') && getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API');
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature') && $checkConf) {
         // Load Dolibarr libraries
         require_once DOL_DOCUMENT_ROOT . '/core/lib/payments.lib.php';
@@ -69,18 +69,18 @@ function set_tiny_url_link(CommonObject $object, string $urlType)
                 break;
         }
 
-        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('TINYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
 
         // Init the CURL session
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $conf->global->TINYURL_URL_YOURLS_API);
+        curl_setopt($ch, CURLOPT_URL, $conf->global->EASYURL_URL_YOURLS_API);
         curl_setopt($ch, CURLOPT_HEADER, 0);            // No header in the result
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return, do not echo result
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, 1);              // This is a POST request
         curl_setopt($ch, CURLOPT_POSTFIELDS, [               // Data to POST
             'action'    => 'shorturl',
-            'signature' => $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API,
+            'signature' => $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API,
             'format'    => 'json',
             'title'     => $title,
             'keyword'   => $title,
@@ -94,43 +94,43 @@ function set_tiny_url_link(CommonObject $object, string $urlType)
         // Do something with the result
         $data = json_decode($data);
         if ($data->status == 'success') {
-            $object->array_options['options_tiny_url_' . $urlType . '_link'] = $data->shorturl;
-            $object->updateExtraField('tiny_url_' . $urlType . '_link');
-            setEventMessage($langs->trans('SetTinyURLSuccess'));
+            $object->array_options['options_easy_url_' . $urlType . '_link'] = $data->shorturl;
+            $object->updateExtraField('easy_url_' . $urlType . '_link');
+            setEventMessage($langs->trans('SetEasyURLSuccess'));
         } else {
-            setEventMessage($langs->trans('SetTinyURLErrors'), 'errors');
+            setEventMessage($langs->trans('SetEasyURLErrors'), 'errors');
         }
     }
 }
 
 /**
- * get tiny url link
+ * get easy url link
  *
  * @param  CommonObject $object  Object
  * @param  string       $urlType Url type
  * @return int                   0 < on error, 1 = statusCode 200, 0 = other statusCode (ex : 404)
  */
-function get_tiny_url_link(CommonObject $object, string $urlType): int
+function get_easy_url_link(CommonObject $object, string $urlType): int
 {
     global $conf;
 
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
-    $checkConf        = getDolGlobalString('TINYURL_URL_YOURLS_API') && getDolGlobalString('TINYURL_SIGNATURE_TOKEN_YOURLS_API');
+    $checkConf        = getDolGlobalString('EASYURL_URL_YOURLS_API') && getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API');
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature') && $checkConf) {
         $object->fetch($object->id);
 
         // Init the CURL session
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $conf->global->TINYURL_URL_YOURLS_API);
+        curl_setopt($ch, CURLOPT_URL, $conf->global->EASYURL_URL_YOURLS_API);
         curl_setopt($ch, CURLOPT_HEADER, 0);            // No header in the result
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return, do not echo result
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, 1);              // This is a POST request
         curl_setopt($ch, CURLOPT_POSTFIELDS, [               // Data to POST
             'action'    => 'url-stats',
-            'signature' => $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API,
+            'signature' => $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API,
             'format'    => 'json',
-            'shorturl'  => $object->array_options['options_tiny_url_' . $urlType . '_link']
+            'shorturl'  => $object->array_options['options_easy_url_' . $urlType . '_link']
         ]);
 
         // Fetch and return content

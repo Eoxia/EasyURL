@@ -17,24 +17,24 @@
 
 /**
  * \file    admin/setup.php
- * \ingroup tinyurl
- * \brief   TinyURL setup page
+ * \ingroup easyurl
+ * \brief   EasyURL setup page
  */
 
-// Load TinyURL environment
-if (file_exists('../tinyurl.main.inc.php')) {
-    require_once __DIR__ . '/../tinyurl.main.inc.php';
-} elseif (file_exists('../../tinyurl.main.inc.php')) {
-    require_once __DIR__ . '/../../tinyurl.main.inc.php';
+// Load EasyURL environment
+if (file_exists('../easyurl.main.inc.php')) {
+    require_once __DIR__ . '/../easyurl.main.inc.php';
+} elseif (file_exists('../../easyurl.main.inc.php')) {
+    require_once __DIR__ . '/../../easyurl.main.inc.php';
 } else {
-    die('Include of tinyurl main fails');
+    die('Include of easyurl main fails');
 }
 
 // Load Dolibarr libraries
 require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
-// Load TinyURL libraries
-require_once __DIR__ . '/../lib/tinyurl.lib.php';
+// Load EasyURL libraries
+require_once __DIR__ . '/../lib/easyurl.lib.php';
 
 // Global variables definitions
 global $conf, $db, $langs, $user;
@@ -50,7 +50,7 @@ $backtopage = GETPOST('backtopage', 'alpha');
 $form = new Form($db);
 
 // Security check - Protection if external user
-$permissionToRead = $user->rights->tinyurl->adminpage->read;
+$permissionToRead = $user->rights->easyurl->adminpage->read;
 saturne_check_access($permissionToRead);
 
 /*
@@ -62,10 +62,10 @@ if ($action == 'set_config') {
     $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
 
     if (dol_strlen($URLYourlsAPI) > 0) {
-        dolibarr_set_const($db, 'TINYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($db, 'EASYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
     if (dol_strlen($signatureTokenYourlsAPI) > 0) {
-        dolibarr_set_const($db, 'TINYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($db, 'EASYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
 
     setEventMessage('SavedConfig');
@@ -79,8 +79,8 @@ if ($action == 'set_config') {
  * View
  */
 
-$title    = $langs->trans('ModuleSetup', 'TinyURL');
-$help_url = 'FR:Module_TinyURL';
+$title    = $langs->trans('ModuleSetup', 'EasyURL');
+$help_url = 'FR:Module_EasyURL';
 
 saturne_header(0,'', $title, $help_url);
 
@@ -89,8 +89,8 @@ $linkback = '<a href="' . ($backtopage ?: DOL_URL_ROOT . '/admin/modules.php?res
 print load_fiche_titre($title, $linkback, 'title_setup');
 
 // Configuration header
-$head = tinyurl_admin_prepare_head();
-print dol_get_fiche_head($head, 'settings', $title, -1, 'tinyurl_color@tinyurl');
+$head = easyurl_admin_prepare_head();
+print dol_get_fiche_head($head, 'settings', $title, -1, 'easyurl_color@easyurl');
 
 print load_fiche_titre($langs->trans('Config'), '', '');
 
@@ -107,30 +107,30 @@ print '</tr>';
 
 print '<tr class="oddeven"><td><label for="url_yourls_api">' . $langs->trans('URLYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('URLYourlsAPIDescription') . '</td>';
-print '<td><input type="text" name="url_yourls_api" value="' . $conf->global->TINYURL_URL_YOURLS_API . '"></td>';
+print '<td><input type="text" name="url_yourls_api" value="' . $conf->global->EASYURL_URL_YOURLS_API . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
-print '<td><input type="password" name="signature_token_yourls_api" value="' . $conf->global->TINYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '<td><input type="password" name="signature_token_yourls_api" value="' . $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';
 print '<td>' . $langs->trans('UseShaUrlDescription') . '</td>';
 print '<td>';
-print ajax_constantonoff('TINYURL_USE_SHA_URL');
+print ajax_constantonoff('EASYURL_USE_SHA_URL');
 print '</td></tr>';
 
-print '<tr class="oddeven"><td>' . $langs->trans('AutomaticTinyUrlGeneration') . '</td>';
-print '<td>' . $langs->trans('AutomaticTinyUrlGenerationDescription') . '</td>';
+print '<tr class="oddeven"><td>' . $langs->trans('AutomaticEasyUrlGeneration') . '</td>';
+print '<td>' . $langs->trans('AutomaticEasyUrlGenerationDescription') . '</td>';
 print '<td>';
-print ajax_constantonoff('TINYURL_AUTOMATIC_GENERATION');
+print ajax_constantonoff('EASYURL_AUTOMATIC_GENERATION');
 print '</td></tr>';
 
-print '<tr class="oddeven"><td>' . $langs->trans('ManualTinyUrlGeneration') . '</td>';
-print '<td>' . $langs->trans('ManualTinyUrlGenerationDescription') . '</td>';
+print '<tr class="oddeven"><td>' . $langs->trans('ManualEasyUrlGeneration') . '</td>';
+print '<td>' . $langs->trans('ManualEasyUrlGenerationDescription') . '</td>';
 print '<td>';
-print ajax_constantonoff('TINYURL_MANUAL_GENERATION');
+print ajax_constantonoff('EASYURL_MANUAL_GENERATION');
 print '</td></tr>';
 
 print '</table>';

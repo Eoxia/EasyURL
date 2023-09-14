@@ -16,8 +16,8 @@
  */
 
 /**
- * \file    lib/tinyurl.lib.php
- * \ingroup tinyurl
+ * \file    lib/easyurl.lib.php
+ * \ingroup easyurl
  * \brief   Library files with common functions for Admin conf
  */
 
@@ -26,7 +26,7 @@
  *
  * @return array $head Array of tabs
  */
-function tinyurl_admin_prepare_head(): array
+function easyurl_admin_prepare_head(): array
 {
     // Global variables definitions
     global $conf, $langs;
@@ -38,19 +38,19 @@ function tinyurl_admin_prepare_head(): array
     $h    = 0;
     $head = [];
 
-    $head[$h][0] = dol_buildpath('/tinyurl/admin/setup.php', 1);
+    $head[$h][0] = dol_buildpath('/easyurl/admin/setup.php', 1);
     $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fas fa-cog pictofixedwidth"></i>' . $langs->trans('ModuleSettings') : '<i class="fas fa-cog"></i>';
     $head[$h][2] = 'settings';
     $h++;
 
-    $head[$h][0] = dol_buildpath('/saturne/admin/about.php', 1) . '?module_name=TinyURL';
+    $head[$h][0] = dol_buildpath('/saturne/admin/about.php', 1) . '?module_name=EasyURL';
     $head[$h][1] = $conf->browser->layout != 'phone' ? '<i class="fab fa-readme pictofixedwidth"></i>' . $langs->trans('About') : '<i class="fab fa-readme"></i>';
     $head[$h][2] = 'about';
     $h++;
 
-    complete_head_from_modules($conf, $langs, null, $head, $h, 'tinyurl@tinyurl');
+    complete_head_from_modules($conf, $langs, null, $head, $h, 'easyurl@easyurl');
 
-    complete_head_from_modules($conf, $langs, null, $head, $h, 'tinyurl@tinyurl', 'remove');
+    complete_head_from_modules($conf, $langs, null, $head, $h, 'easyurl@easyurl', 'remove');
 
     return $head;
 }

@@ -16,21 +16,21 @@
  */
 
 /**
- * 	\defgroup tinyurl     Module TinyURL
- *  \brief    TinyURL module descriptor
+ * 	\defgroup easyurl     Module EasyURL
+ *  \brief    EasyURL module descriptor
  *
- *  \file     core/modules/modTinyURL.class.php
- *  \ingroup  tinyurl
- *  \brief    Description and activation file for module TinyURL
+ *  \file     core/modules/modEasyURL.class.php
+ *  \ingroup  easyurl
+ *  \brief    Description and activation file for module EasyURL
  */
 
 // Load Dolibarr libraries
 require_once DOL_DOCUMENT_ROOT . '/core/modules/DolibarrModules.class.php';
 
 /**
- * Description and activation class for module TinyURL
+ * Description and activation class for module EasyURL
  */
-class modTinyURL extends DolibarrModules
+class modEasyURL extends DolibarrModules
 {
     /**
      * Constructor. Define names, constants, directories, boxes, permissions
@@ -44,17 +44,17 @@ class modTinyURL extends DolibarrModules
 
         if (file_exists(__DIR__ . '/../../../saturne/lib/saturne_functions.lib.php')) {
             require_once __DIR__ . '/../../../saturne/lib/saturne_functions.lib.php';
-            saturne_load_langs(['tinyurl@tinyurl']);
+            saturne_load_langs(['easyurl@easyurl']);
         } else {
             $this->error++;
-            $this->errors[] = $langs->trans('activateModuleDependNotSatisfied', 'TinyURL', 'Saturne');
+            $this->errors[] = $langs->trans('activateModuleDependNotSatisfied', 'EasyURL', 'Saturne');
         }
 
         // ID for module (must be unique)
         $this->numero = 436305;
 
         // Key text used to identify module (for permissions, menus, etc...)
-        $this->rights_class = 'tinyurl';
+        $this->rights_class = 'easyurl';
 
         // Family can be 'base' (core modules),'crm','financial','hr','projects','products','ecm','technic' (transverse modules),'interface' (link with external tools),'other','...'
         // It is used to group modules by family in module setup page
@@ -65,13 +65,13 @@ class modTinyURL extends DolibarrModules
 
         // Gives the possibility for the module, to provide his own family info and position of this family (Overwrite $this->family and $this->module_position. Avoid this)
         $this->familyinfo = ['Eoxia' => ['position' => '01', 'label' => 'Eoxia']];
-        // Module label (no space allowed), used if translation string 'ModuleTinyURLName' not found (TinyURL is name of module)
+        // Module label (no space allowed), used if translation string 'ModuleEasyURLName' not found (EasyURL is name of module)
         $this->name = preg_replace('/^mod/i', '', get_class($this));
 
-        // Module description, used if translation string 'ModuleTinyURLDesc' not found (TinyURL is name of module)
-        $this->description = $langs->trans('TinyURLDescription');
+        // Module description, used if translation string 'ModuleEasyURLDesc' not found (EasyURL is name of module)
+        $this->description = $langs->trans('EasyURLDescription');
         // Used only if file README.md and README-LL.md not found
-        $this->descriptionlong = $langs->trans('TinyURLDescriptionLong');
+        $this->descriptionlong = $langs->trans('EasyURLDescriptionLong');
 
         // Author
         $this->editor_name = 'Eoxia';
@@ -83,14 +83,14 @@ class modTinyURL extends DolibarrModules
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
 
-        // Key used in llx_const table to save module status enabled/disabled (where TINYURL is value of property name of module in uppercase)
+        // Key used in llx_const table to save module status enabled/disabled (where EASYURL is value of property name of module in uppercase)
         $this->const_name = 'MAIN_MODULE_' . strtoupper($this->name);
 
         // Name of image file used for this module
         // If file is in theme/yourtheme/img directory under name object_pictovalue.png, use this->picto='pictovalue'
         // If file is in module/img directory under name object_pictovalue.png, use this->picto='pictovalue@module'
         // To use a supported fa-xxx css style of font awesome, use this->picto='xxx'
-        $this->picto = 'tinyurl_color@tinyurl';
+        $this->picto = 'easyurl_color@easyurl';
 
         // Define some features supported by module (triggers, login, substitutions, menus, css, etc...)
         $this->module_parts = [
@@ -132,11 +132,11 @@ class modTinyURL extends DolibarrModules
         ];
 
         // Data directories to create when module is enabled
-        // Example: this->dirs = array("/tinyurl/temp","/tinyurl/subdir");
-        $this->dirs = ['/tinyurl/temp'];
+        // Example: this->dirs = array("/easyurl/temp","/easyurl/subdir");
+        $this->dirs = ['/easyurl/temp'];
 
-        // Config pages. Put here list of php page, stored into tinyurl/admin directory, to use to set up module
-        $this->config_page_url = ['setup.php@tinyurl'];
+        // Config pages. Put here list of php page, stored into easyurl/admin directory, to use to set up module
+        $this->config_page_url = ['setup.php@easyurl'];
 
         // Dependencies
         // A condition to hide module
@@ -148,7 +148,7 @@ class modTinyURL extends DolibarrModules
         $this->conflictwith = []; // List of module class names as string this module is in conflict with. Example: array('modModuleToDisable1', ...)
 
         // The language file dedicated to your module
-        $this->langfiles = ['tinyurl@tinyurl'];
+        $this->langfiles = ['easyurl@easyurl'];
 
         // Prerequisites
         $this->phpmin                = [7, 4]; // Minimum version of PHP required by module
@@ -157,24 +157,24 @@ class modTinyURL extends DolibarrModules
         // Messages at activation
         $this->warnings_activation     = []; // Warning to show when we activate module. array('always'='text') or array('FR'='textfr','MX'='textmx'...)
         $this->warnings_activation_ext = []; // Warning to show when we activate an external module. array('always'='text') or array('FR'='textfr','MX'='textmx'...)
-        //$this->automatic_activation = array('FR'=>'TinyURLWasAutomaticallyActivatedBecauseOfYourCountryChoice');
+        //$this->automatic_activation = array('FR'=>'EasyURLWasAutomaticallyActivatedBecauseOfYourCountryChoice');
         //$this->always_enabled = true; // If true, can't be disabled
 
         // Constants
         // List of particular constants to add when module is enabled (key, 'chaine', value, desc, visible, 'current' or 'allentities', deleteonunactive)
-        // Example: $this->const=array(1 => array('TINYURL_MYNEWCONST1', 'chaine', 'myvalue', 'This is a constant to add', 1),
-        //                             2 => array('TINYURL_MYNEWCONST2', 'chaine', 'myvalue', 'This is another constant to add', 0, 'current', 1)
+        // Example: $this->const=array(1 => array('EASYURL_MYNEWCONST1', 'chaine', 'myvalue', 'This is a constant to add', 1),
+        //                             2 => array('EASYURL_MYNEWCONST2', 'chaine', 'myvalue', 'This is another constant to add', 0, 'current', 1)
         // );
         $i = 0;
         $this->const = [
             // CONST CONFIGURATION
-            $i++ => ['TINYURL_AUTOMATIC_GENERATION', 'integer', 1, '', 0, 'current'],
-            $i++ => ['TINYURL_MANUAL_GENERATION', 'integer', 1, '', 0, 'current'],
+            $i++ => ['EASYURL_AUTOMATIC_GENERATION', 'integer', 1, '', 0, 'current'],
+            $i++ => ['EASYURL_MANUAL_GENERATION', 'integer', 1, '', 0, 'current'],
 
             // CONST MODULE
-            $i++ => ['TINYURL_VERSION', 'chaine', $this->version, '', 0, 'current'],
-            $i++ => ['TINYURL_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
-            $i++ => ['TINYURL_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
+            $i++ => ['EASYURL_VERSION', 'chaine', $this->version, '', 0, 'current'],
+            $i++ => ['EASYURL_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
+            $i++ => ['EASYURL_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
 
             // CONST DOLIBARR
             $i++ => ['CONTRACT_ALLOW_ONLINESIGN', 'integer', 1, '', 0, 'current'],
@@ -187,9 +187,9 @@ class modTinyURL extends DolibarrModules
             'fr_FR:ParentCompany'=>'Maison mère ou revendeur'
         )*/
 
-        if (!isset($conf->tinyurl) || !isset($conf->tinyurl->enabled)) {
-            $conf->tinyurl = new stdClass();
-            $conf->tinyurl->enabled = 0;
+        if (!isset($conf->easyurl) || !isset($conf->easyurl->enabled)) {
+            $conf->easyurl = new stdClass();
+            $conf->easyurl->enabled = 0;
         }
 
         // Array to add new pages in new tabs
@@ -199,7 +199,7 @@ class modTinyURL extends DolibarrModules
         $this->dictionaries = [];
 
         // Boxes/Widgets
-        // Add here list of php file(s) stored in tinyurl/core/boxes that contains a class to show a widget
+        // Add here list of php file(s) stored in easyurl/core/boxes that contains a class to show a widget
         $this->boxes = [];
 
         // Cronjobs (List of cron jobs entries to add when module is enabled)
@@ -210,21 +210,21 @@ class modTinyURL extends DolibarrModules
         $this->rights = [];
         $r = 0;
 
-        /* TINYURL PERMISSIONS */
+        /* EASYURL PERMISSIONS */
         $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1); // Permission id (must not be already used)
-        $this->rights[$r][1] = $langs->trans('LireModule', 'TinyURL');   // Permission label
-        $this->rights[$r][4] = 'lire';                                                // In php code, permission will be checked by test if ($user->rights->tinyurl->session->read)
+        $this->rights[$r][1] = $langs->trans('LireModule', 'EasyURL');     // Permission label
+        $this->rights[$r][4] = 'lire';                                                  // In php code, permission will be checked by test if ($user->rights->easyurl->session->read)
         $this->rights[$r][5] = 1;
         $r++;
         $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
-        $this->rights[$r][1] = $langs->trans('ReadModule', 'TinyURL');
+        $this->rights[$r][1] = $langs->trans('ReadModule', 'EasyURL');
         $this->rights[$r][4] = 'read';
         $this->rights[$r][5] = 1;
         $r++;
 
         /* ADMINPAGE PANEL ACCESS PERMISSIONS */
         $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
-        $this->rights[$r][1] = $langs->transnoentities('ReadAdminPage', 'TinyURL');
+        $this->rights[$r][1] = $langs->transnoentities('ReadAdminPage', 'EasyURL');
         $this->rights[$r][4] = 'adminpage';
         $this->rights[$r][5] = 'read';
 
@@ -250,32 +250,32 @@ class modTinyURL extends DolibarrModules
 
         $sql = [];
 
-        dolibarr_set_const($this->db, 'TINYURL_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
-        dolibarr_set_const($this->db, 'TINYURL_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($this->db, 'EASYURL_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
+        dolibarr_set_const($this->db, 'EASYURL_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
 
         // Create extrafields during init
         require_once DOL_DOCUMENT_ROOT . '/core/class/extrafields.class.php';
         $extraFields = new ExtraFields($this->db);
 
         // Propal extrafields
-        $extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'propal', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2000, '', 'propal', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', '', 'propal', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
+        $extraFields->addExtraField('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', 2000, '', 'propal', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
 
         // Order extrafields
-        $extraFields->update('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', '', 'commande', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', 2000, '', 'commande', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('easy_url_payment_link', 'EasyUrlPaymentLink', 'url', '', 'commande', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
+        $extraFields->addExtraField('easy_url_payment_link', 'EasyUrlPaymentLink', 'url', 2000, '', 'commande', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
 
         // Invoice extrafields
-        $extraFields->update('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', '', 'facture', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_payment_link', 'TinyUrlPaymentLink', 'url', 2000, '', 'facture', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('easy_url_payment_link', 'EasyUrlPaymentLink', 'url', '', 'facture', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
+        $extraFields->addExtraField('easy_url_payment_link', 'EasyUrlPaymentLink', 'url', 2000, '', 'facture', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
 
         // Contract extrafields
-        $extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'contrat', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2000, '', 'contrat', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', '', 'contrat', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
+        $extraFields->addExtraField('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', 2000, '', 'contrat', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
 
         // Fiche inter extrafields
-        $extraFields->update('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', '', 'fichinter', 0, 0, 2000, '', '', '', 5, 'TinyUrlLinkHelp', '', '', 0, 'tinyurl@tinyurl');
-        $extraFields->addExtraField('tiny_url_signature_link', 'TinyUrlSignatureLink', 'url', 2000, '', 'fichinter', 0, 0, '', '', '', '', 5, 'TinyUrlLinkHelp', '', 0, 'tinyurl@tinyurl');
+        $extraFields->update('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', '', 'fichinter', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
+        $extraFields->addExtraField('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', 2000, '', 'fichinter', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
 
         return $this->_init($sql, $options);
     }

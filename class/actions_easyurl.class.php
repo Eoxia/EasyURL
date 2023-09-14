@@ -16,18 +16,18 @@
  */
 
 /**
- * \file    class/actions_tinyurl.class.php
- * \ingroup tinyurl
- * \brief   TinyURL hook overload
+ * \file    class/actions_easyurl.class.php
+ * \ingroup easyurl
+ * \brief   EasyURL hook overload
  */
 
-// Load TinyURL libraries
-require_once __DIR__ . '/../lib/tinyurl_function.lib.php';
+// Load EasyURL libraries
+require_once __DIR__ . '/../lib/easyurl_function.lib.php';
 
 /**
- * Class ActionsTinyurl
+ * Class ActionsEasyurl
  */
-class ActionsTinyurl
+class ActionsEasyurl
 {
     /**
      * @var DoliDB Database handler
@@ -79,20 +79,20 @@ class ActionsTinyurl
             if ($object->status > $object::STATUS_DRAFT) {
                 print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
 
-                $pictoPath = dol_buildpath('/tinyurl/img/tinyurl_color.png', 1);
+                $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
                 $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
                 $urlTypes  = ['payment', 'signature'];
                 foreach ($urlTypes as $urlType) {
-                    $checkTinyUrlLink = get_tiny_url_link($object, $urlType);
-                    $jQueryElement    = '.' . $object->element . '_extras_tiny_url_' . $urlType . '_link';
-                    if ($checkTinyUrlLink == 0 && getDolGlobalInt('TINYURL_MANUAL_GENERATION')) {
+                    $checkEasyUrlLink = get_easy_url_link($object, $urlType);
+                    $jQueryElement    = '.' . $object->element . '_extras_easy_url_' . $urlType . '_link';
+                    if ($checkEasyUrlLink == 0 && getDolGlobalInt('EASYURL_MANUAL_GENERATION')) {
                         $output  = $picto;
-                        $output .= '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_tiny_url&url_type=' . $urlType . '&token=' . newToken() . '">';
-                        $output .= img_picto($langs->trans('SetTinyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>';
-                        $output .= '</span>' . img_picto($langs->trans('GetTinyURLErrors'), 'fontawesome_fa-exclamation-triangle_fas_#bc9526') . '</span>';
+                        $output .= '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_easy_url&url_type=' . $urlType . '&token=' . newToken() . '">';
+                        $output .= img_picto($langs->trans('SetEasyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>';
+                        $output .= '</span>' . img_picto($langs->trans('GetEasyURLErrors'), 'fontawesome_fa-exclamation-triangle_fas_#bc9526') . '</span>';
                     }
-                    if (!empty($object->array_options['options_tiny_url_' . $urlType . '_link']) && $checkTinyUrlLink > 0) {
-                        $output = showValueWithClipboardCPButton($object->array_options['options_tiny_url_' . $urlType . '_link'], 0, 'none');
+                    if (!empty($object->array_options['options_easy_url_' . $urlType . '_link']) && $checkEasyUrlLink > 0) {
+                        $output = showValueWithClipboardCPButton($object->array_options['options_easy_url_' . $urlType . '_link'], 0, 'none');
                     } ?>
                     <script>
                         var objectElement = <?php echo "'" . $jQueryElement . "'"; ?>;
@@ -106,11 +106,11 @@ class ActionsTinyurl
         if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
             print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
 
-            $pictoPath = dol_buildpath('/tinyurl/img/tinyurl_color.png', 1);
+            $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
             $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
             $urlTypes  = ['payment', 'signature'];
             foreach ($urlTypes as $urlType) {
-                $jQueryElement = 'tiny_url_' . $urlType . '_link'; ?>
+                $jQueryElement = 'easy_url_' . $urlType . '_link'; ?>
 
                 <script>
                     var objectElement = <?php echo "'" . $jQueryElement . "'"; ?>;
@@ -136,8 +136,8 @@ class ActionsTinyurl
     public function doActions(array $parameters, $object, string $action): int
     {
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
-            if ($action == 'set_tiny_url') {
-                set_tiny_url_link($object, GETPOST('url_type'));
+            if ($action == 'set_easy_url') {
+                set_easy_url_link($object, GETPOST('url_type'));
 
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;

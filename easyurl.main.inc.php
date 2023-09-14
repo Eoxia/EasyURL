@@ -16,12 +16,12 @@
  */
 
 /**
- * \file    tinyurl.main.inc.php
- * \ingroup tinyurl
+ * \file    easyurl.main.inc.php
+ * \ingroup easyurl
  * \brief   File that defines environment for Saturne common functions
  */
 
-$moduleName          = 'TinyURL';
+$moduleName          = 'EasyURL';
 $moduleNameLowerCase = strtolower($moduleName);
 $moduleNameUpperCase = strtoupper($moduleName);
 
