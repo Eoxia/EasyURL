@@ -77,7 +77,8 @@ class ActionsEasyurl
 
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($object->status > $object::STATUS_DRAFT) {
-                print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
+                $cssPath = dol_buildpath('/saturne/css/saturne.min.css', 1);
+                print '<link href="' . $cssPath . '" rel="stylesheet">';
 
                 $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
                 $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
@@ -104,7 +105,8 @@ class ActionsEasyurl
         }
 
         if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
-            print '<link href="../../custom/saturne/css/saturne.min.css" rel="stylesheet">';
+            $cssPath = dol_buildpath('/saturne/css/saturne.min.css', 1);
+            print '<link href="' . $cssPath . '" rel="stylesheet">';
 
             $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
             $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
