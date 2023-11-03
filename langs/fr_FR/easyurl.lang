@@ -93,6 +93,8 @@ ValidatePendingAssignment = Validé (en attente d'affectation)
 Assign                    = Affecter
 NoLinkedElement           = Aucun élément lié
 ShortenerRepartition      = Répartition des raccourcissements d'URLs par %s
+ShortenerUrlType          = Liste des types d'URLs
 
 # Fiels - Champ
 ShortUrl = URL raccourcie
+UrlType  = Type d'URL

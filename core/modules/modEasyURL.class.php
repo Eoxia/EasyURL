@@ -197,8 +197,46 @@ class modEasyURL extends DolibarrModules
         // Array to add new pages in new tabs
         $this->tabs = [];
 
-        // Dictionaries.
-        $this->dictionaries = [];
+        // Dictionaries
+        $this->dictionaries = [
+            'langs' => 'easyurl@easyurl',
+            // List of tables we want to see into dictionary editor
+            'tabname' => [
+                MAIN_DB_PREFIX . 'c_shortener_url_type'
+            ],
+            // Label of tables
+            'tablib' => [
+                'ShortenerUrlType'
+            ],
+            // Request to select fields
+            'tabsql' => [
+                'SELECT f.rowid as rowid, f.ref, f.label, f.description, f.position, f.active  FROM ' . MAIN_DB_PREFIX . 'c_shortener_url_type as f'
+            ],
+            // Sort order
+            'tabsqlsort' => [
+                'position ASC'
+            ],
+            // List of fields (result of select to show dictionary)
+            'tabfield' => [
+                'ref,label,description,position'
+            ],
+            // List of fields (list of fields to edit a record)
+            'tabfieldvalue' => [
+                'ref,label,description,position'
+            ],
+            // List of fields (list of fields for insert)
+            'tabfieldinsert' => [
+                'ref,label,description,position'
+            ],
+            // Name of columns with primary key (try to always name it 'rowid')
+            'tabrowid' => [
+                'rowid'
+            ],
+            // Condition to show each dictionary
+            'tabcond' => [
+                $conf->easyurl->enabled
+            ]
+        ];
 
         // Boxes/Widgets
         // Add here list of php file(s) stored in easyurl/core/boxes that contains a class to show a widget

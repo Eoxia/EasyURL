@@ -13,22 +13,12 @@
 -- You should have received a copy of the GNU General Public License
 -- along with this program.  If not, see https://www.gnu.org/licenses/.
 
-CREATE TABLE llx_easyurl_shortener(
-  rowid          integer AUTO_INCREMENT PRIMARY KEY NOT NULL,
-  ref            varchar(128) DEFAULT '(PROV)' NOT NULL,
-  ref_ext        varchar(128),
-  entity         integer DEFAULT 1 NOT NULL,
-  date_creation  datetime NOT NULL,
-  tms            timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  import_key     varchar(14),
-  status         integer NOT NULL,
-  label          varchar(255),
-  short_url      text,
-  original_url   text,
-  type           varchar(255),
-  methode        varchar(255),
-  element_type   varchar(255),
-  fk_element     integer,
-  fk_user_creat  integer NOT NULL,
-  fk_user_modif  integer
+CREATE TABLE llx_c_shortener_url_type(
+  rowid       integer AUTO_INCREMENT PRIMARY KEY NOT NULL,
+  entity      integer default 1,
+  ref         varchar(128),
+  label       varchar(255),
+  description text,
+  active      tinyint(4) DEFAULT 1,
+  position    integer DEFAULT 0
 ) ENGINE=innodb;

@@ -155,7 +155,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
                     if ($object->fk_element == -1) {
                         $object->fk_element = '';
                     }
-                    $object->update($user);
+                    $object->update($user, true);
                 }
 
                 $actioncomm->label = $langs->trans('ObjectModifyTrigger', $langs->transnoentities(ucfirst($object->element)), $object->ref);
