@@ -250,6 +250,11 @@ class modEasyURL extends DolibarrModules
 
         $sql = [];
 
+        $result = $this->_load_tables('/easyurl/sql/');
+        if ($result < 0) {
+            return -1; // Do not activate module if error 'not allowed' returned when loading module SQL queries (the _load_table run sql with run_sql with the error allowed parameter set to 'default')
+        }
+
         dolibarr_set_const($this->db, 'EASYURL_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
         dolibarr_set_const($this->db, 'EASYURL_DB_VERSION', $this->version, 'chaine', 0, '', $conf->entity);
 
