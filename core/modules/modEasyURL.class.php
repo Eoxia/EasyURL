@@ -170,7 +170,6 @@ class modEasyURL extends DolibarrModules
             // CONST CONFIGURATION
             $i++ => ['EASYURL_AUTOMATIC_GENERATION', 'integer', 1, '', 0, 'current'],
             $i++ => ['EASYURL_MANUAL_GENERATION', 'integer', 1, '', 0, 'current'],
-            $i++ => ['EASYURL_URL_PARAMETERS_AUTO_INCREMENT', 'integer', 1, '', 0, 'current'],
 
             // CONST MODULE
             $i++ => ['EASYURL_VERSION', 'chaine', $this->version, '', 0, 'current'],

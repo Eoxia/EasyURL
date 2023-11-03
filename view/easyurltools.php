@@ -65,7 +65,7 @@ if ($action == 'generate_url' && $permissionToAdd) {
         $shortener      = new Shortener($db);
         $shortener->ref = $shortener->getNextNumRef();
         if (dol_strlen($originalUrl) > 0) {
-            $shortener->original_url = $originalUrl . $urlParameters . (getDolGlobalInt('EASYURL_URL_PARAMETERS_AUTO_INCREMENT') || $NbUrl > 1 ? $i : '');
+            $shortener->original_url = $originalUrl . $urlParameters;
         }
         $shortener->methode = $urlMethode;
 
@@ -122,11 +122,6 @@ print '</tr>';
 print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
 print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
 print '<td><input type="text" name="url_parameters"></td>';
-print '</tr>';
-
-print '<tr class="oddeven"><td>' . $langs->trans('UrlParametersAutoIncrement') . '</td>';
-print '<td>' . $langs->trans('UrlParametersAutoIncrementDescription') . '</td>';
-print '<td>' . ajax_constantonoff('EASYURL_URL_PARAMETERS_AUTO_INCREMENT') . '</td>';
 print '</tr>';
 
 $urlMethode = ['yourls' => 'YOURLS', 'wordpress' => 'WordPress'];
