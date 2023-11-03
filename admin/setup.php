@@ -60,12 +60,16 @@ saturne_check_access($permissionToRead);
 if ($action == 'set_config') {
     $URLYourlsAPI            = GETPOST('url_yourls_api');
     $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
+    $defaultOriginalURL      = GETPOST('default_original_url');
 
     if (dol_strlen($URLYourlsAPI) > 0) {
         dolibarr_set_const($db, 'EASYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
     if (dol_strlen($signatureTokenYourlsAPI) > 0) {
         dolibarr_set_const($db, 'EASYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
+    }
+    if (dol_strlen($defaultOriginalURL) > 0) {
+        dolibarr_set_const($db, 'EASYURL_DEFAULT_ORIGINAL_URL', $defaultOriginalURL, 'chaine', 0, '', $conf->entity);
     }
 
     setEventMessage('SavedConfig');
@@ -113,6 +117,11 @@ print '</td></tr>';
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
 print '<td><input type="password" name="signature_token_yourls_api" value="' . $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '</td></tr>';
+
+print '<tr class="oddeven"><td><label for="default_original_url">' . $langs->trans('DefaultOriginalUrl') . '</label></td>';
+print '<td>' . $langs->trans('DefaultOriginalUrlDescription') . '</td>';
+print '<td><input type="text" name="default_original_url" value="' . $conf->global->EASYURL_DEFAULT_ORIGINAL_URL . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';

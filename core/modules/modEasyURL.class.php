@@ -170,11 +170,13 @@ class modEasyURL extends DolibarrModules
             // CONST CONFIGURATION
             $i++ => ['EASYURL_AUTOMATIC_GENERATION', 'integer', 1, '', 0, 'current'],
             $i++ => ['EASYURL_MANUAL_GENERATION', 'integer', 1, '', 0, 'current'],
+            $i++ => ['EASYURL_URL_PARAMETERS_AUTO_INCREMENT', 'integer', 1, '', 0, 'current'],
 
             // CONST MODULE
             $i++ => ['EASYURL_VERSION', 'chaine', $this->version, '', 0, 'current'],
             $i++ => ['EASYURL_DB_VERSION', 'chaine', $this->version, '', 0, 'current'],
             $i++ => ['EASYURL_SHOW_PATCH_NOTE', 'integer', 1, '', 0, 'current'],
+            $i++ => ['EASYURL_ADVANCED_TRIGGER', 'integer', 1, '', 0, 'current'],
 
             // CONST DOLIBARR
             $i++ => ['CONTRACT_ALLOW_ONLINESIGN', 'integer', 1, '', 0, 'current'],
@@ -222,6 +224,23 @@ class modEasyURL extends DolibarrModules
         $this->rights[$r][5] = 1;
         $r++;
 
+        /* SHORTENER PERMISSIONS */
+        $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
+        $this->rights[$r][1] = $langs->transnoentities('ReadObjects', $langs->transnoentities('Shorteners'));
+        $this->rights[$r][4] = 'shortener';
+        $this->rights[$r][5] = 'read';
+        $r++;
+        $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
+        $this->rights[$r][1] = $langs->transnoentities('CreateObjects', $langs->transnoentities('Shorteners'));
+        $this->rights[$r][4] = 'shortener';
+        $this->rights[$r][5] = 'write';
+        $r++;
+        $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
+        $this->rights[$r][1] = $langs->transnoentities('DeleteObjects', $langs->transnoentities('Shorteners'));
+        $this->rights[$r][4] = 'shortener';
+        $this->rights[$r][5] = 'delete';
+        $r++;
+
         /* ADMINPAGE PANEL ACCESS PERMISSIONS */
         $this->rights[$r][0] = $this->numero . sprintf('%02d', $r + 1);
         $this->rights[$r][1] = $langs->transnoentities('ReadAdminPage', 'EasyURL');
@@ -230,6 +249,57 @@ class modEasyURL extends DolibarrModules
 
         // Main menu entries to add
         $this->menu = [];
+        $r = 0;
+
+        // Add here entries to declare new menus
+        // EASYURL MENU
+        $this->menu[$r++] = [
+            'fk_menu'  => 'fk_mainmenu=easyurl',
+            'type'     => 'top',
+            'titre'    => $langs->trans('EasyURL'),
+            'prefix'   => '<i class="fas fa-home pictofixedwidth"></i>',
+            'mainmenu' => 'easyurl',
+            'leftmenu' => '',
+            'url'      => '/easyurl/easyurlindex.php',
+            'langs'    => 'easyurl@easyurl',
+            'position' => 1000 + $r,
+            'enabled'  => '$conf->easyurl->enabled && $user->rights->easyurl->read',
+            'perms'    => '$user->rights->easyurl->read',
+            'target'   => '',
+            'user'     => 0,
+        ];
+
+        $this->menu[$r++] = [
+            'fk_menu'  => 'fk_mainmenu=easyurl',
+            'type'     => 'left',
+            'titre'    => $langs->transnoentities('Shortener'),
+            'prefix'   => '<i class="fas fa-link pictofixedwidth"></i>',
+            'mainmenu' => 'easyurl',
+            'leftmenu' => 'shortener',
+            'url'      => '/easyurl/view/shortener/shortener_list.php',
+            'langs'    => 'easyurl@easyurl',
+            'position' => 1000 + $r,
+            'enabled'  => '$conf->easyurl->enabled',
+            'perms'    => '$user->rights->easyurl->shortener->read',
+            'target'   => '',
+            'user'     => 0,
+        ];
+
+        $this->menu[$r++] = [
+            'fk_menu'  => 'fk_mainmenu=easyurl',
+            'type'     => 'left',
+            'titre'    => $langs->trans('Tools'),
+            'prefix'   => '<i class="fas fa-wrench pictofixedwidth"></i>',
+            'mainmenu' => 'easyurl',
+            'leftmenu' => 'easyurltools',
+            'url'      => '/easyurl/view/easyurltools.php',
+            'langs'    => 'easyurl@easyurl',
+            'position' => 1000 + $r,
+            'enabled'  => '$conf->easyurl->enabled',
+            'perms'    => '$user->rights->easyurl->read && $user->rights->easyurl->adminpage->read',
+            'target'   => '',
+            'user'     => 0,
+        ];
     }
 
     /**
@@ -281,6 +351,13 @@ class modEasyURL extends DolibarrModules
         // Fiche inter extrafields
         $extraFields->update('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', '', 'fichinter', 0, 0, 2000, '', '', '', 5, 'EasyUrlLinkHelp', '', '', 0, 'easyurl@easyurl');
         $extraFields->addExtraField('easy_url_signature_link', 'EasyUrlSignatureLink', 'url', 2000, '', 'fichinter', 0, 0, '', '', '', '', 5, 'EasyUrlLinkHelp', '', 0, 'easyurl@easyurl');
+
+        // All element type extrafields
+        $objectsMetadata = saturne_get_objects_metadata();
+        foreach($objectsMetadata as $objectMetadata) {
+            $extraFields->update('easy_url_all_link', 'EasyUrlAllLink', 'url', '', $objectMetadata['table_element'], 0, 0, 2100, '', '', '', 5, 'EasyUrlAllLinkHelp', '', '', 0, 'easyurl@easyurl');
+            $extraFields->addExtraField('easy_url_all_link', 'EasyUrlAllLink', 'url', 2100, '', $objectMetadata['table_element'], 0, 0, '', '', '', '', 5, 'EasyUrlAllLinkHelp', '', 0, 'easyurl@easyurl');
+        }
 
         return $this->_init($sql, $options);
     }
