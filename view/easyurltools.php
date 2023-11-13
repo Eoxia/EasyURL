@@ -57,31 +57,35 @@ saturne_check_access($permissionToRead);
 
 if ($action == 'generate_url' && $permissionToAdd) {
     $error         = 0;
+    $urlMethode    = GETPOST('url_methode');
     $NbUrl         = GETPOST('nb_url');
     $originalUrl   = GETPOST('original_url');
     $urlParameters = GETPOST('url_parameters');
-    $urlMethode    = GETPOST('url_methode');
-    for ($i = 1; $i <= $NbUrl; $i++) {
-        $shortener      = new Shortener($db);
-        $shortener->ref = $shortener->getNextNumRef();
-        if (dol_strlen($originalUrl) > 0) {
-            $shortener->original_url = $originalUrl . $urlParameters;
-        }
-        $shortener->methode = $urlMethode;
+    if ((dol_strlen($urlParameters) > 0) || dol_strlen(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) > 0) {
+        for ($i = 1; $i <= $NbUrl; $i++) {
+            $shortener = new Shortener($db);
+            $shortener->ref = $shortener->getNextNumRef();
+            if (dol_strlen($originalUrl) > 0) {
+                $shortener->original_url = $originalUrl . $urlParameters;
+            }
+            $shortener->methode = $urlMethode;
 
-        $shortener->create($user);
+            $shortener->create($user);
 
-        // UrlType : none because we want mass generation url (all can be use but need to change this code)
-        $result = set_easy_url_link($shortener, 'none', $urlMethode);
-        if (!empty($result) && is_object($result)) {
-            setEventMessage($result->message, 'errors');
-            $error++;
+            // UrlType : none because we want mass generation url (all can be use but need to change this code)
+            $result = set_easy_url_link($shortener, 'none', $urlMethode);
+            if (!empty($result) && is_object($result)) {
+                setEventMessage($result->message, 'errors');
+                $error++;
+            }
         }
-    }
-    if ($error == 0) {
-        setEventMessage($langs->trans('GenerateUrlSuccess', $i - 1));
-        header('Location: ' . $_SERVER['PHP_SELF']);
-        exit;
+        if ($error == 0) {
+            setEventMessage($langs->trans('GenerateUrlSuccess', $i - 1));
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit;
+        }
+    } else {
+        setEventMessage($langs->trans('UrlParametersFail'));
     }
 }
 
@@ -94,9 +98,15 @@ $helpUrl = 'FR:Module_EasyURL';
 
 saturne_header(0,'', $title, $helpUrl);
 
-print load_fiche_titre($title, '', 'wrench');
+print load_fiche_titre($title, '', 'wrench'); ?>
 
-print load_fiche_titre($langs->trans('GenerateUrlManagement'), '', '');
+    <div class="wpeo-notice notice-info">
+        <div class="notice-content">
+            <div class="notice-title"><strong><?php echo $langs->trans('SocietyObjectContactNotDefinedTitle', $conf->global->EASYCRM_ALREADY_CHECK_OBJECT_CONTACT); ?></strong></div>
+        </div>
+    </div>
+
+<?php print load_fiche_titre($langs->trans('GenerateUrlManagement'), '', '');
 
 print '<form name="generate-url-from" id="generate-url-from" action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
 print '<input type="hidden" name="token" value="' . newToken() . '">';
@@ -109,21 +119,6 @@ print '<td>' . $langs->trans('Description') . '</td>';
 print '<td>' . $langs->trans('Value') . '</td>';
 print '</tr>';
 
-print '<tr class="oddeven"><td><label for="nb_url">' . $langs->trans('NbUrl') . '</label></td>';
-print '<td>' . $langs->trans('NbUrlDescription') . '</td>';
-print '<td><input type="number" name="nb_url" min="0"></td>';
-print '</tr>';
-
-print '<tr class="oddeven"><td><label for="original_url">' . $langs->trans('OriginalUrl') . '</label></td>';
-print '<td>' . $langs->trans('OriginalUrlDescription') . '</td>';
-print '<td><input type="text" name="original_url"></td>';
-print '</tr>';
-
-print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
-print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
-print '<td><input type="text" name="url_parameters"></td>';
-print '</tr>';
-
 $urlMethode = ['yourls' => 'YOURLS', 'wordpress' => 'WordPress'];
 print '<tr class="oddeven"><td>';
 print $langs->trans('UrlMethode');
@@ -132,6 +127,21 @@ print $langs->trans('UrlMethodeDescription');
 print '<td>';
 print $form::selectarray('url_methode', $urlMethode, 'yourls');
 print '</td></tr>';
+
+print '<tr class="oddeven"><td><label for="nb_url">' . $langs->trans('NbUrl') . '</label></td>';
+print '<td>' . $langs->trans('NbUrlDescription') . '</td>';
+print '<td><input type="number" name="nb_url" min="0"></td>';
+print '</tr>';
+
+print '<tr class="oddeven"><td><label for="original_url">' . $langs->trans('OriginalUrl') . '</label></td>';
+print '<td>' . $langs->trans('OriginalUrlDescription', getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) . '</td>';
+print '<td><input type="text" name="original_url"></td>';
+print '</tr>';
+
+print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
+print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
+print '<td><input type="text" name="url_parameters"></td>';
+print '</tr>';
 
 print '</table>';
 print $form->buttonsSaveCancel('Generate', '');

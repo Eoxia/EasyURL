@@ -68,16 +68,12 @@ if ($action == 'set_config') {
     if (dol_strlen($signatureTokenYourlsAPI) > 0) {
         dolibarr_set_const($db, 'EASYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
-    if (dol_strlen($defaultOriginalURL) > 0) {
-        dolibarr_set_const($db, 'EASYURL_DEFAULT_ORIGINAL_URL', $defaultOriginalURL, 'chaine', 0, '', $conf->entity);
-    }
+    dolibarr_set_const($db, 'EASYURL_DEFAULT_ORIGINAL_URL', $defaultOriginalURL, 'chaine', 0, '', $conf->entity);
 
     setEventMessage('SavedConfig');
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
-
-
 
 /*
  * View
