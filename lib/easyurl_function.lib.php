@@ -16,10 +16,10 @@
  */
 
 /**
-* \file    lib/easyurl_function.lib.php
-* \ingroup easyurl
-* \brief   Library files with common functions for EasyURL
-*/
+ * \file    lib/easyurl_function.lib.php
+ * \ingroup easyurl
+ * \brief   Library files with common functions for EasyURL
+ */
 
 /**
  * Set easy url link
@@ -118,6 +118,17 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
                 $object->short_url    = $data->shorturl;
                 $object->original_url = $onlineUrl;
                 $object->update($user, true);
+
+                require_once TCPDF_PATH . 'tcpdf_barcodes_2d.php';
+
+                $barcode = new TCPDF2DBarcode($object->short_url, 'QRCODE,L');
+
+                dol_mkdir($conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $object->ref . '/qrcode/');
+                $file = $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $object->ref . '/qrcode/' . 'barcode_' . $object->ref . '.png';
+
+                $imageData = $barcode->getBarcodePngData();
+                $imageData = imagecreatefromstring($imageData);
+                imagepng($imageData, $file);
             }
             return 1;
         } else {

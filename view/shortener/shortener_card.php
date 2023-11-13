@@ -124,6 +124,62 @@ $help_url = 'FR:Module_EasyURL';
 
 saturne_header(0, '', $title, $help_url);
 
+// Part to assign
+if ($action == 'assign') {
+    if (empty($permissiontoadd)) {
+        accessforbidden($langs->trans('NotEnoughPermissions'), 0);
+        exit;
+    }
+
+    print load_fiche_titre($langs->trans('Assign' . ucfirst($object->element)), '', 'object_' . $object->picto);
+
+    print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">';
+    print '<input type="hidden" name="token" value="' . newToken() . '">';
+    print '<input type="hidden" name="action" value="update">';
+    if ($backtopage) {
+        print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
+    }
+    if ($backtopageforcancel) {
+        print '<input type="hidden" name="backtopageforcancel" value="'. $backtopageforcancel . '">';
+    }
+
+    print dol_get_fiche_head();
+
+    print '<table class="border centpercent tableforfieldcreate">';
+
+    $object->fields['short_url']['type'] = 'integer:Shortener:easyurl/class/shortener.class.php::(t.status:>:10)';
+
+    if (dol_strlen($object->element_type) > 0 || GETPOST('element_type')) {
+        $objectsMetadata = saturne_get_objects_metadata(dol_strlen($object->element_type) > 0 ? $object->element_type : GETPOST('element_type'));
+
+        $object->fields['element_type']['picto']                                       = $objectsMetadata['picto'];
+        $object->fields['element_type']['arrayofkeyval'][$objectsMetadata['tab_type']] = $langs->trans($objectsMetadata['langs']);
+
+        $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
+        $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
+        $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+
+        if (GETPOST('from_element_type', 'int') > 0) {
+            $object->fields['element_type']['visible'] = 0;
+            $object->fields['fk_element']['visible']   = 0;
+        }
+    }
+
+    // Common attributes
+    require_once DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+
+    // Other attributes
+    include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+
+    print '</table>';
+
+    print dol_get_fiche_end();
+
+    print $form->buttonsSaveCancel('Assign');
+
+    print '</form>';
+}
+
 // Part to edit record
 if (($id || $ref) && $action == 'edit') {
     print load_fiche_titre($langs->trans('Modify' . ucfirst($object->element)), '', 'object_' . $object->picto);
@@ -152,6 +208,11 @@ if (($id || $ref) && $action == 'edit') {
         $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
         $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
         $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+
+        if (GETPOST('from_element_type', 'int') > 0) {
+            $object->fields['element_type']['visible'] = 0;
+            $object->fields['fk_element']['visible']   = 0;
+        }
     }
 
     // Common attributes

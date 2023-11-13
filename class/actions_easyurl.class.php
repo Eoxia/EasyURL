@@ -102,6 +102,20 @@ class ActionsEasyurl
                     <?php
                 }
             }
+
+            $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
+            print '<script src="' . $jsPath . '" ></script>';
+            $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1);
+            print '<script src="' . $jsPath . '" ></script>';
+
+            require_once __DIR__ . '/shortener.class.php';
+
+            $shortener = new Shortener($this->db);
+            $output = $shortener->displayObjectDetails($object); ?>
+            <script>
+                jQuery('.fichehalfright').find('.tableforfield').after(<?php echo json_encode($output); ?>);
+            </script>
+            <?php
         }
 
         if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
@@ -137,12 +151,24 @@ class ActionsEasyurl
      */
     public function doActions(array $parameters, $object, string $action): int
     {
+        global $conf, $user;
+
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($action == 'set_easy_url') {
                 set_easy_url_link($object, GETPOST('url_type'));
 
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;
+            }
+
+            if ($action == 'show_qrcode') {
+                $data = json_decode(file_get_contents('php://input'), true);
+
+                $showQRCode = $data['showQRCode'];
+
+                $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
+
+                dol_set_user_param($this->db, $conf, $user, $tabParam);
             }
         }
 

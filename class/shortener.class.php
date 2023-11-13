@@ -107,23 +107,23 @@ class Shortener extends SaturneObject
      * @var array Array with all fields and their property. Do not use it as a static var. It may be modified by constructor
      */
     public $fields = [
-        'rowid'          => ['type' => 'integer',                            'label' => 'TechnicalID',      'enabled' => 1, 'position' => 1,   'notnull' => 1, 'visible' => 0, 'noteditable' => 1, 'index' => 1, 'comment' => 'Id'],
-        'ref'            => ['type' => 'varchar(128)',                       'label' => 'Ref',              'enabled' => 1, 'position' => 10,  'notnull' => 1, 'visible' => 4, 'noteditable' => 1, 'default' => '(PROV)', 'index' =>1, 'searchall' => 1, 'showoncombobox' => 1, 'validate' => 1, 'comment' => 'Reference of object'],
-        'ref_ext'        => ['type' => 'varchar(128)',                       'label' => 'RefExt',           'enabled' => 1, 'position' => 20,  'notnull' => 0, 'visible' => 0],
-        'entity'         => ['type' => 'integer',                            'label' => 'Entity',           'enabled' => 1, 'position' => 30,  'notnull' => 1, 'visible' => 0, 'index' => 1],
-        'date_creation'  => ['type' => 'datetime',                           'label' => 'DateCreation',     'enabled' => 1, 'position' => 40,  'notnull' => 1, 'visible' => 2],
-        'tms'            => ['type' => 'timestamp',                          'label' => 'DateModification', 'enabled' => 1, 'position' => 50,  'notnull' => 0, 'visible' => 0],
-        'import_key'     => ['type' => 'varchar(14)',                        'label' => 'ImportId',         'enabled' => 1, 'position' => 60,  'notnull' => 0, 'visible' => 0],
-        'status'         => ['type' => 'smallint',                           'label' => 'Status',           'enabled' => 1, 'position' => 160, 'notnull' => 1, 'visible' => 2, 'default' => 0, 'index' => 1, 'arrayofkeyval' => [0 => 'StatusDraft', 1 => 'ValidatePendingAssignment', 10 => 'Assign'], 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
-        'label'          => ['type' => 'varchar(255)',                       'label' => 'Label',            'enabled' => 1, 'position' => 70,  'notnull' => 1, 'visible' => 5, 'searchall' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx', 'cssview' => 'wordbreak', 'showoncombobox' => 2, 'validate' => 1],
-        'short_url'      => ['type' => 'url',                                'label' => 'ShortUrl',         'enabled' => 1, 'position' => 80,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
-        'original_url'   => ['type' => 'url',                                'label' => 'OriginalUrl',      'enabled' => 1, 'position' => 90,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
-        'type'           => ['type' => 'sellist:c_shortener_url_type:label', 'label' => 'UrlType',          'enabled' => 1, 'position' => 100, 'notnull' => 0, 'visible' => 1, 'css' => 'maxwidth150 widthcentpercentminusxx'],
-        'methode'        => ['type' => 'select',                             'label' => 'UrlMethode',       'enabled' => 1, 'position' => 110, 'notnull' => 0, 'visible' => 5, 'arrayofkeyval' => ['' => '', 'yourls' => 'YOURLS', 'wordpress' => 'WordPress'], 'css' => 'maxwidth200 widthcentpercentminusxx', 'csslist' => 'minwidth150 center', 'help' => 'UrlMethodeDescription'],
-        'element_type'   => ['type' => 'select',                             'label' => 'ElementType',      'enabled' => 1, 'position' => 120, 'notnull' => 0, 'visible' => 1, 'arrayofkeyval' => ['' => ''], 'css' => 'maxwidth150 widthcentpercentminusxx'],
-        'fk_element'     => ['type' => 'integer',                            'label' => 'FkElement',        'enabled' => 1, 'position' => 130, 'notnull' => 0, 'visible' => 1, 'index' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
-        'fk_user_creat'  => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserAuthor', 'picto' => 'user', 'enabled' => 1, 'position' => 140, 'notnull' => 1, 'visible' => 0, 'foreignkey' => 'user.rowid'],
-        'fk_user_modif'  => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserModif',  'picto' => 'user', 'enabled' => 1, 'position' => 150, 'notnull' => 0, 'visible' => 0, 'foreignkey' => 'user.rowid'],
+        'rowid'         => ['type' => 'integer',                            'label' => 'TechnicalID',      'enabled' => 1, 'position' => 1,   'notnull' => 1, 'visible' => 0, 'noteditable' => 1, 'index' => 1, 'comment' => 'Id'],
+        'ref'           => ['type' => 'varchar(128)',                       'label' => 'Ref',              'enabled' => 1, 'position' => 10,  'notnull' => 1, 'visible' => 4, 'noteditable' => 1, 'default' => '(PROV)', 'index' =>1, 'searchall' => 1, 'showoncombobox' => 1, 'validate' => 1, 'comment' => 'Reference of object'],
+        'ref_ext'       => ['type' => 'varchar(128)',                       'label' => 'RefExt',           'enabled' => 1, 'position' => 20,  'notnull' => 0, 'visible' => 0],
+        'entity'        => ['type' => 'integer',                            'label' => 'Entity',           'enabled' => 1, 'position' => 30,  'notnull' => 1, 'visible' => 0, 'index' => 1],
+        'date_creation' => ['type' => 'datetime',                           'label' => 'DateCreation',     'enabled' => 1, 'position' => 40,  'notnull' => 1, 'visible' => 2],
+        'tms'           => ['type' => 'timestamp',                          'label' => 'DateModification', 'enabled' => 1, 'position' => 50,  'notnull' => 0, 'visible' => 0],
+        'import_key'    => ['type' => 'varchar(14)',                        'label' => 'ImportId',         'enabled' => 1, 'position' => 60,  'notnull' => 0, 'visible' => 0],
+        'status'        => ['type' => 'smallint',                           'label' => 'Status',           'enabled' => 1, 'position' => 160, 'notnull' => 1, 'visible' => 2, 'default' => 0, 'index' => 1, 'arrayofkeyval' => [0 => 'StatusDraft', 1 => 'ValidatePendingAssignment', 10 => 'Assign'], 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'label'         => ['type' => 'varchar(255)',                       'label' => 'Label',            'enabled' => 1, 'position' => 70,  'notnull' => 1, 'visible' => 5, 'searchall' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx', 'cssview' => 'wordbreak', 'showoncombobox' => 2, 'validate' => 1],
+        'short_url'     => ['type' => 'url',                                'label' => 'ShortUrl',         'enabled' => 1, 'position' => 80,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'original_url'  => ['type' => 'url',                                'label' => 'OriginalUrl',      'enabled' => 1, 'position' => 90,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'type'          => ['type' => 'sellist:c_shortener_url_type:label', 'label' => 'UrlType',          'enabled' => 1, 'position' => 100, 'notnull' => 0, 'visible' => 1, 'css' => 'maxwidth150 widthcentpercentminusxx'],
+        'methode'       => ['type' => 'select',                             'label' => 'UrlMethode',       'enabled' => 1, 'position' => 110, 'notnull' => 0, 'visible' => 5, 'arrayofkeyval' => ['' => '', 'yourls' => 'YOURLS', 'wordpress' => 'WordPress'], 'css' => 'maxwidth200 widthcentpercentminusxx', 'csslist' => 'minwidth150 center', 'help' => 'UrlMethodeDescription'],
+        'element_type'  => ['type' => 'select',                             'label' => 'ElementType',      'enabled' => 1, 'position' => 120, 'notnull' => 0, 'visible' => 1, 'arrayofkeyval' => ['' => ''], 'css' => 'maxwidth150 widthcentpercentminusxx'],
+        'fk_element'    => ['type' => 'integer',                            'label' => 'FkElement',        'enabled' => 1, 'position' => 130, 'notnull' => 0, 'visible' => 1, 'index' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'fk_user_creat' => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserAuthor', 'picto' => 'user', 'enabled' => 1, 'position' => 140, 'notnull' => 1, 'visible' => 0, 'foreignkey' => 'user.rowid'],
+        'fk_user_modif' => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserModif',  'picto' => 'user', 'enabled' => 1, 'position' => 150, 'notnull' => 0, 'visible' => 0, 'foreignkey' => 'user.rowid'],
     ];
 
     /**
@@ -184,7 +184,7 @@ class Shortener extends SaturneObject
     /**
      * @var string|null Type
      */
-    public ?string $type;
+    public ?string $type = '';
 
     /**
      * @var string Methode
@@ -395,5 +395,64 @@ class Shortener extends SaturneObject
         $array['data'] = $arrayNbShortenerByElementType;
 
         return $array;
+    }
+
+    /**
+     * Display more object details
+     *
+     * @param  CommonObject $object Current object
+     * @return string       $out    Output current table object details
+     * @throws Exception
+     */
+    public function displayObjectDetails(CommonObject $object): string
+    {
+        require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+
+        global $conf, $form, $langs, $user;
+
+        switch ($object->element) {
+            case 'propal' :
+                $element_type = 'proposal';
+                break;
+            case 'commande' :
+                $element_type = 'order';
+                break;
+            case 'facture' :
+                $element_type = 'invoice';
+                break;
+            case 'contrat' :
+                $element_type = 'contract';
+                break;
+            default :
+                $element_type = $object->element;
+                break;
+        }
+
+        $out  = '<table class="noborder ObjectInfo centpercent">';
+        $out .= '<thead><tr class="liste_titre">';
+        $out .= '<td class="minwidth100"><i class="far fa-minus-square toggleObjectInfo" style="font-size: 1.5em; margin-right: 4px; vertical-align: middle;"></i>' . $langs->trans('UrlType') . '</td>';
+        $out .= '<td class="short-url" style="vertical-align: middle;">' . $langs->trans('ShortUrl');
+        $out .= ($user->conf->EASYURL_SHOW_QRCODE ? img_picto($langs->trans('Enabled'), 'switch_on', 'class="show-qrcode marginleftonly pictoModule marginrightonly"') : img_picto($langs->trans('Disabled'), 'switch_off', 'class="show-qrcode marginleftonly pictoModule marginrightonly"'));
+        $out .= $form->textwithpicto('', $langs->trans('ShowQRCode'));
+        $out .= '</td>';
+        $out .= '<td>' . $langs->trans('OriginalUrl') . '</td>';
+        $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fa fa fa-link valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element_type=1&action=assign&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), '', 'btnTitle') . '</td>';
+        $out .= '</thead></tr>';
+        $out .= '<tbody>';
+
+        $shorteners = self::fetchAll('', '', 0, 0, ['customsql' => 't.element_type = "' . $element_type . '" AND t.fk_element = ' . $object->id . ' AND t.status = ' . self::STATUS_ASSIGN]);
+        if (is_array($shorteners) && !empty($shorteners)) {
+            foreach ($shorteners as $shortener) {
+                $out .= '<tr>';
+                $out .= '<td class="minwidth100">' . getDictionaryValue('c_shortener_url_type', 'label', $shortener->type) . '</td>';
+                $out .= '<td>' . ($user->conf->EASYURL_SHOW_QRCODE ? saturne_show_medias_linked('easyurl', $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $shortener->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'shortener/'. $shortener->ref . '/qrcode/', $shortener, '', 0, 0) : $shortener->showOutputField($this->fields['short_url'], 'short_url', $shortener->short_url)) . '</td>';
+                $out .= '<td>' . $shortener->showOutputField($this->fields['original_url'], 'original_url', $shortener->original_url) . '</td>';
+                $out .= '<td class="center">' . dolGetButtonTitle($langs->trans('Modify'), '', 'fa fa-edit', dol_buildpath('/custom/easyurl/view/shortener/shortener_card.php?id='. $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element_type=1&action=edit&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), 1), '', $user->rights->easyurl->shortener->write) . '</td>';
+                $out .= '</tr>';
+            }
+        }
+        $out .= '</tbody></table>';
+
+        return $out;
     }
 }
