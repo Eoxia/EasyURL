@@ -61,12 +61,14 @@ if ($action == 'generate_url' && $permissionToAdd) {
     $NbUrl         = GETPOST('nb_url');
     $originalUrl   = GETPOST('original_url');
     $urlParameters = GETPOST('url_parameters');
-    if ((dol_strlen($urlParameters) > 0) || dol_strlen(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) > 0) {
+    if ((dol_strlen($originalUrl) > 0 || dol_strlen(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) > 0) && $NbUrl > 0)  {
         for ($i = 1; $i <= $NbUrl; $i++) {
             $shortener = new Shortener($db);
             $shortener->ref = $shortener->getNextNumRef();
             if (dol_strlen($originalUrl) > 0) {
                 $shortener->original_url = $originalUrl . $urlParameters;
+            } else {
+                $shortener->original_url = getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') . $urlParameters;
             }
             $shortener->methode = $urlMethode;
 
@@ -81,12 +83,12 @@ if ($action == 'generate_url' && $permissionToAdd) {
         }
         if ($error == 0) {
             setEventMessage($langs->trans('GenerateUrlSuccess', $i - 1));
-            header('Location: ' . $_SERVER['PHP_SELF']);
-            exit;
         }
     } else {
-        setEventMessage($langs->trans('UrlParametersFail'));
+        setEventMessage($langs->trans('OriginalUrlFail'), 'errors');
     }
+    header('Location: ' . $_SERVER['PHP_SELF']);
+    exit;
 }
 
 /*
@@ -98,15 +100,19 @@ $helpUrl = 'FR:Module_EasyURL';
 
 saturne_header(0,'', $title, $helpUrl);
 
-print load_fiche_titre($title, '', 'wrench'); ?>
+print load_fiche_titre($title, '', 'wrench');
 
-    <div class="wpeo-notice notice-info">
-        <div class="notice-content">
-            <div class="notice-title"><strong><?php echo $langs->trans('SocietyObjectContactNotDefinedTitle', $conf->global->EASYCRM_ALREADY_CHECK_OBJECT_CONTACT); ?></strong></div>
+if (!getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) : ?>
+<div class="wpeo-notice notice-warning">
+    <div class="notice-content">
+        <div class="notice-title">
+            <a href="<?php echo dol_buildpath('/custom/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('DefaultOriginalUrlConfiguration'); ?></strong></a>
         </div>
     </div>
+</div>
+<?php endif;
 
-<?php print load_fiche_titre($langs->trans('GenerateUrlManagement'), '', '');
+print load_fiche_titre($langs->trans('GenerateUrlManagement'), '', '');
 
 print '<form name="generate-url-from" id="generate-url-from" action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
 print '<input type="hidden" name="token" value="' . newToken() . '">';
@@ -130,17 +136,17 @@ print '</td></tr>';
 
 print '<tr class="oddeven"><td><label for="nb_url">' . $langs->trans('NbUrl') . '</label></td>';
 print '<td>' . $langs->trans('NbUrlDescription') . '</td>';
-print '<td><input type="number" name="nb_url" min="0"></td>';
+print '<td><input class="minwidth100" type="number" name="nb_url" min="0"></td>';
 print '</tr>';
 
 print '<tr class="oddeven"><td><label for="original_url">' . $langs->trans('OriginalUrl') . '</label></td>';
-print '<td>' . $langs->trans('OriginalUrlDescription', getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) . '</td>';
-print '<td><input type="text" name="original_url"></td>';
+print '<td>' .  $langs->trans('OriginalUrlDescription') . (getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') ? $langs->trans('OriginalUrlMoreDescription', getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) : '') . '</td>';
+print '<td><input class="minwidth300" type="text" name="original_url"></td>';
 print '</tr>';
 
 print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
 print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
-print '<td><input type="text" name="url_parameters"></td>';
+print '<td><input class="minwidth300" type="text" name="url_parameters"></td>';
 print '</tr>';
 
 print '</table>';
