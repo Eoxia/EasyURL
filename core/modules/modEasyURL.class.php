@@ -340,6 +340,32 @@ class modEasyURL extends DolibarrModules
             'target'   => '',
             'user'     => 0,
         ];
+
+        // Exports profiles provided by this module
+        $r = 1;
+
+        $this->export_code[$r]       = $this->rights_class . '_' . $r;
+        $this->export_label[$r]      = 'Shortener'; // Translation key (used only if key ExportDataset_xxx_z not found)
+        $this->export_icon[$r]       = 'fontawesome_fa-link_fas_#63ACC9';
+        $this->export_enabled[$r]    = '!empty($conf->easyurl->enabled)';
+        $this->export_permission[$r] = [["easyurl", "shortener"]];
+
+        $this->export_fields_array[$r]     = [];
+        $this->export_TypeFields_array[$r] = [];
+        $this->export_entities_array[$r]   = [];
+
+        $keyforclass     = 'Shortener';
+        $keyforclassfile = '/easyurl/class/shortener.class.php';
+        $keyforelement   = 'shortener';
+        $keyforalias     = 't';
+
+        require_once DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+
+        $this->export_sql_start[$r] = 'SELECT DISTINCT ';
+
+        $this->export_sql_end[$r]  = ' FROM ' . MAIN_DB_PREFIX . 'easyurl_shortener as t';
+        $this->export_sql_end[$r] .= ' WHERE 1 = 1';
+        $this->export_sql_end[$r] .= ' AND t.entity IN (' . getEntity('shortener') . ')';
     }
 
     /**
