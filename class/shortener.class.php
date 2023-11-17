@@ -116,12 +116,12 @@ class Shortener extends SaturneObject
         'import_key'    => ['type' => 'varchar(14)',                        'label' => 'ImportId',         'enabled' => 1, 'position' => 60,  'notnull' => 0, 'visible' => 0],
         'status'        => ['type' => 'smallint',                           'label' => 'Status',           'enabled' => 1, 'position' => 160, 'notnull' => 1, 'visible' => 2, 'default' => 0, 'index' => 1, 'arrayofkeyval' => [0 => 'StatusDraft', 1 => 'ValidatePendingAssignment', 10 => 'Assign'], 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
         'label'         => ['type' => 'varchar(255)',                       'label' => 'Label',            'enabled' => 1, 'position' => 70,  'notnull' => 1, 'visible' => 5, 'searchall' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx', 'cssview' => 'wordbreak', 'showoncombobox' => 2, 'validate' => 1],
-        'short_url'     => ['type' => 'url',                                'label' => 'ShortUrl',         'enabled' => 1, 'position' => 80,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
-        'original_url'  => ['type' => 'url',                                'label' => 'OriginalUrl',      'enabled' => 1, 'position' => 90,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'short_url'     => ['type' => 'url',                                'label' => 'ShortUrl',         'enabled' => 1, 'position' => 80,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx nowrap'],
+        'original_url'  => ['type' => 'url',                                'label' => 'OriginalUrl',      'enabled' => 1, 'position' => 90,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx nowrap'],
         'type'          => ['type' => 'sellist:c_shortener_url_type:label', 'label' => 'UrlType',          'enabled' => 1, 'position' => 100, 'notnull' => 0, 'visible' => 1, 'css' => 'maxwidth150 widthcentpercentminusxx'],
         'methode'       => ['type' => 'select',                             'label' => 'UrlMethode',       'enabled' => 1, 'position' => 110, 'notnull' => 0, 'visible' => 5, 'arrayofkeyval' => ['' => '', 'yourls' => 'YOURLS', 'wordpress' => 'WordPress'], 'css' => 'maxwidth200 widthcentpercentminusxx', 'csslist' => 'minwidth150 center', 'help' => 'UrlMethodeDescription'],
         'element_type'  => ['type' => 'select',                             'label' => 'ElementType',      'enabled' => 1, 'position' => 120, 'notnull' => 0, 'visible' => 1, 'arrayofkeyval' => ['' => ''], 'css' => 'maxwidth150 widthcentpercentminusxx'],
-        'fk_element'    => ['type' => 'integer',                            'label' => 'FkElement',        'enabled' => 1, 'position' => 130, 'notnull' => 0, 'visible' => 1, 'index' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx'],
+        'fk_element'    => ['type' => 'integer',                            'label' => 'FkElement',        'enabled' => 1, 'position' => 130, 'notnull' => 0, 'visible' => 1, 'index' => 1, 'css' => 'minwidth200 maxwidth300 widthcentpercentminusxx'],
         'fk_user_creat' => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserAuthor', 'picto' => 'user', 'enabled' => 1, 'position' => 140, 'notnull' => 1, 'visible' => 0, 'foreignkey' => 'user.rowid'],
         'fk_user_modif' => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserModif',  'picto' => 'user', 'enabled' => 1, 'position' => 150, 'notnull' => 0, 'visible' => 0, 'foreignkey' => 'user.rowid'],
     ];
@@ -189,7 +189,7 @@ class Shortener extends SaturneObject
     /**
      * @var string Methode
      */
-    public string $methode;
+    public string $methode = '';
 
     /**
      * @var string Element type
@@ -374,7 +374,7 @@ class Shortener extends SaturneObject
         $array['labels']['NoLinkedElement'] = ['label' => $langs->transnoentities('NoLinkedElement'), 'color' => '#999999'];
         $objectsMetadata = saturne_get_objects_metadata();
         foreach ($objectsMetadata as $objectMetadata) {
-            $array['labels'][$objectMetadata['tab_type']] = ['label' => $langs->transnoentities($objectMetadata['langs']), 'color' => $objectMetadata['color']];
+            $array['labels'][$objectMetadata['tab_type']]               = ['label' => $langs->transnoentities($objectMetadata['langs']), 'color' => $objectMetadata['color']];
             ksort($array['labels']);
         }
 
@@ -393,6 +393,12 @@ class Shortener extends SaturneObject
         }
 
         $array['data'] = $arrayNbShortenerByElementType;
+
+        foreach ($array['labels'] as $key => $label) {
+            if (!array_key_exists($key, $array['data'])) {
+                unset($array['labels'][$key]);
+            }
+        }
 
         return $array;
     }
@@ -436,7 +442,7 @@ class Shortener extends SaturneObject
         $out .= $form->textwithpicto('', $langs->trans('ShowQRCode'));
         $out .= '</td>';
         $out .= '<td>' . $langs->trans('OriginalUrl') . '</td>';
-        $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fa fa fa-link valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element_type=1&action=assign&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), '', 'btnTitle') . '</td>';
+        $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fa fa fa-link valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), '', 'btnTitle') . '</td>';
         $out .= '</thead></tr>';
         $out .= '<tbody>';
 

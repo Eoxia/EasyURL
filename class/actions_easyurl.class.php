@@ -122,7 +122,7 @@ class ActionsEasyurl
                         $shortener = new Shortener($this->db);
                         $output = $shortener->displayObjectDetails($object); ?>
                         <script>
-                            jQuery('.fichehalfright').append(<?php echo json_encode($output); ?>);
+                            jQuery('.fichehalfright').first().append(<?php echo json_encode($output); ?>);
                         </script>
                         <?php
                     }
@@ -172,15 +172,26 @@ class ActionsEasyurl
                 header('Location: ' . $_SERVER['PHP_SELF'] . '?id=' . $object->id);
                 exit;
             }
+        }
 
-            if ($action == 'show_qrcode') {
-                $data = json_decode(file_get_contents('php://input'), true);
+        require_once __DIR__ . '/../../saturne/lib/object.lib.php';
 
-                $showQRCode = $data['showQRCode'];
+        $objectsMetadata = saturne_get_objects_metadata();
+        if (!empty($objectsMetadata)) {
+            foreach ($objectsMetadata as $objectMetadata) {
+                if ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element) {
+                    if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
+                        if ($action == 'show_qrcode') {
+                            $data = json_decode(file_get_contents('php://input'), true);
 
-                $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
+                            $showQRCode = $data['showQRCode'];
 
-                dol_set_user_param($this->db, $conf, $user, $tabParam);
+                            $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
+
+                            dol_set_user_param($this->db, $conf, $user, $tabParam);
+                        }
+                    }
+                }
             }
         }
 

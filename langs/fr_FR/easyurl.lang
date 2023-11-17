@@ -92,6 +92,7 @@ TheShortener              = le raccourcissement d'URL
 Shorteners                = raccourcissements d'URLs
 ShortenerList             = Liste des raccourcissements d'URLs
 ModifyShortener           = Modifier le raccourcissement d'URL
+AssignShortener           = Affecter le raccourcissement d'URL
 ValidatePendingAssignment = Validé (en attente d'affectation)
 Assign                    = Affecter
 NoLinkedElement           = Aucun élément lié

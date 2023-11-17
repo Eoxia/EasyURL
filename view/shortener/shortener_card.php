@@ -78,6 +78,9 @@ if (empty($action) && empty($id) && empty($ref)) {
 }
 
 // Load object
+if (GETPOST('fromid', 'int')) {
+    $id = GETPOST('fromid', 'int');
+}
 include DOL_DOCUMENT_ROOT . '/core/actions_fetchobject.inc.php'; // Must be included, not include_once
 
 // Security check - Protection if external user
@@ -111,6 +114,10 @@ if (empty($resHook)) {
         }
     }
 
+    if ($action == 'update' && GETPOST('from_element', 'int') > 0) {
+        $noback = 1;
+    }
+
     // Actions cancel, add, update, update_extras, confirm_validate, confirm_delete, confirm_deleteline, confirm_clone, confirm_close, confirm_setdraft, confirm_reopen
     require_once DOL_DOCUMENT_ROOT . '/core/actions_addupdatedelete.inc.php';
 }
@@ -125,7 +132,7 @@ $help_url = 'FR:Module_EasyURL';
 saturne_header(0, '', $title, $help_url);
 
 // Part to assign
-if ($action == 'assign') {
+if ($action == 'edit_assign') {
     if (empty($permissiontoadd)) {
         accessforbidden($langs->trans('NotEnoughPermissions'), 0);
         exit;
@@ -133,9 +140,12 @@ if ($action == 'assign') {
 
     print load_fiche_titre($langs->trans('Assign' . ucfirst($object->element)), '', 'object_' . $object->picto);
 
-    print '<form method="POST" action="' . $_SERVER['PHP_SELF'] . '">';
+    print '<form class="assign-form" method="POST" action="' . $_SERVER['PHP_SELF'] . '">';
     print '<input type="hidden" name="token" value="' . newToken() . '">';
     print '<input type="hidden" name="action" value="update">';
+    print '<input type="hidden" name="from_element" value="' . GETPOST('from_element', 'int') . '">';
+    print '<input type="hidden" name="element_type" value="' . GETPOST('element_type') . '">';
+    print '<input type="hidden" name="fk_element" value="' . GETPOST('fk_element', 'int') . '">';
     if ($backtopage) {
         print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
     }
@@ -145,9 +155,9 @@ if ($action == 'assign') {
 
     print dol_get_fiche_head();
 
-    print '<table class="border centpercent tableforfieldcreate">';
+    print '<table class="border centpercent tableforfieldedit">';
 
-    $object->fields['short_url']['type'] = 'integer:Shortener:easyurl/class/shortener.class.php::(t.status:>:10)';
+    $object->fields['fromid']['type'] = 'integer:Shortener:easyurl/class/shortener.class.php::(t.status:=:' . Shortener::STATUS_VALIDATED . ')';
 
     if (dol_strlen($object->element_type) > 0 || GETPOST('element_type')) {
         $objectsMetadata = saturne_get_objects_metadata(dol_strlen($object->element_type) > 0 ? $object->element_type : GETPOST('element_type'));
@@ -159,23 +169,26 @@ if ($action == 'assign') {
         $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
         $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
 
-        if (GETPOST('from_element_type', 'int') > 0) {
+        if (GETPOST('from_element', 'int') > 0) {
+            $object->fields['fromid']['visible']       = 1;
+            $object->fields['fromid']['label']         = 'Shortener';
+            $object->fields['ref']['visible']          = 0;
             $object->fields['element_type']['visible'] = 0;
             $object->fields['fk_element']['visible']   = 0;
         }
     }
 
     // Common attributes
-    require_once DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_add.tpl.php';
+    require_once DOL_DOCUMENT_ROOT.'/core/tpl/commonfields_edit.tpl.php';
 
     // Other attributes
-    include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_add.tpl.php';
+    include DOL_DOCUMENT_ROOT.'/core/tpl/extrafields_edit.tpl.php';
 
     print '</table>';
 
     print dol_get_fiche_end();
 
-    print $form->buttonsSaveCancel('Assign');
+    print $form->buttonsSaveCancel('Assign', 'Cancel', [], 0,'assign-button', 'assignShortener');
 
     print '</form>';
 }
@@ -209,7 +222,7 @@ if (($id || $ref) && $action == 'edit') {
         $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
         $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
 
-        if (GETPOST('from_element_type', 'int') > 0) {
+        if (GETPOST('from_element', 'int') > 0) {
             $object->fields['element_type']['visible'] = 0;
             $object->fields['fk_element']['visible']   = 0;
         }

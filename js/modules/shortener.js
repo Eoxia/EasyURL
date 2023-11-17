@@ -61,6 +61,8 @@ window.easyurl.shortener.init = function() {
 window.easyurl.shortener.event = function() {
   $(document).on('click', '.toggleObjectInfo', window.easyurl.shortener.toggleObjectInfo);
   $(document).on('click', '.show-qrcode', window.easyurl.shortener.showQRCode);
+  $(document).on('change', '#fromid', window.easyurl.shortener.reloadAssignShortenerView);
+  $(document).on('click', '.button-save.assign-button', window.easyurl.shortener.assignShortener);
 };
 
 /**
@@ -116,6 +118,61 @@ window.easyurl.shortener.showQRCode = function() {
     contentType: false,
     success: function(resp) {
       window.location.reload();
+    },
+    error: function() {}
+  });
+};
+
+/**
+ * Reload short_url field and assign shortener view
+ *
+ * @memberof EasyURL_Shortener
+ *
+ * @since   1.1.0
+ * @version 1.1.0
+ *
+ * @returns {void}
+ */
+window.easyurl.shortener.reloadAssignShortenerView = function() {
+  let field          = $(this).val();
+  let token          = window.saturne.toolbox.getToken();
+  let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
+
+  window.saturne.loader.display($('.assign-form'));
+
+  $.ajax({
+    url: document.URL + querySeparator + "fromid=" + field + "&token=" + token,
+    type: "POST",
+    processData: false,
+    contentType: false,
+    success: function(resp) {
+      $('.assign-form').replaceWith($(resp).find('.assign-form'));
+    },
+    error: function() {}
+  });
+};
+
+/**
+ * Assign shortener
+ *
+ * @memberof EasyURL_Shortener
+ *
+ * @since   1.1.0
+ * @version 1.1.0
+ *
+ * @returns {void}
+ */
+window.easyurl.shortener.assignShortener = function() {
+  let token          = window.saturne.toolbox.getToken();
+  let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
+
+  $.ajax({
+    url: document.URL + querySeparator + "view&token=" + token,
+    type: "POST",
+    processData: false,
+    contentType: false,
+    success: function() {
+      window.parent.jQuery('#idfordialogassignShortener').dialog('close');
     },
     error: function() {}
   });
