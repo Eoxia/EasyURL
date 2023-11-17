@@ -118,10 +118,6 @@ class modEasyURL extends DolibarrModules
             'js' => [],
             // Set here all hooks context managed by module. To find available hook context, make a "grep -r '>initHooks(' *" on source code. You can also set hook context to 'all'
             'hooks' => [
-                'propalcard',
-                'ordercard',
-                'invoicecard',
-                'contractcard',
                 'interventioncard',
                 'propallist',
                 'orderlist',
@@ -130,6 +126,15 @@ class modEasyURL extends DolibarrModules
             // Set this to 1 if features of module are opened to external users
             'moduleforexternal' => 0
         ];
+
+        if (function_exists('saturne_get_objects_metadata')) {
+            $objectsMetadata = saturne_get_objects_metadata();
+            if (!empty($objectsMetadata)) {
+                foreach ($objectsMetadata as $objectMetadata) {
+                    $this->module_parts['hooks'][] = $objectMetadata['hook_name_card'];
+                }
+            }
+        }
 
         // Data directories to create when module is enabled
         // Example: this->dirs = array("/easyurl/temp","/easyurl/subdir");

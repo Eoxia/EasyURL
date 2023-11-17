@@ -102,20 +102,32 @@ class ActionsEasyurl
                     <?php
                 }
             }
+        }
 
-            $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
-            print '<script src="' . $jsPath . '" ></script>';
-            $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1);
-            print '<script src="' . $jsPath . '" ></script>';
+        require_once __DIR__ . '/../../saturne/lib/object.lib.php';
 
-            require_once __DIR__ . '/shortener.class.php';
+        $objectsMetadata = saturne_get_objects_metadata();
+        if (!empty($objectsMetadata)) {
+            foreach ($objectsMetadata as $objectMetadata) {
+                if ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element) {
+                    if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
 
-            $shortener = new Shortener($this->db);
-            $output = $shortener->displayObjectDetails($object); ?>
-            <script>
-                jQuery('.fichehalfright').find('.tableforfield').after(<?php echo json_encode($output); ?>);
-            </script>
-            <?php
+                        $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
+                        print '<script src="' . $jsPath . '" ></script>';
+                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1);
+                        print '<script src="' . $jsPath . '" ></script>';
+
+                        require_once __DIR__ . '/shortener.class.php';
+
+                        $shortener = new Shortener($this->db);
+                        $output = $shortener->displayObjectDetails($object); ?>
+                        <script>
+                            jQuery('.fichehalfright').append(<?php echo json_encode($output); ?>);
+                        </script>
+                        <?php
+                    }
+                }
+            }
         }
 
         if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
