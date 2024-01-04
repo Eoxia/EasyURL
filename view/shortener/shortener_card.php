@@ -201,6 +201,7 @@ if (($id || $ref) && $action == 'edit') {
     print '<input type="hidden" name="token" value="' . newToken() . '">';
     print '<input type="hidden" name="action" value="update">';
     print '<input type="hidden" name="id" value="' . $object->id . '">';
+    print '<input type="hidden" name="previous_original_url" value="' . $object->original_url . '">';
     if ($backtopage) {
         print '<input type="hidden" name="backtopage" value="' . $backtopage . '">';
     }

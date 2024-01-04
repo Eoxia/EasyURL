@@ -158,6 +158,10 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
                     $object->update($user, true);
                 }
 
+                if ($object->original_url != GETPOST('previous_original_url')) {
+                    update_easy_url_link($object);
+                }
+
                 $actioncomm->label = $langs->trans('ObjectModifyTrigger', $langs->transnoentities(ucfirst($object->element)), $object->ref);
                 $actioncomm->create($user);
                 break;
