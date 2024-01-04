@@ -364,7 +364,7 @@ class modEasyURL extends DolibarrModules
         $keyforelement   = 'shortener';
         $keyforalias     = 't';
 
-        require_once DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+        require DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
 
         $this->export_sql_start[$r] = 'SELECT DISTINCT ';
 
