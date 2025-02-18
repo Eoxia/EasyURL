@@ -1,4 +1,4 @@
-/* Copyright (C) 2021-2023 EVARISK <technique@evarisk.com>
+/* Copyright (C) 2021-2025 EVARISK <technique@evarisk.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,6 +65,7 @@ window.easyurl.shortener.event = function() {
   $(document).on('click', '.button-save.assign-button', window.easyurl.shortener.assignShortener);
   $(document).on('submit', '#generate-url-from', window.easyurl.shortener.buttonSave);
   $(document).on('change', '#element_type', window.saturne.utils.reloadField);
+  $(document).on('keydown', '#generate-url-from', window.easyurl.shortener.keyDownForm);
 };
 
 /**
@@ -238,3 +239,18 @@ window.easyurl.shortener.createShortener = function(form, current, nbUrl) {
     }
   });
 };
+
+/**
+ * ExportShortener key down form
+ *
+ * @since  1.1.0
+ * @version 1.1.0
+ *
+ * @returns {void}
+ */
+
+window.easyurl.shortener.keyDownForm = function(e) {
+  if (e.key == 'Enter' && e.target.tagName == 'INPUT') {
+    e.preventDefault();
+  }
+}
