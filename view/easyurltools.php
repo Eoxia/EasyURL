@@ -162,7 +162,7 @@ print saturne_show_notice('', '', 'success', 'notice-infos', 0, 1, '', $translat
 
 print load_fiche_titre($langs->trans('GenerateUrlManagement'), '', '');
 
-print '<form name="generate-url-from" id="generate-url-from" action="' . $_SERVER['PHP_SELF'] . '" method="POST">';
+print '<form name="generate-url-from" id="generate-url-from">';
 print '<input type="hidden" name="token" value="' . newToken() . '">';
 print '<input type="hidden" name="action" value="generate_url">';
 if (GETPOSTISSET('success')) {
@@ -224,6 +224,9 @@ $exportShortenerDocuments = $exportShortenerDocument->fetchAll('DESC', 'rowid', 
 if (is_array($exportShortenerDocuments) && !empty($exportShortenerDocuments)) {
     foreach ($exportShortenerDocuments as $exportShortenerDocument) {
         $data = json_decode($exportShortenerDocument->json, true);
+        if (!$data) {
+            continue;
+        }
 
         $shorteners = $shortener->fetchAll('', '', $data['number_shortener_url'], 0, ['customsql' => 't.rowid >=' . $data['first_shortener_id']]);
         if (is_array($shorteners) && !empty($shorteners)) {

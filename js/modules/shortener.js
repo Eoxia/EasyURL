@@ -1,4 +1,4 @@
-/* Copyright (C) 2021-2023 EVARISK <technique@evarisk.com>
+/* Copyright (C) 2021-2025 EVARISK <technique@evarisk.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -63,7 +63,7 @@ window.easyurl.shortener.event = function() {
   $(document).on('click', '.show-qrcode', window.easyurl.shortener.showQRCode);
   $(document).on('change', '#fromid', window.easyurl.shortener.reloadAssignShortenerView);
   $(document).on('click', '.button-save.assign-button', window.easyurl.shortener.assignShortener);
-  $(document).on('submit', '#generate-url-from', window.easyurl.shortener.buttonSave);
+  $(document).on('click', '#generate-url-from .button-save', window.easyurl.shortener.buttonSave);
   $(document).on('change', '#element_type', window.saturne.utils.reloadField);
 };
 
@@ -192,6 +192,9 @@ window.easyurl.shortener.assignShortener = function() {
  */
 window.easyurl.shortener.buttonSave = function(e) {
   e.preventDefault();
+  if (e.originalEvent && e.originalEvent.detail === 0) {
+    return;
+  }
   let form = new FormData($('#generate-url-from')[0]);
   let nbUrl = parseInt(form.get('nb_url'));
 
