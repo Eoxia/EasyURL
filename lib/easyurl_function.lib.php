@@ -150,7 +150,7 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
             }
             return 1;
         } else {
-            setEventMessage($langs->trans('SetEasyURLErrors'), 'errors');
+            setEventMessages($langs->trans('SetEasyURLErrors'), [$data->message], 'errors');
             return $data;
         }
     }
