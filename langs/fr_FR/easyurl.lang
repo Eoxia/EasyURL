@@ -73,11 +73,12 @@ GetEasyURLErrors     = Erreur : URL raccourcie non trouvée
 #
 
 # Data - Donnée
+#@todo il faut revoir la traduction OriginalUrl
 GenerateUrlManagement           = Gestion de la génération des raccourcissements d'URLs
 GeneratedExport                 = Export déjà générés
 NbUrl                           = Nombre d'URL
 NbUrlDescription                = Cette option permet de choisir le nombre d'URL à générer
-OriginalUrl                     = URL d'origine
+OriginalUrl                     = URL cible
 OriginalUrlDescription          = Cette option permet de choisir l'URL d'origine
 OriginalUrlMoreDescription      = <br> (par défaut si aucune URL n'est renseignée alors l'URL par défaut est : <b>%s</b>)
 UrlParameters                   = Paramètre d'URL supplémentaire

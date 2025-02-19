@@ -89,6 +89,7 @@ window.easyurl.exportshortener.generateExport = function(nbUrl) {
     },
     error: function() {
       window.saturne.notice.showNotice('notice-infos', 'Error', 'ExportError', 'error');
+      window.saturne.loader.remove($('#generate-url-from .button-save'));
     }
   });
 };
