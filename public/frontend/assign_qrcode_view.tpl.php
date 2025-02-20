@@ -59,7 +59,7 @@ print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
                                     $linkableElementArrays[$linkableElementObject->id] = $linkableElementObject->{$linkableElement['name_field']};
                                 }
                             }
-                            print Form::selectarray('fk_element', $linkableElementArrays, $objectId, $langs->transnoentities('NumProductLot'));
+                            print Form::selectarray('fk_element', $linkableElementArrays, $objectId, $langs->transnoentities('NumProductLot'), 0, 0, '',  0, 0, !empty($trackId));
                         }
                         ?>
                     </div>
