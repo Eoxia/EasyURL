@@ -70,6 +70,7 @@ $entity  = GETPOST('entity');
 // Initialize technical objects
 $object = new Shortener($db);
 
+$objectId = 0;
 if (!empty($trackId)) {
     $objectDataJson = base64_decode($trackId);
     $objectData     = json_decode($objectDataJson);
@@ -79,6 +80,9 @@ if (!empty($trackId)) {
         $objectId   = $objectData->id;
 
         $linkedObject = new $objectType($db);
+    } else {
+        //@todo : Besoin du selecteur d'object pour le moment on va forcer ProductLot
+        $linkedObject = new ProductLot($db);
     }
 } else {
     //@todo : Besoin du selecteur d'object pour le moment on va forcer ProductLot
@@ -95,7 +99,6 @@ $conf->setEntityValues($db, $entity);
 
 //@todo notice d'erreur pour le track_id
 // Load linkable elements
-$objectId        = 0;
 $linkableElement = [];
 if (is_object($linkedObject)) {
     $linkableElements = saturne_get_objects_metadata();
@@ -162,56 +165,7 @@ $conf->dol_hide_leftmenu = 1;
 
 saturne_header(1, '', $title,  '', '', 0, 0, [], [], '', 'page-public-card page-public-shortener');
 
-print '<form id="public-shortener-form" method="POST" action="' . $_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' .  $trackId . '&' : '?') . 'entity=' . $entity . '">';
-print '<input type="hidden" name="token" value="' . newToken() . '">';
-print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
-
-<div class="public-card__container" data-public-interface="true">
-    <?php if (getDolGlobalInt('SATURNE_ENABLE_PUBLIC_INTERFACE')) : ?>
-        <div class="public-card__header">
-            <div class="header-information">
-                <h1 class="information-title"><?php echo $langs->transnoentities('AssignQRCode'); ?></h1>
-            </div>
-        </div>
-        <div class="public-card__content">
-            <div class="wpeo-gridlayout grid-3">
-                <div>
-                    <?php
-                        if (!empty($linkableElement)) {
-                            $linkableElementArrays  = [];
-                            $linkableElementObjects = saturne_fetch_all_object_type($linkableElement['class_name']);
-                            if (is_array($linkableElementObjects) && !empty($linkableElementObjects)) {
-                                foreach ($linkableElementObjects as $linkableElementObject) {
-                                    $linkableElementArrays[$linkableElementObject->id] = $linkableElementObject->{$linkableElement['name_field']};
-                                }
-                            }
-                            print Form::selectarray('fk_element', $linkableElementArrays, $objectId, $langs->transnoentities('NumProductLot'));
-                        }
-                    ?>
-                </div>
-
-                <div>
-                    <?php
-                        $shortenerArrays = [];
-                        $shorteners      = $object->fetchAll('', '', 0, 0, ['customsql' => 't.status = ' . Shortener::STATUS_VALIDATED]);
-                        if (is_array($shorteners) && !empty($shorteners)) {
-                            foreach ($shorteners as $shortener) {
-                                $shortenerArrays[$shortener->id] = $shortener->label;
-                            }
-                        }
-                        print Form::selectarray('shortener', $shortenerArrays, '', $langs->transnoentities('NumQRCode'));
-                    ?>
-                </div>
-                <?php if ($permissionToAssign) : ?>
-                    <button type="submit" class="wpeo-button" style="background: var(--butactionbg); border-color: var(--butactionbg);"><?php echo $langs->transnoentities('Assign'); ?></button>
-                <?php endif; ?>
-            </div>
-        </div>
-    <?php else :
-        print '<div class="center">' . $langs->trans('PublicInterfaceForbidden', $langs->transnoentities('OfAssignShortener')) . '</div>';
-    endif; ?>
-</div>
-<?php print '</form>';
+require_once __DIR__ . '/../frontend/assign_qrcode_view.tpl.php';
 
 llxFooter('', 'public');
 $db->close();

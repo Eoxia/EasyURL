@@ -65,6 +65,26 @@ class ActionsEasyurl
     }
 
     /**
+     * Overloading the addHtmlHeader function : replacing the parent's function with the one below
+     *
+     * @param  array $parameters Hook metadata (context, etc...)
+     * @return int               0 < on error, 0 on success, 1 to replace standard code
+     */
+    public function addHtmlHeader(array $parameters): int
+    {
+        if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
+            $resourcesRequired = ['css' => '/custom/easyurl/css/easyurl.min.css'];
+
+            $out  = '<!-- Includes CSS added by module easyurl -->';
+            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '">';
+
+            $this->resprints = $out;
+        }
+
+        return 0; // or return 1 to replace standard code
+    }
+
+    /**
      * Overloading the printCommonFooter function : replacing the parent's function with the one below
      *
      * @param  array     $parameters Hook metadatas (context, etc...)
@@ -163,7 +183,7 @@ class ActionsEasyurl
      */
     public function doActions(array $parameters, $object, string $action): int
     {
-        global $conf, $user;
+        global $conf, $langs, $user;
 
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($action == 'set_easy_url') {
@@ -195,6 +215,50 @@ class ActionsEasyurl
             }
         }
 
+        if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
+            $langs->load('easyurl@easyurl');
+
+            $permissionToAssign = $user->hasRight('easyurl', 'shortener', 'assign');
+            if ($action == 'assign_qrcode' && $permissionToAssign && is_object($parameters['linkedObject'])) {
+                $fkElementID = GETPOSTINT('fk_element');
+                $shortenerID = GETPOSTINT('shortener');
+
+                require_once __DIR__ . '/shortener.class.php';
+
+                $object = new Shortener($this->db);
+
+                $parameters['linkedObject']->fetch($fkElementID);
+                $object->fetch($shortenerID);
+
+                if ($parameters['linkedObject']->id > 0 && $object->id > 0) {
+                    $object->element_type = 'productlot';
+                    $object->fk_element   = $parameters['linkedObject']->id;
+                    $object->status       = Shortener::STATUS_ASSIGN;
+                    $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
+
+                    $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $parameters['linkedObject']->array_options['options_control_history_link'] . '&entity=' . $conf->entity, 3);
+                    $object->original_url      = $publicControlInterfaceUrl;
+
+                    $result = update_easy_url_link($object);
+                    if ($result > 0) {
+                        $object->update($user);
+
+                        $parameters['linkedObject']->array_options['options_easy_url_all_link'] = $object->short_url;
+                        $parameters['linkedObject']->updateExtraField('easy_url_all_link');
+
+                        setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($parameters['linkableElement']['langs']), $parameters['linkedObject']->{$parameters['linkableElement']['name_field']}), []);
+                    } else {
+                        setEventMessages('AssignQRCodeErrors', [], 'errors');
+                    }
+                } else {
+                    setEventMessages('AssignQRCodeErrors', [], 'errors');
+                }
+
+                header('Location: ' . $_SERVER['PHP_SELF'] . (!empty($parameters['trackId']) ? '?track_id=' .  $parameters['trackId'] . '&' : '?') . 'entity=' . $parameters['entity'] . '&route=assignQRCode');
+                exit;
+            }
+        }
+
         return 0; // or return 1 to replace standard code
     }
 
@@ -211,9 +275,13 @@ class ActionsEasyurl
         if (isModEnabled('digiquali') && $parameters['objectType'] == 'productlot') {
             $langs->load('easyurl@easyurl');
 
-            print '<a class="tab" href="' . dol_buildpath('custom/easyurl/public/shortener/public_shortener.php?track_id=' . $parameters['trackId'] . '&entity=' . $parameters['entity'], 1) . '">';
-            print $langs->transnoentities('AssignQRCode');
-            print '</a>';
+            $out  = '<div class="tab switch-public-control-view' . ($parameters['route'] == 'assignQRCode' ? ' tab-active' : '') . '" data-route="assignQRCode">';
+            $out .= $langs->transnoentities('AssignQRCode');
+            $out .= '</div>';
+            $parameters['routes']['assignQRCode'] = '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
+            $parameters['externals'][]            = 'assignQRCode';
+
+            $this->resprints = $out;
         }
 
         return 0; // or return 1 to replace standard code
