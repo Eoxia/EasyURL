@@ -221,7 +221,7 @@ class ActionsEasyurl
             $permissionToAssign = $user->hasRight('easyurl', 'shortener', 'assign');
             if ($action == 'assign_qrcode' && $permissionToAssign && is_object($parameters['linkedObject'])) {
                 $fkElementID = GETPOSTINT('fk_element');
-                $shortenerID = GETPOSTINT('shortener');
+                $shortenerID = GETPOSTINT('shortenerId');
 
                 require_once __DIR__ . '/shortener.class.php';
 

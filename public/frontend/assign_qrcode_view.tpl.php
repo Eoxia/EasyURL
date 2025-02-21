@@ -73,7 +73,7 @@ print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
                                 $shortenerArrays[$shortener->id] = $shortener->label;
                             }
                         }
-                        print Form::selectarray('shortener', $shortenerArrays, '', $langs->transnoentities('NumQRCode'));
+                        print Form::selectarray('shortenerId', $shortenerArrays, '', $langs->transnoentities('NumQRCode'));
                         ?>
                     </div>
                     <?php if ($permissionToAssign) : ?>
