@@ -131,7 +131,8 @@ if (empty($resHook)) {
             $object->status       = Shortener::STATUS_ASSIGN;
             $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-            $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $linkedObject->array_options['options_control_history_link'] . '&entity=' . $conf->entity, 3);
+            $trackId                   = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
+            $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $trackId . '&entity=' . $conf->entity, 3);
             $object->original_url      = $publicControlInterfaceUrl;
 
             $result = update_easy_url_link($object);

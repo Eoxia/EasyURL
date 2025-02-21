@@ -73,7 +73,7 @@ print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
                                 $shortenerArrays[$shortener->id] = $shortener->label;
                             }
                         }
-                        print Form::selectarray('shortenerId', $shortenerArrays, '', $langs->transnoentities('NumQRCode'));
+                        print Form::selectarray('shortenerId', $shortenerArrays, '', $langs->transnoentities('NumQRCode'), 0, 0, '',  0, 0, !$permissionToAssign);
                         ?>
                     </div>
                     <?php if ($permissionToAssign) : ?>
@@ -86,7 +86,7 @@ print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
         endif; ?>
         <?php
             $objectElement = $linkableElementObjects[$objectId];
-            if (!empty($objectElement) && $permissionToAssign) {
+            if (!empty($objectElement)) {
                 print '<div class="margintoponly">';
                 print $object->displayObjectDetails($objectElement, $trackId);
                 print '</div>';
