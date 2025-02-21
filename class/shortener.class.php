@@ -500,15 +500,20 @@ class Shortener extends SaturneObject
     /**
      * Display more object details
      *
-     * @param  CommonObject $object Current object
-     * @return string       $out    Output current table object details
+     * @param  CommonObject $object  Current object
+     * @param  string       $trackId Track ID
+     * @return string       $out     Output current table object details
      * @throws Exception
      */
-    public function displayObjectDetails(CommonObject $object): string
+    public function displayObjectDetails(CommonObject $object, string $trackId = ''): string
     {
         require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
 
         global $conf, $form, $langs, $user;
+
+        if (!$form) {
+            $form = new Form($this->db);
+        }
 
         switch ($object->element) {
             case 'propal' :
@@ -557,9 +562,10 @@ class Shortener extends SaturneObject
                     $out .= '<td>' . (isset($shortenerData->link) && isset($shortenerData->link->clicks) ? $shortenerData->link->clicks : 0) . '</td>';
                 }
                 if ($user->hasRight('easyurl', 'shortener', 'write')) {
+                    $backToPage = urlencode($_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' . $trackId . '&entity=' . GETPOSTINT('entity') . '&route=' . GETPOST('route') : '?id=' . $object->id));
                     $out .= '<td class="center">';
-                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), 1) . '">' . img_edit($langs->trans('Modify')) . '</a>';
-                    $out .= '<a class="editfielda" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&action=unassign&backtopage=' . urlencode($_SERVER['PHP_SELF'] . '?id=' . $object->id), 1) . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
+                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . $backToPage, 1) . '">' . img_edit($langs->trans('Modify')) . '</a>';
+                    $out .= '<a class="editfielda" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&action=unassign&backtopage=' . $backToPage, 1) . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
                     $out .= '</td>';
                 }
                 $out .= '</tr>';

@@ -120,7 +120,7 @@ if ($resHook < 0) {
 if (empty($resHook)) {
     if ($action == 'assign_qrcode' && $permissionToAssign && is_object($linkedObject)) {
         $fkElementID = GETPOSTINT('fk_element');
-        $shortenerID = GETPOSTINT('shortener');
+        $shortenerID = GETPOSTINT('shortenerId');
 
         $linkedObject->fetch($fkElementID);
         $object->fetch($shortenerID);
