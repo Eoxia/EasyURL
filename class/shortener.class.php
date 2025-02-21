@@ -535,7 +535,7 @@ class Shortener extends SaturneObject
 
         $out  = '<table class="noborder ObjectInfo centpercent">';
         $out .= '<thead><tr class="liste_titre">';
-        $out .= '<td class="minwidth100"><i class="far fa-minus-square toggleObjectInfo" style="font-size: 1.5em; margin-right: 4px; vertical-align: middle;"></i>' . $langs->trans('UrlType') . '</td>';
+        //$out .= '<td class="minwidth100"><i class="far fa-minus-square toggleObjectInfo" style="font-size: 1.5em; margin-right: 4px; vertical-align: middle;"></i>' . $langs->trans('UrlType') . '</td>';
         $out .= '<td class="short-url" style="vertical-align: middle;">' . $langs->trans('ShortUrl');
         if (!empty($user->id)) {
             $out .= ($user->conf->EASYURL_SHOW_QRCODE ? img_picto($langs->trans('Enabled'), 'switch_on', 'class="show-qrcode marginleftonly pictoModule marginrightonly"') : img_picto($langs->trans('Disabled'), 'switch_off', 'class="show-qrcode marginleftonly pictoModule marginrightonly"'));
@@ -556,8 +556,8 @@ class Shortener extends SaturneObject
         if (is_array($shorteners) && !empty($shorteners)) {
             foreach ($shorteners as $shortener) {
                 $out .= '<tr>';
-                $out .= '<td class="minwidth100">' . getDictionaryValue('c_shortener_url_type', 'label', $shortener->type) . '</td>';
-                $out .= '<td>' . ($user->conf->EASYURL_SHOW_QRCODE ? saturne_show_medias_linked('easyurl', $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $shortener->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'shortener/'. $shortener->ref . '/qrcode/', $shortener, '', 0, 0) : $shortener->showOutputField($this->fields['short_url'], 'short_url', $shortener->short_url)) . '</td>';
+                //$out .= '<td class="minwidth100">' . getDictionaryValue('c_shortener_url_type', 'label', $shortener->type) . '</td>';
+                $out .= '<td>' . ($user->conf->EASYURL_SHOW_QRCODE ? saturne_show_medias_linked('easyurl', $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $shortener->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'shortener/'. $shortener->ref . '/qrcode/', $shortener, '', 0, 0) : dol_print_url($shortener->short_url, '_blank', 0, 1)) . '</td>';
                 $out .= '<td>' . $shortener->showOutputField($this->fields['original_url'], 'original_url', $shortener->original_url) . '</td>';
                 if (getDolGlobalInt('EASYURL_SHOW_API_INFOS')) {
                     $shortenerData = get_easy_url_link($object, 'all');
