@@ -84,5 +84,14 @@ print '<input type="hidden" name="action" value="assign_qrcode">'; ?>
         <?php else :
             print '<div class="center">' . $langs->trans('PublicInterfaceForbidden', $langs->transnoentities('OfAssignShortener')) . '</div>';
         endif; ?>
+        <?php
+            $objectElement = $linkableElementObjects[$objectId];
+            if (!empty($objectElement) && $permissionToAssign) {
+                print '<div class="margintoponly">';
+                print $object->displayObjectDetails($objectElement, $trackId);
+                print '</div>';
+            }
+        ?>
     </div>
 <?php print '</form>';
+

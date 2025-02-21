@@ -73,10 +73,17 @@ class ActionsEasyurl
     public function addHtmlHeader(array $parameters): int
     {
         if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
-            $resourcesRequired = ['css' => '/custom/easyurl/css/easyurl.min.css'];
+            $resourcesRequired = [
+                'css' => '/custom/easyurl/css/easyurl.min.css',
+                'js'  => '/custom/easyurl/js/easyurl.min.js'
+            ];
+
 
             $out  = '<!-- Includes CSS added by module easyurl -->';
             $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '">';
+
+            $out .= '<!-- Includes JS added by module easyurl -->';
+            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '"></script>';
 
             $this->resprints = $out;
         }
@@ -202,6 +209,8 @@ class ActionsEasyurl
                 if ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element) {
                     if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
                         if ($action == 'show_qrcode') {
+                            require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
                             $data = json_decode(file_get_contents('php://input'), true);
 
                             $showQRCode = $data['showQRCode'];
@@ -256,6 +265,17 @@ class ActionsEasyurl
 
                 header('Location: ' . $_SERVER['PHP_SELF'] . (!empty($parameters['trackId']) ? '?track_id=' .  $parameters['trackId'] . '&' : '?') . 'entity=' . $parameters['entity'] . '&route=assignQRCode');
                 exit;
+            }
+            if ($action == 'show_qrcode') {
+                require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
+                $data = json_decode(file_get_contents('php://input'), true);
+
+                $showQRCode = $data['showQRCode'];
+
+                $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
+
+                dol_set_user_param($this->db, $conf, $user, $tabParam);
             }
         }
 
