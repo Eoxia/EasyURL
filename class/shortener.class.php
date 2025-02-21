@@ -537,7 +537,7 @@ class Shortener extends SaturneObject
         $out .= '<thead><tr class="liste_titre">';
         $out .= '<td class="minwidth100"><i class="far fa-minus-square toggleObjectInfo" style="font-size: 1.5em; margin-right: 4px; vertical-align: middle;"></i>' . $langs->trans('UrlType') . '</td>';
         $out .= '<td class="short-url" style="vertical-align: middle;">' . $langs->trans('ShortUrl');
-        if (!empty($user->conf)) {
+        if (!empty($user->id)) {
             $out .= ($user->conf->EASYURL_SHOW_QRCODE ? img_picto($langs->trans('Enabled'), 'switch_on', 'class="show-qrcode marginleftonly pictoModule marginrightonly"') : img_picto($langs->trans('Disabled'), 'switch_off', 'class="show-qrcode marginleftonly pictoModule marginrightonly"'));
             $out .= $form->textwithpicto('', $langs->trans('ShowQRCode'));
         }
