@@ -560,7 +560,7 @@ class Shortener extends SaturneObject
                 $out .= '<td>' . ($user->conf->EASYURL_SHOW_QRCODE ? saturne_show_medias_linked('easyurl', $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $shortener->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'shortener/'. $shortener->ref . '/qrcode/', $shortener, '', 0, 0) : dol_print_url($shortener->short_url, '_blank', 0, 1)) . '</td>';
                 $out .= '<td>' . $shortener->showOutputField($this->fields['original_url'], 'original_url', $shortener->original_url) . '</td>';
                 if (getDolGlobalInt('EASYURL_SHOW_API_INFOS')) {
-                    $shortenerData = get_easy_url_link($object, 'all');
+                    $shortenerData = get_easy_url_link($shortener->short_url);
                     $out .= '<td>' . (isset($shortenerData->link) && isset($shortenerData->link->clicks) ? $shortenerData->link->clicks : 0) . '</td>';
                 }
                 if ($user->hasRight('easyurl', 'shortener', 'write')) {

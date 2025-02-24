@@ -44,7 +44,8 @@ AutomaticEasyUrlGeneration            = Génération automatique des URLs raccou
 AutomaticEasyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (proposition commerciale, commande, facture)
 ManualEasyUrlGeneration               = Génération manuelle des URLs raccourcies
 ManualEasyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (proposition commerciale, commande, facture)
-WarningApiCredentialsIncorrect        = Les informations d'API sont incorrects
+ErrorEasyURLAPIConfig                 = Les informations d'API sont incorrects
+ErrorMissingEasyURLAPIConfig          = Les informations d'API ne sont pas configurées
 
 # Public interface - Interface publique
 OfAssignShortener = d'affectation de raccourcissement d'URL
