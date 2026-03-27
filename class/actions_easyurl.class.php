@@ -158,9 +158,6 @@ class ActionsEasyurl
         }
 
         if (in_array($parameters['currentcontext'], ['propallist', 'orderlist', 'invoicelist'])) {
-            $cssPath = dol_buildpath('/saturne/css/saturne.min.css', 1);
-            print '<link href="' . $cssPath . '" rel="stylesheet">';
-
             $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
             $picto     = img_picto('', $pictoPath, '', 1, 0, 0, '', 'pictoModule');
             $urlTypes  = ['payment', 'signature'];
