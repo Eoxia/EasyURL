@@ -267,21 +267,6 @@ class Shortener extends SaturneObject
     }
 
     /**
-     * Sets object to supplied categories
-     *
-     * Deletes object from existing categories not supplied
-     * Adds it to non-existing supplied categories
-     * Existing categories are left untouched
-     *
-     * @param  int[]|int $categories Category or categories IDs
-     * @return string
-     */
-    public function setCategories($categories): string
-    {
-        return '';
-    }
-
-    /**
      * Return HTML string to put an input field into a page
      * Code very similar with showInputField of extra fields
      *
