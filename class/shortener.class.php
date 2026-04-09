@@ -214,7 +214,7 @@ class Shortener extends SaturneObject
     /**
      * Constructor
      *
-     * @param  DoliDb    $db Database handler
+     * @param  DoliDB    $db Database handler
      * @throws Exception
      */
     public function __construct(DoliDB $db)
@@ -329,19 +329,18 @@ class Shortener extends SaturneObject
     /**
      * Write information of trigger description
      *
-     * @param  SaturneObject $object Object calling the trigger
-     * @return string                Description to display in actioncomm->note_private
+     * @return string Description to display in actioncomm->note_private
      */
-    public function getTriggerDescription(SaturneObject $object): string
+    public function getTriggerDescription(): string
     {
         global $langs;
 
-        $ret  = parent::getTriggerDescription($object);
-        $ret .= (dol_strlen($object->short_url) > 0 ? $langs->transnoentities('ShortUrl') . ' : ' . $object->short_url . '<br>' : '');
-        $ret .= (dol_strlen($object->original_url) > 0 ? $langs->transnoentities('OriginalUrl') . ' : ' . $object->original_url . '<br>' : '');
-        $ret .= (dol_strlen($object->methode) > 0 ? $langs->transnoentities('UrlMethode') . ' : ' . $object->methode . '<br>' : '');
-        $ret .= (dol_strlen($object->element_type) > 0 ? $langs->transnoentities('ElementType') . ' : ' . $object->element_type . '<br>' : '');
-        $ret .= (!empty($object->fk_element) ? $langs->transnoentities('FkElement') . ' : ' . $object->fk_element . '<br>' : '');
+        $ret  = parent::getTriggerDescription();
+        $ret .= (dol_strlen($this->short_url) > 0 ? $langs->transnoentities('ShortUrl') . ' : ' . $this->short_url . '<br>' : '');
+        $ret .= (dol_strlen($this->original_url) > 0 ? $langs->transnoentities('OriginalUrl') . ' : ' . $this->original_url . '<br>' : '');
+        $ret .= (dol_strlen($this->methode) > 0 ? $langs->transnoentities('UrlMethode') . ' : ' . $this->methode . '<br>' : '');
+        $ret .= (dol_strlen($this->element_type) > 0 ? $langs->transnoentities('ElementType') . ' : ' . $this->element_type . '<br>' : '');
+        $ret .= (!empty($this->fk_element) ? $langs->transnoentities('FkElement') . ' : ' . $this->fk_element . '<br>' : '');
 
         return $ret;
     }
