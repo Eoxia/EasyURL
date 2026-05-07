@@ -3,7 +3,7 @@
 ## Informations
 
 - Numéro du module : 436305
-- Dernière mise à jour : 13/09/2023
+- Dernière mise à jour : 07/05/2026
 - Éditeur : [Eoxia](https://eoxia.com)
 - Thème : Eldy Menu
 - Licence : GPLv3
@@ -11,9 +11,10 @@
 
 ## Version
 
-- Version :  1.0.0
-- Compatibilité : Dolibarr 16.0.0 - 18.0.1
-- Saturne framework : 1.1.2
+- Version : 23.0.0
+- PHP : 7.4.33
+- Compatibilité : Dolibarr 20.0.0 - 23.0.2
+- Saturne framework : 23.0.0
 
 ## Liens
 
