@@ -23,21 +23,31 @@ ModuleEasyURLDesc      = Création d'URLs raccourcies pour YOURLS et Dolibarr
 EasyURLDescription     = Création d'URLs raccourcies pour YOURLS et Dolibarr
 EasyURLDescriptionLong = Création d'URLs raccourcies pour YOURLS et Dolibarr
 
+
+
 #
 # Config page - Page d'administration
 #
 
 # Data - Donnée
 URLYourlsAPI                          = URL API YOURLS
-URLYourlsAPIDescription               = Cette option permet de configurer l'url d'API YOURLS
+URLYourlsAPIDescription               = Cette option permet de configurer l'URL d'API YOURLS
 SignatureTokenYourlsAPI               = Token de signature
 SignatureTokenYourlsAPIDescription    = Cette option permet de configurer le token de signature d'API YOURLS
+DefaultOriginalUrl                    = URL d'origine par défaut
+DefaultOriginalUrlDescription         = Cette option permet de configurer l'URL d'origine par défaut
 UseShaUrl                             = SHA dans l'URL raccourcie
-UseShaUrlDescription                  = Cette option permet d'ajouter un SHA (8 caractères) dans le raccourcicement des URLs
+UseShaUrlDescription                  = Cette option permet d'ajouter un SHA (8 caractères) dans le raccourcissement des URLs
+ShowAPIInfos                          = Afficher les informations supplémentaire de l'API
+ShowAPIInfosDescription               = Cette option permet d'afficher les informations supplémentaire de l'API <br> (nombre de click, etc)
 AutomaticEasyUrlGeneration            = Génération automatique des URLs raccourcies
-AutomaticEasyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (propositon commerciale, commande, facture)
+AutomaticEasyUrlGenerationDescription = Crée automatiquement l'URL raccourcie lors de la validation d'un objet <br> (proposition commerciale, commande, facture)
 ManualEasyUrlGeneration               = Génération manuelle des URLs raccourcies
-ManualEasyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (propositon commerciale, commande, facture)
+ManualEasyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL raccourcie sur un objet <br> (proposition commerciale, commande, facture)
+WarningApiCredentialsIncorrect        = Les informations d'API sont incorrects
+
+# Public interface - Interface publique
+OfAssignShortener = d'affectation de raccourcissement d'URL
 
 
 
@@ -48,9 +58,86 @@ ManualEasyUrlGenerationDescription    = Ajout d'un bouton pour créer une URL ra
 # Data - Donnée
 EasyUrlPaymentLink   = EasyURL-paiement
 EasyUrlSignatureLink = EasyURL-signature
+EasyUrlAllLink       = EasyURL-lien
 EasyUrlLinkHelp      = Transformation d'une URL en URL raccourcie (lien de paiement, lien de signature)
+EasyUrlAllLinkHelp   = Transformation d'une URL en URL raccourcie (tout type de lien)
 SetEasyURLLink       = Créer URL raccourcie
 SetEasyURLSuccess    = Création réussie de l'URL raccourcie
 SetEasyURLErrors     = Erreur : création de l'URL raccourcie
 GetEasyURLErrors     = Erreur : URL raccourcie non trouvée
 
+
+
+#
+# Tools - Outils
+#
+
+# Data - Donnée
+#@todo il faut revoir la traduction OriginalUrl
+GenerateUrlManagement           = Gestion de la génération des raccourcissements d'URLs
+GeneratedExport                 = Export déjà générés
+NbUrl                           = Nombre d'URL
+NbUrlDescription                = Cette option permet de choisir le nombre d'URL à générer
+OriginalUrl                     = URL cible
+OriginalUrlDescription          = Cette option permet de choisir l'URL d'origine
+OriginalUrlMoreDescription      = <br> (par défaut si aucune URL n'est renseignée alors l'URL par défaut est : <b>%s</b>)
+UrlParameters                   = Paramètre d'URL supplémentaire
+UrlParametersDescription        = Cette option permet d'ajouter des paramètres d'URLs supplémentaires <br> (exemple : un tiret/une valeur)
+UrlMethode                      = Méthode d'API URL
+UrlMethodeDescription           = Cette option permet de choisir la méthode d'API URL utilisée dans le raccourcissement des URLs <br> (deux valeurs possibles : YOURLS ou WordPress)
+GenerateUrlSuccess              = Génération réussie des %d raccourcissements d'URLs
+OriginalUrlFail                 = Erreur(s) possible(s) : <br> - Nombre d'URL est vide <br> - l'URL d'origine est vide <br> - l'URL d'origine par défaut n'as pas été configurée
+DefaultOriginalUrlConfiguration = Vous n'avez pas configuré d'URL d'origine par défaut, veuillez cliquer ici pour vous rendre sur la page de configuration
+ApiCredentialsNotCongirate      = Vous n'avez pas configuré d'API, veuillez cliquer ici pour vous rendre sur la page de configuration
+Success                         = Succès
+ExportId                        = Id Export
+ExportNumber                    = Nombre d'URL générées
+ExportStart                     = ID début URL
+ExportEnd                       = ID fin URL
+ExportDate                      = Date export
+ExportOrigin                    = URL d'origine
+ExportConsume                   = Nombre d'URL consommé
+ExportGenerating                = Generation en cours
+ExportSuccess                   = URL(s) exportées avec succès !
+YouGenerated                    = Vous avez généré
+UrlWithSuccess                  = URL(s) avec succès
+ExportError                     = Erreur lors de la génération de l'URL
+
+#
+# Shortener - Raccourcissement d'URL
+#
+
+# Right - Droit
+AssignShorteners = Affecter les raccourcissements d'URLs
+
+# Trigger - Déclencheur
+ObjectUnAssignTrigger = %s %s désaffectée
+
+# Data - Donnée
+Shortener                 = Raccourcissement d'URL
+TheShortener              = le raccourcissement d'URL
+Shorteners                = raccourcissements d'URLs
+ShortenerList             = Liste des raccourcissements d'URLs
+ModifyShortener           = Modifier le raccourcissement d'URL
+AssignShortener           = Affecter le raccourcissement d'URL
+ValidatePendingAssignment = Validé (en attente d'affectation)
+Assign                    = Affecter
+Assigned                  = Affecté
+Unassign                  = Désaffecter
+UnassignShortenerSuccess  = Désaffectation du raccourcissement d'URL <strong>%s</strong>
+NoLinkedElement           = Aucun élément lié
+ShortenerRepartition      = Répartition des raccourcissements d'URLs par %s
+ShortenerUrlType          = Liste des types d'URLs
+ShowQRCode                = Afficher le QRCode de l'URL raccourcie
+NbClick                   = Nombre de click
+
+# Fiels - Champ
+ShortUrl = URL raccourcie
+UrlType  = Type d'URL
+
+# Public interface - Interface publique
+AssignQRCode        = Affectation de QR Code
+NumProductLot       = N° du lot/série
+NumQRCode           = N° du QRCode
+AssignQRCodeSuccess = Affectation réussie du N° du QRCode <strong>%s</strong> sur %s <strong>%s</strong>
+AssignQRCodeErrors  = Erreur : affectation du QRCode

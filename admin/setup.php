@@ -60,6 +60,7 @@ saturne_check_access($permissionToRead);
 if ($action == 'set_config') {
     $URLYourlsAPI            = GETPOST('url_yourls_api');
     $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
+    $defaultOriginalURL      = GETPOST('default_original_url');
 
     if (dol_strlen($URLYourlsAPI) > 0) {
         dolibarr_set_const($db, 'EASYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
@@ -68,12 +69,37 @@ if ($action == 'set_config') {
         dolibarr_set_const($db, 'EASYURL_SIGNATURE_TOKEN_YOURLS_API', $signatureTokenYourlsAPI, 'chaine', 0, '', $conf->entity);
     }
 
+    if (dol_strlen($URLYourlsAPI) > 0 && dol_strlen($signatureTokenYourlsAPI) > 0) {
+
+        // Init the CURL session
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, GETPOST('url_yourls_api'));
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return, do not echo result
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, 1);              // This is a POST request
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [               // Data to POST
+            'signature' => getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API'),
+            'format'    => 'json'
+        ]);
+
+        $data = curl_exec($ch);
+        $statusCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        // 400 when no actions set and credentials ok
+        if ($statusCode != 400) {
+            setEventMessage('WarningApiCredentialsIncorrect', 'warnings');
+        }
+    }
+
+    dolibarr_set_const($db, 'EASYURL_DEFAULT_ORIGINAL_URL', $defaultOriginalURL, 'chaine', 0, '', $conf->entity);
+
     setEventMessage('SavedConfig');
     header('Location: ' . $_SERVER['PHP_SELF']);
     exit;
 }
-
-
 
 /*
  * View
@@ -107,18 +133,29 @@ print '</tr>';
 
 print '<tr class="oddeven"><td><label for="url_yourls_api">' . $langs->trans('URLYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('URLYourlsAPIDescription') . '</td>';
-print '<td><input type="text" name="url_yourls_api" value="' . $conf->global->EASYURL_URL_YOURLS_API . '"></td>';
+print '<td><input class="minwidth300" type="text" name="url_yourls_api" value="' . $conf->global->EASYURL_URL_YOURLS_API . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
-print '<td><input type="password" name="signature_token_yourls_api" value="' . $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '<td><input class="minwidth300" type="password" name="signature_token_yourls_api" value="' . $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
+print '</td></tr>';
+
+print '<tr class="oddeven"><td><label for="default_original_url">' . $langs->trans('DefaultOriginalUrl') . '</label></td>';
+print '<td>' . $langs->trans('DefaultOriginalUrlDescription') . '</td>';
+print '<td><input class="minwidth300" type="text" name="default_original_url" value="' . $conf->global->EASYURL_DEFAULT_ORIGINAL_URL . '"></td>';
 print '</td></tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';
 print '<td>' . $langs->trans('UseShaUrlDescription') . '</td>';
 print '<td>';
 print ajax_constantonoff('EASYURL_USE_SHA_URL');
+print '</td></tr>';
+
+print '<tr class="oddeven"><td>' . $langs->trans('ShowAPIInfos') . '</td>';
+print '<td>' . $langs->trans('ShowAPIInfosDescription') . '</td>';
+print '<td>';
+print ajax_constantonoff('EASYURL_SHOW_API_INFOS');
 print '</td></tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('AutomaticEasyUrlGeneration') . '</td>';
