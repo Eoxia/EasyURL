@@ -203,10 +203,36 @@ function update_easy_url_link(CommonObject $object): int
     $ch = init_easy_url_curl($curlPostFields);
 
     // Fetch and return content
-    $data = curl_exec($ch);
+    $data    = curl_exec($ch);
+    $curlErr = curl_error($ch);
     curl_close($ch);
 
     // Do something with the result
     $data = json_decode($data);
-    return $data->statusCode == 200 ? 1 : 0;
+    if (is_object($data) && $data->statusCode == 200) {
+        return 1;
+    }
+
+    // Propagate the real error to the caller so it can be displayed to the user
+    $statusCode = (is_object($data) && isset($data->statusCode)) ? $data->statusCode : '';
+    $apiMessage = '';
+    if (is_object($data)) {
+        foreach ((array) $data as $key => $value) {
+            if (trim($key) === 'simple' && dol_strlen($value) > 0) { // YOURLS renvoie une clé "simple " (avec un espace) contenant le message lisible
+                $apiMessage = $value;
+                break;
+            }
+        }
+        if (empty($apiMessage) && !empty($data->message)) {
+            $apiMessage = $data->message;
+        }
+    }
+    if (empty($apiMessage)) {
+        $apiMessage = (dol_strlen($curlErr) > 0 ? $curlErr : 'No response from URL shortener API');
+    }
+
+    $object->error    = (dol_strlen($statusCode) > 0 ? '[' . $statusCode . '] ' : '') . $apiMessage;
+    $object->errors[] = $object->error;
+
+    return 0;
 }
