@@ -254,7 +254,7 @@ class ActionsEasyurl
 
                         setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($parameters['linkableElement']['langs']), $parameters['linkedObject']->{$parameters['linkableElement']['name_field']}), []);
                     } else {
-                        setEventMessages('AssignQRCodeErrors', [], 'errors');
+                        setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
                     }
                 } else {
                     setEventMessages('AssignQRCodeErrors', [], 'errors');
