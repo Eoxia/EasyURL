@@ -325,6 +325,22 @@ if (is_array($exportShortenerDocuments) && !empty($exportShortenerDocuments)) {
 
 print '</table>';
 
+$logFile = $conf->easyurl->multidir_output[$conf->entity] . '/logs/generation_errors.log';
+$consoleInitialContent = '';
+if (file_exists($logFile)) {
+    $lines = file($logFile);
+    $lines = array_slice($lines, -200); // Keep last 200 lines
+    foreach ($lines as $line) {
+        if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (.*)$/', trim($line), $matches)) {
+            $time = substr($matches[1], 11);
+            $msg = $matches[2];
+            $consoleInitialContent .= '<div class="eu-log-line"><span class="eu-log-time">' . $time . '</span><span class="eu-log-pfx">&gt;_</span><span class="eu-log-e">[HISTORIQUE KO] ' . dol_escape_htmltag($msg) . '</span></div>';
+        } else {
+            $consoleInitialContent .= '<div class="eu-log-line"><span class="eu-log-pfx">&gt;_</span><span class="eu-log-e">' . dol_escape_htmltag(trim($line)) . '</span></div>';
+        }
+    }
+}
+
 print '<style>
 .eu-console-popup{position:fixed;bottom:0;right:24px;width:660px;max-width:calc(100vw - 48px);background:#0d1117;border:1px solid #30363d;border-bottom:none;border-radius:8px 8px 0 0;font-family:\'Consolas\',\'Courier New\',monospace;z-index:9999;box-shadow:0 -4px 20px rgba(0,0,0,.5);}
 .eu-con-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#161b22;border-bottom:1px solid #30363d;border-radius:8px 8px 0 0;cursor:pointer;user-select:none;}
@@ -350,7 +366,7 @@ print '<style>
       <button onclick="jQuery(\'#eu-cb\').toggle()" title="Ouvrir / Fermer">&#9650;</button>
     </span>
   </div>
-  <div class="eu-con-body" id="eu-cb" style="display:none"></div>
+  <div class="eu-con-body" id="eu-cb" style="display:none">' . $consoleInitialContent . '</div>
 </div>';
 
 // End of page
