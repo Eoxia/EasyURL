@@ -107,12 +107,22 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
                 break;
         }
 
-        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        if (property_exists($object, 'custom_easyurl_keyword') && !empty($object->custom_easyurl_keyword)) {
+            $keyword = dol_sanitizeFileName($object->custom_easyurl_keyword);
+        } else {
+            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        }
+        
+        if (property_exists($object, 'custom_easyurl_title') && !empty($object->custom_easyurl_title)) {
+            $title = $object->custom_easyurl_title;
+        } else {
+            $title = $keyword;
+        }
 
         $curlPostFields = [
             'action'  => 'shorturl',
             'title'   => $title,
-            'keyword' => $title,
+            'keyword' => $keyword,
             'url'     => $onlineUrl
         ];
         $ch = init_easy_url_curl($curlPostFields, $urlMethod);

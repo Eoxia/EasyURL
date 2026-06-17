@@ -212,9 +212,55 @@ window.easyurl.shortener.buttonSave = function(e) {
  *
  * @returns {void}
  */
-window.easyurl.shortener.createShortener = function(form, current, nbUrl) {
+window.easyurl.shortener.createShortener = function(form, current, nbUrl, successCount) {
+  if (typeof successCount === 'undefined') successCount = 0;
   let token = window.saturne.toolbox.getToken();
   let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
+  
+  if ($('#eu-cp').length === 0) {
+      let consoleHtml = `
+<style>
+.eu-console-popup{position:fixed;bottom:0;right:24px;width:660px;max-width:calc(100vw - 48px);background:#0d1117;border:1px solid #30363d;border-bottom:none;border-radius:8px 8px 0 0;font-family:'Consolas','Courier New',monospace;z-index:9999;box-shadow:0 -4px 20px rgba(0,0,0,.5);}
+.eu-con-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#161b22;border-bottom:1px solid #30363d;border-radius:8px 8px 0 0;cursor:pointer;user-select:none;}
+.eu-con-title{color:#58a6ff;font-weight:700;font-size:.82em;letter-spacing:.5px;white-space:nowrap;}
+.eu-con-acts{display:flex;gap:10px;align-items:center;font-size:.76em;color:#8b949e;flex-shrink:0;}
+.eu-con-acts button{background:none;border:none;color:#8b949e;cursor:pointer;padding:0;font-family:inherit;font-size:1em;}
+.eu-con-acts button:hover{color:#c9d1d9;}
+.eu-con-sep{color:#30363d;}
+.eu-con-body{height:260px;overflow-y:auto;padding:8px 14px;scroll-behavior:smooth;}
+.eu-log-line{display:flex;gap:8px;margin-bottom:2px;font-size:.76em;line-height:1.5;}
+.eu-log-time{color:#484f58;min-width:56px;flex-shrink:0;}
+.eu-log-pfx{color:#58a6ff;flex-shrink:0;}
+.eu-log-s{color:#3fb950;}.eu-log-e{color:#f85149;}.eu-log-w{color:#d29922;}.eu-log-i{color:#c9d1d9;}
+</style>
+<div class="eu-console-popup" id="eu-cp">
+  <div class="eu-con-hd" onclick="$('#eu-cb').toggle();">
+    <span style="display:flex;align-items:center;min-width:0;overflow:hidden;">
+      <span class="eu-con-title">&gt;_ CONSOLE</span>
+    </span>
+    <span class="eu-con-acts" onclick="event.stopPropagation()">
+      <button onclick="window.open(document.URL.substring(0, document.URL.indexOf('/custom/easyurl/')) + '/document.php?modulepart=easyurl&file=logs/generation_errors.log', '_blank')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
+      <button onclick="$('#eu-cb').empty()">Vider</button><span class="eu-con-sep">|</span>
+      <button onclick="$('#eu-cb').toggle()" title="Ouvrir / Fermer">&#9650;</button>
+    </span>
+  </div>
+  <div class="eu-con-body" id="eu-cb" style="display:block"></div>
+</div>
+      `;
+      $('body').append(consoleHtml);
+  }
+  
+  let time = new Date().toLocaleTimeString('fr-FR', { hour12: false });
+  if (current === 1) {
+      $('#eu-cb').html(`
+        <div class="eu-log-line">
+          <span class="eu-log-time">${time}</span>
+          <span class="eu-log-pfx">&gt;_</span>
+          <span class="eu-log-i">Démarrage de la génération de ${nbUrl} URLs...</span>
+        </div>
+      `);
+      $('#eu-cb').show();
+  }
 
   $.ajax({
     method: 'POST',
@@ -224,17 +270,73 @@ window.easyurl.shortener.createShortener = function(form, current, nbUrl) {
     contentType: false,
     success: function (resp) {
       let success = $(resp).find('input[name="success"]').val();
-
+      let generatedUrl = $(resp).find('input[name="generated_keyword"]').val() || ('URL ' + current);
+      let timeNow = new Date().toLocaleTimeString('fr-FR', { hour12: false });
+      
       if (success == 'true') {
+        successCount++;
+        $('#eu-cb').append(`
+          <div class="eu-log-line">
+            <span class="eu-log-time">${timeNow}</span>
+            <span class="eu-log-pfx">&gt;_</span>
+            <span class="eu-log-s">[OK] Génération de : ${generatedUrl} réussie.</span>
+          </div>
+        `);
+        $('#eu-cb').scrollTop($('#eu-cb')[0].scrollHeight);
+        
         if (current < nbUrl) {
           window.saturne.notice.showNotice('notice-infos', 'ExportGenerating', 'ExportGenerating ' + current + ' URLs ! <div class="wpeo-loader" style="display: inline; margin-left: 2rem;"><span class="loader-spin wpeo-loader"></span></div>', 'warning');
-          window.easyurl.shortener.createShortener(form, ++current, nbUrl);
+          window.easyurl.shortener.createShortener(form, ++current, nbUrl, successCount);
         } else {
-          window.easyurl.exportshortener.generateExport(nbUrl);
+          $('#eu-cb').append(`
+            <div class="eu-log-line" style="margin-top: 10px;">
+              <span class="eu-log-time">${timeNow}</span>
+              <span class="eu-log-pfx">&gt;_</span>
+              <span class="eu-log-i" style="color: #58a6ff; font-weight: bold;">[INFO] Génération terminée !</span>
+            </div>
+          `);
+          $('#eu-cb').scrollTop($('#eu-cb')[0].scrollHeight);
+          window.saturne.loader.remove($('#generate-url-from .button-save'));
+          window.easyurl.exportshortener.generateExport(nbUrl, successCount);
         }
       } else {
-        window.saturne.notice.showNotice('notice-infos', 'Error', 'ExportError ' + current, 'error');
+        var errorMsg = $(resp).find('input[name="error_msg"]').val();
+        var failedKeyword = $(resp).find('input[name="failed_keyword"]').val();
+        
+        var displayMsg = "";
+        if (errorMsg && errorMsg.indexOf('already exists') !== -1) {
+            displayMsg = "Elle existe déjà dans la base de données.";
+        } else {
+            displayMsg = errorMsg ? errorMsg : ('Erreur inconnue');
+        }
+        
+        $('#eu-cb').append(`
+          <div class="eu-log-line">
+            <span class="eu-log-time">${timeNow}</span>
+            <span class="eu-log-pfx">&gt;_</span>
+            <span class="eu-log-e">[KO] Génération de : ${failedKeyword || current} | ${displayMsg}</span>
+          </div>
+        `);
+        $('#eu-cb').scrollTop($('#eu-cb')[0].scrollHeight);
+        
+        // Log it and continue automatically
+        if (current < nbUrl) {
+            window.saturne.notice.showNotice('notice-infos', 'ExportGenerating', 'ExportGenerating ' + current + ' URLs ! <div class="wpeo-loader" style="display: inline; margin-left: 2rem;"><span class="loader-spin wpeo-loader"></span></div>', 'warning');
+            window.easyurl.shortener.createShortener(form, ++current, nbUrl, successCount);
+        } else {
+            $('#eu-cb').append(`
+              <div class="eu-log-line" style="margin-top: 10px;">
+                <span class="eu-log-time">${timeNow}</span>
+                <span class="eu-log-pfx">&gt;_</span>
+                <span class="eu-log-i" style="color: #58a6ff; font-weight: bold;">[INFO] Génération terminée !</span>
+              </div>
+            `);
+            $('#eu-cb').scrollTop($('#eu-cb')[0].scrollHeight);
+            window.saturne.loader.remove($('#generate-url-from .button-save'));
+            window.easyurl.exportshortener.generateExport(nbUrl, successCount);
+        }
       }
+
     },
     error: function() {
       window.saturne.notice.showNotice('notice-infos', 'Error', 'ExportError ' + current, 'error');

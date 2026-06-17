@@ -75,7 +75,7 @@ class ActionsEasyurl
         if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
             $resourcesRequired = [
                 'css' => '/custom/easyurl/css/easyurl.min.css',
-                'js'  => '/custom/easyurl/js/easyurl.min.js'
+                'js'  => '/custom/easyurl/js/easyurl.min.js?v=2'
             ];
 
 
@@ -141,7 +141,7 @@ class ActionsEasyurl
 
                         $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
                         print '<script src="' . $jsPath . '" ></script>';
-                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1);
+                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1) . '?v=2';
                         print '<script src="' . $jsPath . '" ></script>';
 
                         require_once __DIR__ . '/shortener.class.php';
