@@ -361,8 +361,16 @@ print '<style>
       <span class="eu-con-title">&gt;_ CONSOLE</span>
     </span>
     <span class="eu-con-acts" onclick="event.stopPropagation()">
+      <span style="color:#3fb950"><span id="eu-count-ok">0</span> OK</span> / <span style="color:#f85149"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</span>
+      <span class="eu-con-sep">|</span>
+      <select onchange="var url=new URL(window.location.href);url.searchParams.set(\'history_lines\', this.value);window.location.href=url.href;" style="background:transparent;color:#8b949e;border:1px solid #30363d;border-radius:4px;padding:0 2px;">
+        <option value="50" ' . ($historyLines==50?'selected':'') . '>50 lignes</option>
+        <option value="200" ' . ($historyLines==200?'selected':'') . '>200 lignes</option>
+        <option value="500" ' . ($historyLines==500?'selected':'') . '>500 lignes</option>
+      </select>
+      <span class="eu-con-sep">|</span>
       <button onclick="window.open(document.URL.substring(0, document.URL.indexOf(\'/custom/easyurl/\')) + \'/document.php?modulepart=easyurl&file=logs/generation_errors.log\', \'_blank\')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
-      <button onclick="jQuery(\'#eu-cb\').empty()">Vider</button><span class="eu-con-sep">|</span>
+      <button onclick="jQuery(\'#eu-cb\').empty(); jQuery(\'#eu-count-ok\').text(\'0\'); jQuery(\'#eu-count-ko\').text(\'0\');">Vider</button><span class="eu-con-sep">|</span>
       <button onclick="jQuery(\'#eu-cb\').toggle()" title="Ouvrir / Fermer">&#9650;</button>
     </span>
   </div>
