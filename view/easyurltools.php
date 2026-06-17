@@ -354,6 +354,8 @@ print '<style>
 .eu-log-time{color:#484f58;min-width:56px;flex-shrink:0;}
 .eu-log-pfx{color:#58a6ff;flex-shrink:0;}
 .eu-log-s{color:#3fb950;} .eu-log-e{color:#f85149;} .eu-log-w{color:#d29922;} .eu-log-i{color:#c9d1d9;}
+.hide-ok .eu-log-line:has(.eu-log-s) { display: none !important; }
+.hide-ko .eu-log-line:has(.eu-log-e) { display: none !important; }
 </style>
 <div class="eu-console-popup" id="eu-cp">
   <div class="eu-con-hd" onclick="jQuery(\'#eu-cb\').toggle();">
@@ -361,7 +363,8 @@ print '<style>
       <span class="eu-con-title">&gt;_ CONSOLE</span>
     </span>
     <span class="eu-con-acts" onclick="event.stopPropagation()">
-      <span style="color:#3fb950"><span id="eu-count-ok">0</span> OK</span> / <span style="color:#f85149"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</span>
+      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ok\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ok\') ? \'0.4\' : \'1\');" style="color:#3fb950;font-weight:bold;" title="Afficher / Masquer les OK"><span id="eu-count-ok">0</span> OK</button> / 
+      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ko\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ko\') ? \'0.4\' : \'1\');" style="color:#f85149;font-weight:bold;" title="Afficher / Masquer les KO"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</button>
       <span class="eu-con-sep">|</span>
       <select onchange="var url=new URL(window.location.href);url.searchParams.set(\'history_lines\', this.value);window.location.href=url.href;" style="background:transparent;color:#8b949e;border:1px solid #30363d;border-radius:4px;padding:0 2px;">
         <option value="50" ' . ($historyLines==50?'selected':'') . '>50 lignes</option>
