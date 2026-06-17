@@ -67,14 +67,57 @@ if ($action == 'generate_url' && $permissionToAdd) {
         $urlMethode    = $data['url_methode'];
         $originalUrl   = $data['original_url'];
         $urlParameters = $data['url_parameters'];
+        $urlTitle      = isset($data['url_title']) ? $data['url_title'] : '';
 
         if (dol_strlen($originalUrl) > 0 || dol_strlen(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) > 0) {
             $shortener->ref = $shortener->getNextNumRef();
             if (dol_strlen($originalUrl) > 0) {
-                $shortener->original_url = $originalUrl . $urlParameters;
+                $shortener->original_url = $originalUrl;
             } else {
-                $shortener->original_url = getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') . $urlParameters;
+                $shortener->original_url = getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL');
             }
+
+            if (!empty($urlParameters)) {
+                $customKeyword = $urlParameters;
+                $customKeyword = str_ireplace(
+                    ['{AAAAMMJJ}', '{AAMMJJ}', '{AMMJJ}', '{AAAAMM}', '{AAMM}'],
+                    [date('Ymd'), date('ymd'), date('ymd'), date('Ym'), date('ym')],
+                    $customKeyword
+                );
+                
+                $currentIndex = GETPOSTINT('nb_url');
+                if (preg_match('/\{(\d+)\}/', $customKeyword, $matches)) {
+                    $originalMatch = $matches[0];
+                    $digitsStr = $matches[1];
+                    $padLength = strlen($digitsStr);
+                    $startValue = (int)$digitsStr;
+                    $newValue = str_pad((string)($startValue + $currentIndex - 1), $padLength, '0', STR_PAD_LEFT);
+                    $customKeyword = str_replace($originalMatch, $newValue, $customKeyword);
+                }
+                
+                $shortener->custom_easyurl_keyword = dol_strtolower($customKeyword);
+            }
+            if (!empty($urlTitle)) {
+                $customTitle = $urlTitle;
+                $customTitle = str_ireplace(
+                    ['{AAAAMMJJ}', '{AAMMJJ}', '{AMMJJ}', '{AAAAMM}', '{AAMM}'],
+                    [date('Ymd'), date('ymd'), date('ymd'), date('Ym'), date('ym')],
+                    $customTitle
+                );
+                
+                $currentIndex = GETPOSTINT('nb_url');
+                if (preg_match('/\{(\d+)\}/', $customTitle, $matches)) {
+                    $originalMatch = $matches[0];
+                    $digitsStr = $matches[1];
+                    $padLength = strlen($digitsStr);
+                    $startValue = (int)$digitsStr;
+                    $newValue = str_pad((string)($startValue + $currentIndex - 1), $padLength, '0', STR_PAD_LEFT);
+                    $customTitle = str_replace($originalMatch, $newValue, $customTitle);
+                }
+                
+                $shortener->custom_easyurl_title = $customTitle;
+            }
+            
             $shortener->methode = $urlMethode;
 
             $shortener->create($user);
@@ -82,9 +125,16 @@ if ($action == 'generate_url' && $permissionToAdd) {
             // UrlType : none because we want mass generation url (all can be use but need to change this code)
             $result = set_easy_url_link($shortener, 'none', $urlMethode);
             if (!empty($result) && is_object($result)) {
-                $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
+                $logDir = $conf->easyurl->multidir_output[$conf->entity] . '/logs';
+                if (!is_dir($logDir)) { dol_mkdir($logDir); }
+                $logFile = $logDir . '/generation_errors.log';
+                $logContent = date('Y-m-d H:i:s') . " - URL " . GETPOSTINT('nb_url') . " - " . $result->message . "\n";
+                file_put_contents($logFile, $logContent, FILE_APPEND);
+                
+                $errMsg = urlencode($result->message);
+                $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener&error_msg=' . $errMsg . '&failed_keyword=' . urlencode($shortener->custom_easyurl_keyword);
             } else {
-                $urlParametersOut .= '?success=true&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
+                $urlParametersOut .= '?success=true&nb_url=' . GETPOST('nb_url') . '&successType=shortener&generated_keyword=' . urlencode($shortener->short_url);
             }
         } else {
             $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
@@ -168,6 +218,18 @@ print '<input type="hidden" name="action" value="generate_url">';
 if (GETPOSTISSET('success')) {
     print '<input type="hidden" name="success" value="' . GETPOST('success') . '">';
 }
+if (GETPOSTISSET('error_msg')) {
+    print '<input type="hidden" name="error_msg" value="' . dol_escape_htmltag(urldecode(GETPOST('error_msg'))) . '">';
+}
+if (GETPOSTISSET('failed_keyword')) {
+    print '<input type="hidden" name="failed_keyword" value="' . dol_escape_htmltag(urldecode(GETPOST('failed_keyword'))) . '">';
+}
+if (GETPOSTISSET('generated_keyword')) {
+    print '<input type="hidden" name="generated_keyword" value="' . dol_escape_htmltag(urldecode(GETPOST('generated_keyword'))) . '">';
+}
+
+$displayAstuce = GETPOSTISSET('error_msg') ? 'block' : 'none';
+print '<div class="wpeo-notice notice-warning" style="display: ' . $displayAstuce . '; margin-bottom: 15px;"><div class="notice-content"><div class="notice-title"><strong>Astuce YOURLS</strong></div><div class="notice-desc">Si vous générez plusieurs liens vers la même URL d\'origine, YOURLS bloquera la création (Erreur "URL already exists"). Pour autoriser les doublons, vous devez définir <code>define(\'YOURLS_UNIQUE_URLS\', false);</code> dans le fichier <code>user/config.php</code> de votre serveur YOURLS.</div></div></div>';
 
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre">';
@@ -195,6 +257,11 @@ print '<td>' .  $langs->trans('OriginalUrlDescription') . (getDolGlobalString('E
 print '<td><input class="minwidth300" type="text" name="original_url" value="' . getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') . '"></td>';
 print '</tr>';
 
+print '<tr class="oddeven"><td><label for="url_title">' . $langs->trans('EasyUrlTitle') . '</label></td>';
+print '<td>' . $langs->trans('EasyUrlTitleDescription') . '</td>';
+print '<td><input class="minwidth300" type="text" name="url_title"></td>';
+print '</tr>';
+
 print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
 print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
 print '<td><input class="minwidth300" type="text" name="url_parameters"></td>';
@@ -207,6 +274,9 @@ print '</div>';
 print '</form>';
 
 print load_fiche_titre($langs->trans('GeneratedExport'), '', '');
+
+// Logs button removed (now managed in the console popup)
+
 print '<table class="noborder centpercent" id="shortener-export-table">';
 
 print '<tr class="liste_titre">';
