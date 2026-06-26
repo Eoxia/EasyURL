@@ -293,7 +293,8 @@ class ActionsEasyurl
             $langs->load('easyurl@easyurl');
 
             $out  = '<div class="tab switch-public-control-view' . ($parameters['route'] == 'assignQRCode' ? ' tab-active' : '') . '" data-route="assignQRCode">';
-            $out .= $langs->transnoentities('AssignQRCode');
+            $out .= '<i class="fas fa-qrcode"></i>';
+            $out .= '<span>' . $langs->transnoentities('AssignQRCode') . '</span>';
             $out .= '</div>';
             $parameters['routes']['assignQRCode'] = '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
             $parameters['externals'][]            = 'assignQRCode';
