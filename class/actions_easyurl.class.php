@@ -138,7 +138,7 @@ class ActionsEasyurl
         $objectsMetadata = saturne_get_objects_metadata();
         if (!empty($objectsMetadata)) {
             foreach ($objectsMetadata as $objectMetadata) {
-                if ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element) {
+                if (is_object($object) && ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element)) {
                     if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
 
                         $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
