@@ -123,15 +123,20 @@ if ($action == 'generate_url' && $permissionToAdd) {
             $shortener->create($user);
 
             // UrlType : none because we want mass generation url (all can be use but need to change this code)
-            $result = set_easy_url_link($shortener, 'none', $urlMethode);
-            if (!empty($result) && is_object($result)) {
+            $errorMessage = '';
+            $result       = set_easy_url_link($shortener, 'none', $urlMethode, $errorMessage);
+            // 1 on success only: 0 (nothing attempted) and < 0 (transport or API error) both mean no url was created
+            if ($result <= 0) {
+                if (!dol_strlen($errorMessage)) {
+                    $errorMessage = $langs->trans('SetEasyURLErrors');
+                }
                 $logDir = $conf->easyurl->multidir_output[$conf->entity] . '/logs';
                 if (!is_dir($logDir)) { dol_mkdir($logDir); }
                 $logFile = $logDir . '/generation_errors.log';
-                $logContent = date('Y-m-d H:i:s') . " - URL " . GETPOSTINT('nb_url') . " - " . $result->message . "\n";
+                $logContent = date('Y-m-d H:i:s') . " - URL " . GETPOSTINT('nb_url') . " - " . $errorMessage . "\n";
                 file_put_contents($logFile, $logContent, FILE_APPEND);
-                
-                $errMsg = urlencode($result->message);
+
+                $errMsg = urlencode($errorMessage);
                 $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener&error_msg=' . $errMsg . '&failed_keyword=' . urlencode($shortener->custom_easyurl_keyword);
             } else {
                 $urlParametersOut .= '?success=true&nb_url=' . GETPOST('nb_url') . '&successType=shortener&generated_keyword=' . urlencode($shortener->short_url);
