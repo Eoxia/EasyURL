@@ -73,7 +73,8 @@ window.easyurl.exportshortener.event = function() {
  *
  * @returns {void}
  */
-window.easyurl.exportshortener.generateExport = function(nbUrl) {
+window.easyurl.exportshortener.generateExport = function(nbUrl, successCount) {
+  if (typeof successCount === 'undefined') successCount = nbUrl;
   let token          = window.saturne.toolbox.getToken();
   let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
 
@@ -83,7 +84,13 @@ window.easyurl.exportshortener.generateExport = function(nbUrl) {
     processData: false,
     contentType: false,
     success: function (resp) {
-      window.saturne.notice.showNotice('notice-infos', 'Success', 'YouGenerated ' + nbUrl + ' UrlWithSuccess', 'success');
+      if (successCount == nbUrl) {
+          window.saturne.notice.showNotice('notice-infos', 'Success', 'Vous avez généré ' + successCount + ' / ' + nbUrl + ' URL(s) avec succès.', 'success');
+      } else if (successCount > 0) {
+          window.saturne.notice.showNotice('notice-infos', 'Warning', 'Génération terminée avec des erreurs : ' + successCount + ' / ' + nbUrl + ' URL(s) générées.', 'warning');
+      } else {
+          window.saturne.notice.showNotice('notice-infos', 'Error', 'Échec total : 0 / ' + nbUrl + ' URL(s) générées.', 'error');
+      }
       window.saturne.loader.remove($('#generate-url-from .button-save'));
       $('#shortener-export-table').replaceWith($(resp).find('#shortener-export-table'));
     },

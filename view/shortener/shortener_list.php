@@ -157,6 +157,18 @@ if ($reshook < 0) {
 }
 
 if (empty($reshook)) {
+    if (GETPOST('action', 'aZ09') == 'set_label' && GETPOST('id', 'int') > 0) {
+        $object->fetch(GETPOST('id', 'int'));
+        $object->label = GETPOST('label', 'restricthtml');
+        $res = $object->update($user, true);
+        if ($res > 0) {
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['success' => false, 'error' => $object->error]);
+        }
+        exit;
+    }
+
     if (GETPOST('cancel', 'alpha')) {
         $action = 'list';
         $massaction = '';
@@ -618,6 +630,10 @@ while ($i < $imaxinloop) {
                     }
                 } elseif ($key == 'rowid') {
                     print $object->showOutputField($val, $key, $object->id);
+                } elseif ($key == 'label') {
+                    print '<div class="easyurl-inline-edit" data-id="' . $object->id . '" title="' . dol_escape_htmltag($langs->trans('ClickToEdit') != 'ClickToEdit' ? $langs->trans('ClickToEdit') : 'Cliquez pour modifier') . '" style="cursor: pointer; padding: 2px 4px; border: 1px solid transparent; border-radius: 3px; min-height: 20px;">';
+                    print $object->showOutputField($val, $key, $object->$key);
+                    print '</div>';
                 } else {
                     print $object->showOutputField($val, $key, $object->$key);
                 }
@@ -689,6 +705,64 @@ print $hookmanager->resPrint;
 print '</table>';
 print '</div>';
 print '</form>';
+
+?>
+<script>
+$(document).ready(function() {
+    $('.easyurl-inline-edit').on('click', function(e) {
+        if ($(this).find('input').length > 0) return;
+        let container = $(this);
+        let id = container.data('id');
+        let currentVal = container.text().trim();
+        let input = $('<input type="text" class="flat" style="width:100%; min-width: 150px; padding: 2px;" value="">').val(currentVal);
+        container.html(input);
+        input.focus();
+
+        input.on('blur', function() {
+            let newVal = $(this).val().trim();
+            if (newVal !== currentVal) {
+                container.html('<span class="fa fa-spinner fa-spin"></span>');
+                $.post('<?php echo $_SERVER['PHP_SELF']; ?>', {
+                    action: 'set_label',
+                    id: id,
+                    label: newVal,
+                    token: '<?php echo newToken(); ?>'
+                }).done(function(response) {
+                    try {
+                        let res = typeof response === 'string' ? JSON.parse(response) : response;
+                        if(res.success) {
+                            container.text(newVal);
+                            $.jnotify('<?php echo dol_escape_js($langs->trans('RecordSaved') != 'RecordSaved' ? $langs->trans('RecordSaved') : 'Enregistrement sauvegardé'); ?>', 'success');
+                        } else {
+                            container.text(currentVal);
+                            $.jnotify(res.error || 'Error', 'error');
+                        }
+                    } catch(err) {
+                        container.text(currentVal);
+                        $.jnotify('Error parsing response', 'error');
+                    }
+                }).fail(function() {
+                    container.text(currentVal);
+                    $.jnotify('Request failed', 'error');
+                });
+            } else {
+                container.text(currentVal);
+            }
+        });
+        input.on('keypress', function(e) {
+            if(e.which == 13) { e.preventDefault(); $(this).blur(); }
+        });
+        input.on('click', function(e) { e.stopPropagation(); });
+    });
+    
+    $('.easyurl-inline-edit').hover(function() {
+        if($(this).find('input').length === 0) $(this).css('border-color', '#aaa');
+    }, function() {
+        $(this).css('border-color', 'transparent');
+    });
+});
+</script>
+<?php
 
 // End of page
 llxFooter();

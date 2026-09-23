@@ -56,12 +56,13 @@ function init_easy_url_curl(array $curlPostFields, string $urlMethod = 'yourls')
 /**
  * Set easy url link
  *
- * @param  CommonObject $object    Object
- * @param  string       $urlType   Url type
- * @param  string       $urlMethod Url method
- * @return int|object   $data      Data error after curl
+ * @param  CommonObject $object       Object
+ * @param  string       $urlType      Url type
+ * @param  string       $urlMethod    Url method
+ * @param  string       $errorMessage Error detail, filled when the call fails (transport or API)
+ * @return int                        1 on success, 0 if nothing attempted (method not configured), < 0 on error
  */
-function set_easy_url_link(CommonObject $object, string $urlType, string $urlMethod = 'yourls')
+function set_easy_url_link(CommonObject $object, string $urlType, string $urlMethod = 'yourls', string &$errorMessage = '')
 {
     global $conf, $langs, $user;
 
@@ -107,24 +108,44 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
                 break;
         }
 
-        $title = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        if (property_exists($object, 'custom_easyurl_keyword') && !empty($object->custom_easyurl_keyword)) {
+            $keyword = dol_sanitizeFileName($object->custom_easyurl_keyword);
+        } else {
+            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+        }
+        
+        if (property_exists($object, 'custom_easyurl_title') && !empty($object->custom_easyurl_title)) {
+            $title = $object->custom_easyurl_title;
+        } else {
+            $title = $keyword;
+        }
 
         $curlPostFields = [
             'action'  => 'shorturl',
             'title'   => $title,
-            'keyword' => $title,
+            'keyword' => $keyword,
             'url'     => $onlineUrl
         ];
         $ch = init_easy_url_curl($curlPostFields, $urlMethod);
 
         // Fetch and return content
-        $data = curl_exec($ch);
+        $rawData = curl_exec($ch);
+        $errno   = curl_errno($ch);
+        $error   = curl_error($ch);
         curl_close($ch);
 
-        // Do something with the result
-        $data = json_decode($data);
+        // Transport failure (network, DNS, timeout, ...): curl_exec() returns false. Must NOT be treated as a success
+        if ($rawData === false || $errno) {
+            $errorMessage = $error;
+            dol_syslog('set_easy_url_link: cURL transport error (errno=' . $errno . ', error=' . $error . ')', LOG_ERR);
+            setEventMessages($langs->trans('SetEasyURLErrors'), [$errorMessage], 'errors');
+            return -1;
+        }
 
-        if ($data != null && $data->status == 'success') {
+        // Do something with the result
+        $data = json_decode($rawData);
+
+        if (is_object($data) && isset($data->status) && $data->status == 'success') {
             if ($urlType != 'none') {
                 $object->array_options['options_easy_url_' . $urlType . '_link'] = $data->shorturl;
                 $object->updateExtraField('easy_url_' . $urlType . '_link');
@@ -149,11 +170,18 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
                 imagepng($imageData, $file);
             }
             return 1;
-        } else {
-            setEventMessages($langs->trans('SetEasyURLErrors'), [$data->message], 'errors');
-            return $data;
         }
+
+        // Logical error returned by the shortener API (auth refused, invalid/duplicate keyword, ...)
+        $errorMessage = (is_object($data) && isset($data->message)) ? $data->message : $rawData;
+        dol_syslog('set_easy_url_link: shortener API returned an error: ' . $errorMessage, LOG_ERR);
+        setEventMessages($langs->trans('SetEasyURLErrors'), [$errorMessage], 'errors');
+
+        return -1;
     }
+
+    // Nothing attempted: the required configuration for this method/type is missing
+    return 0;
 }
 
 /**
@@ -203,10 +231,36 @@ function update_easy_url_link(CommonObject $object): int
     $ch = init_easy_url_curl($curlPostFields);
 
     // Fetch and return content
-    $data = curl_exec($ch);
+    $data    = curl_exec($ch);
+    $curlErr = curl_error($ch);
     curl_close($ch);
 
     // Do something with the result
     $data = json_decode($data);
-    return $data->statusCode == 200 ? 1 : 0;
+    if (is_object($data) && $data->statusCode == 200) {
+        return 1;
+    }
+
+    // Propagate the real error to the caller so it can be displayed to the user
+    $statusCode = (is_object($data) && isset($data->statusCode)) ? $data->statusCode : '';
+    $apiMessage = '';
+    if (is_object($data)) {
+        foreach ((array) $data as $key => $value) {
+            if (trim($key) === 'simple' && dol_strlen($value) > 0) { // YOURLS renvoie une clé "simple " (avec un espace) contenant le message lisible
+                $apiMessage = $value;
+                break;
+            }
+        }
+        if (empty($apiMessage) && !empty($data->message)) {
+            $apiMessage = $data->message;
+        }
+    }
+    if (empty($apiMessage)) {
+        $apiMessage = (dol_strlen($curlErr) > 0 ? $curlErr : 'No response from URL shortener API');
+    }
+
+    $object->error    = (dol_strlen($statusCode) > 0 ? '[' . $statusCode . '] ' : '') . $apiMessage;
+    $object->errors[] = $object->error;
+
+    return 0;
 }

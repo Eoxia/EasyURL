@@ -75,7 +75,7 @@ class ActionsEasyurl
         if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
             $resourcesRequired = [
                 'css' => '/custom/easyurl/css/easyurl.min.css',
-                'js'  => '/custom/easyurl/js/easyurl.min.js'
+                'js'  => '/custom/easyurl/js/easyurl.min.js?v=2'
             ];
 
 
@@ -113,13 +113,15 @@ class ActionsEasyurl
                 foreach ($urlTypes as $urlType) {
                     $shortenerData = get_easy_url_link($object, $urlType);
                     $jQueryElement = '.' . $object->element . '_extras_easy_url_' . $urlType . '_link';
-                    if ($shortenerData->statusCode != 200 && getDolGlobalInt('EASYURL_MANUAL_GENERATION')) {
+                    $statusCode = (is_object($shortenerData) && isset($shortenerData->statusCode)) ? $shortenerData->statusCode : -1;
+
+                    if ($statusCode != 200 && getDolGlobalInt('EASYURL_MANUAL_GENERATION')) {
                         $output  = $picto;
                         $output .= '<a class="reposition editfielda" href="' . $_SERVER['PHP_SELF'] . '?id=' . $object->id . '&action=set_easy_url&url_type=' . $urlType . '&token=' . newToken() . '">';
                         $output .= img_picto($langs->trans('SetEasyURLLink'), 'fontawesome_fa-redo_fas_#444', 'class="paddingright pictofixedwidth valignmiddle"') . '</a>';
                         $output .= '</span>' . img_picto($langs->trans('GetEasyURLErrors'), 'fontawesome_fa-exclamation-triangle_fas_#bc9526') . '</span>';
                     }
-                    if (!empty($object->array_options['options_easy_url_' . $urlType . '_link']) && $shortenerData->statusCode == 200) {
+                    if (!empty($object->array_options['options_easy_url_' . $urlType . '_link']) && $statusCode == 200) {
                         $output = showValueWithClipboardCPButton($object->array_options['options_easy_url_' . $urlType . '_link'], 0, 'none');
                     } ?>
                     <script>
@@ -136,12 +138,12 @@ class ActionsEasyurl
         $objectsMetadata = saturne_get_objects_metadata();
         if (!empty($objectsMetadata)) {
             foreach ($objectsMetadata as $objectMetadata) {
-                if ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element) {
+                if (is_object($object) && ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element)) {
                     if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
 
                         $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
                         print '<script src="' . $jsPath . '" ></script>';
-                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1);
+                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1) . '?v=2';
                         print '<script src="' . $jsPath . '" ></script>';
 
                         require_once __DIR__ . '/shortener.class.php';
@@ -254,7 +256,7 @@ class ActionsEasyurl
 
                         setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($parameters['linkableElement']['langs']), $parameters['linkedObject']->{$parameters['linkableElement']['name_field']}), []);
                     } else {
-                        setEventMessages('AssignQRCodeErrors', [], 'errors');
+                        setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
                     }
                 } else {
                     setEventMessages('AssignQRCodeErrors', [], 'errors');
@@ -293,7 +295,8 @@ class ActionsEasyurl
             $langs->load('easyurl@easyurl');
 
             $out  = '<div class="tab switch-public-control-view' . ($parameters['route'] == 'assignQRCode' ? ' tab-active' : '') . '" data-route="assignQRCode">';
-            $out .= $langs->transnoentities('AssignQRCode');
+            $out .= '<i class="fas fa-qrcode"></i>';
+            $out .= '<span>' . $langs->transnoentities('AssignQRCode') . '</span>';
             $out .= '</div>';
             $parameters['routes']['assignQRCode'] = '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
             $parameters['externals'][]            = 'assignQRCode';
