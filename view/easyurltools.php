@@ -332,10 +332,21 @@ print '</table>';
 
 $logFile = $conf->easyurl->multidir_output[$conf->entity] . '/logs/generation_errors.log';
 $consoleInitialContent = '';
+
+// La console affiche un selecteur de nombre de lignes et un compteur de KO, mais leurs
+// variables n etaient jamais definies : le nombre de lignes restait fige a 200 et le
+// compteur lisait une variable absente
+$historyLines = GETPOSTINT('history_lines');
+if (!in_array($historyLines, [50, 200, 500], true)) {
+    $historyLines = 200;
+}
+$historyKoCount = 0;
+
 if (file_exists($logFile)) {
     $lines = file($logFile);
-    $lines = array_slice($lines, -200); // Keep last 200 lines
+    $lines = array_slice($lines, -$historyLines);
     foreach ($lines as $line) {
+        $historyKoCount++;
         if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (.*)$/', trim($line), $matches)) {
             $time = substr($matches[1], 11);
             $msg = $matches[2];
