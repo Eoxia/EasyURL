@@ -356,7 +356,7 @@ class Shortener extends SaturneObject
         global $user, $langs;
 
         $confName        = strtoupper($this->module) . '_DASHBOARD_CONFIG';
-        $dashboardConfig = json_decode($user->conf->$confName);
+        $dashboardConfig = json_decode($user->conf->$confName ?? '');
         $array = ['graphs' => [], 'disabledGraphs' => []];
 
         if (empty($dashboardConfig->graphs->ShortenerRepartitionStatus->hide)) {
@@ -462,15 +462,26 @@ class Shortener extends SaturneObject
         if (is_array($shorteners) && !empty($shorteners)) {
             foreach ($shorteners as $shortener) {
                 if (empty($shortener->element_type)) {
-                    $arrayNbShortenerByElementType['NoLinkedElement']++;
+                    $arrayNbShortenerByElementType['NoLinkedElement'] = ($arrayNbShortenerByElementType['NoLinkedElement'] ?? 0) + 1;
                 } else {
-                    $arrayNbShortenerByElementType[$shortener->element_type]++;
+                    $arrayNbShortenerByElementType[$shortener->element_type] = ($arrayNbShortenerByElementType[$shortener->element_type] ?? 0) + 1;
                 }
                 ksort($arrayNbShortenerByElementType);
             }
         }
 
         $array['data'] = $arrayNbShortenerByElementType;
+
+        // Un type d element sans metadonnee - module desactive, type disparu - n avait pas de
+        // libelle, donc pas de couleur : le graphe recevait plus de series que de couleurs et
+        // le coeur lisait un index absent. Lui donner un libelle de repli garde la donnee
+        // visible et reappaire les deux tableaux.
+        foreach ($array['data'] as $key => $value) {
+            if (!array_key_exists($key, $array['labels'])) {
+                $array['labels'][$key] = ['label' => $key, 'color' => '#cccccc'];
+            }
+        }
+        ksort($array['labels']);
 
         foreach ($array['labels'] as $key => $label) {
             if (!array_key_exists($key, $array['data'])) {
