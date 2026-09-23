@@ -67,24 +67,79 @@ if ($action == 'generate_url' && $permissionToAdd) {
         $urlMethode    = $data['url_methode'];
         $originalUrl   = $data['original_url'];
         $urlParameters = $data['url_parameters'];
+        $urlTitle      = isset($data['url_title']) ? $data['url_title'] : '';
 
         if (dol_strlen($originalUrl) > 0 || dol_strlen(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) > 0) {
             $shortener->ref = $shortener->getNextNumRef();
             if (dol_strlen($originalUrl) > 0) {
-                $shortener->original_url = $originalUrl . $urlParameters;
+                $shortener->original_url = $originalUrl;
             } else {
-                $shortener->original_url = getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') . $urlParameters;
+                $shortener->original_url = getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL');
             }
+
+            if (!empty($urlParameters)) {
+                $customKeyword = $urlParameters;
+                $customKeyword = str_ireplace(
+                    ['{AAAAMMJJ}', '{AAMMJJ}', '{AMMJJ}', '{AAAAMM}', '{AAMM}'],
+                    [date('Ymd'), date('ymd'), date('ymd'), date('Ym'), date('ym')],
+                    $customKeyword
+                );
+                
+                $currentIndex = GETPOSTINT('nb_url');
+                if (preg_match('/\{(\d+)\}/', $customKeyword, $matches)) {
+                    $originalMatch = $matches[0];
+                    $digitsStr = $matches[1];
+                    $padLength = strlen($digitsStr);
+                    $startValue = (int)$digitsStr;
+                    $newValue = str_pad((string)($startValue + $currentIndex - 1), $padLength, '0', STR_PAD_LEFT);
+                    $customKeyword = str_replace($originalMatch, $newValue, $customKeyword);
+                }
+                
+                $shortener->custom_easyurl_keyword = dol_strtolower($customKeyword);
+            }
+            if (!empty($urlTitle)) {
+                $customTitle = $urlTitle;
+                $customTitle = str_ireplace(
+                    ['{AAAAMMJJ}', '{AAMMJJ}', '{AMMJJ}', '{AAAAMM}', '{AAMM}'],
+                    [date('Ymd'), date('ymd'), date('ymd'), date('Ym'), date('ym')],
+                    $customTitle
+                );
+                
+                $currentIndex = GETPOSTINT('nb_url');
+                if (preg_match('/\{(\d+)\}/', $customTitle, $matches)) {
+                    $originalMatch = $matches[0];
+                    $digitsStr = $matches[1];
+                    $padLength = strlen($digitsStr);
+                    $startValue = (int)$digitsStr;
+                    $newValue = str_pad((string)($startValue + $currentIndex - 1), $padLength, '0', STR_PAD_LEFT);
+                    $customTitle = str_replace($originalMatch, $newValue, $customTitle);
+                }
+                
+                $shortener->custom_easyurl_title = $customTitle;
+            }
+            
             $shortener->methode = $urlMethode;
 
             $shortener->create($user);
 
             // UrlType : none because we want mass generation url (all can be use but need to change this code)
-            $result = set_easy_url_link($shortener, 'none', $urlMethode);
-            if (!empty($result) && is_object($result)) {
-                $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
+            $errorMessage = '';
+            $result       = set_easy_url_link($shortener, 'none', $urlMethode, $errorMessage);
+            // 1 on success only: 0 (nothing attempted) and < 0 (transport or API error) both mean no url was created
+            if ($result <= 0) {
+                if (!dol_strlen($errorMessage)) {
+                    $errorMessage = $langs->trans('SetEasyURLErrors');
+                }
+                $logDir = $conf->easyurl->multidir_output[$conf->entity] . '/logs';
+                if (!is_dir($logDir)) { dol_mkdir($logDir); }
+                $logFile = $logDir . '/generation_errors.log';
+                $logContent = date('Y-m-d H:i:s') . " - URL " . GETPOSTINT('nb_url') . " - " . $errorMessage . "\n";
+                file_put_contents($logFile, $logContent, FILE_APPEND);
+
+                $errMsg = urlencode($errorMessage);
+                $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener&error_msg=' . $errMsg . '&failed_keyword=' . urlencode($shortener->custom_easyurl_keyword);
             } else {
-                $urlParametersOut .= '?success=true&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
+                $urlParametersOut .= '?success=true&nb_url=' . GETPOST('nb_url') . '&successType=shortener&generated_keyword=' . urlencode($shortener->short_url);
             }
         } else {
             $urlParametersOut .= '?success=false&nb_url=' . GETPOST('nb_url') . '&successType=shortener';
@@ -168,6 +223,18 @@ print '<input type="hidden" name="action" value="generate_url">';
 if (GETPOSTISSET('success')) {
     print '<input type="hidden" name="success" value="' . GETPOST('success') . '">';
 }
+if (GETPOSTISSET('error_msg')) {
+    print '<input type="hidden" name="error_msg" value="' . dol_escape_htmltag(urldecode(GETPOST('error_msg'))) . '">';
+}
+if (GETPOSTISSET('failed_keyword')) {
+    print '<input type="hidden" name="failed_keyword" value="' . dol_escape_htmltag(urldecode(GETPOST('failed_keyword'))) . '">';
+}
+if (GETPOSTISSET('generated_keyword')) {
+    print '<input type="hidden" name="generated_keyword" value="' . dol_escape_htmltag(urldecode(GETPOST('generated_keyword'))) . '">';
+}
+
+$displayAstuce = GETPOSTISSET('error_msg') ? 'block' : 'none';
+print '<div class="wpeo-notice notice-warning" style="display: ' . $displayAstuce . '; margin-bottom: 15px;"><div class="notice-content"><div class="notice-title"><strong>Astuce YOURLS</strong></div><div class="notice-desc">Si vous générez plusieurs liens vers la même URL d\'origine, YOURLS bloquera la création (Erreur "URL already exists"). Pour autoriser les doublons, vous devez définir <code>define(\'YOURLS_UNIQUE_URLS\', false);</code> dans le fichier <code>user/config.php</code> de votre serveur YOURLS.</div></div></div>';
 
 print '<table class="noborder centpercent">';
 print '<tr class="liste_titre">';
@@ -195,6 +262,11 @@ print '<td>' .  $langs->trans('OriginalUrlDescription') . (getDolGlobalString('E
 print '<td><input class="minwidth300" type="text" name="original_url" value="' . getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL') . '"></td>';
 print '</tr>';
 
+print '<tr class="oddeven"><td><label for="url_title">' . $langs->trans('EasyUrlTitle') . '</label></td>';
+print '<td>' . $langs->trans('EasyUrlTitleDescription') . '</td>';
+print '<td><input class="minwidth300" type="text" name="url_title"></td>';
+print '</tr>';
+
 print '<tr class="oddeven"><td><label for="url_parameters">' . $langs->trans('UrlParameters') . '</label></td>';
 print '<td>' . $langs->trans('UrlParametersDescription') . '</td>';
 print '<td><input class="minwidth300" type="text" name="url_parameters"></td>';
@@ -207,6 +279,9 @@ print '</div>';
 print '</form>';
 
 print load_fiche_titre($langs->trans('GeneratedExport'), '', '');
+
+// Logs button removed (now managed in the console popup)
+
 print '<table class="noborder centpercent" id="shortener-export-table">';
 
 print '<tr class="liste_titre">';
@@ -252,6 +327,74 @@ if (is_array($exportShortenerDocuments) && !empty($exportShortenerDocuments)) {
 } else {
     print '<tr><td colspan="8"><span class="opacitymedium">' . $langs->trans('NoRecordFound') . '</span></td></tr>';
 }
+
+print '</table>';
+
+$logFile = $conf->easyurl->multidir_output[$conf->entity] . '/logs/generation_errors.log';
+$consoleInitialContent = '';
+
+// La console affiche un selecteur de nombre de lignes et un compteur de KO, mais leurs
+// variables n etaient jamais definies : le nombre de lignes restait fige a 200 et le
+// compteur lisait une variable absente
+$historyLines = GETPOSTINT('history_lines');
+if (!in_array($historyLines, [50, 200, 500], true)) {
+    $historyLines = 200;
+}
+$historyKoCount = 0;
+
+if (file_exists($logFile)) {
+    $lines = file($logFile);
+    $lines = array_slice($lines, -$historyLines);
+    foreach ($lines as $line) {
+        $historyKoCount++;
+        if (preg_match('/^(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}) - (.*)$/', trim($line), $matches)) {
+            $time = substr($matches[1], 11);
+            $msg = $matches[2];
+            $consoleInitialContent .= '<div class="eu-log-line"><span class="eu-log-time">' . $time . '</span><span class="eu-log-pfx">&gt;_</span><span class="eu-log-e">[HISTORIQUE KO] ' . dol_escape_htmltag($msg) . '</span></div>';
+        } else {
+            $consoleInitialContent .= '<div class="eu-log-line"><span class="eu-log-pfx">&gt;_</span><span class="eu-log-e">' . dol_escape_htmltag(trim($line)) . '</span></div>';
+        }
+    }
+}
+
+print '<style>
+.eu-console-popup{position:fixed;bottom:0;right:24px;width:660px;max-width:calc(100vw - 48px);background:#0d1117;border:1px solid #30363d;border-bottom:none;border-radius:8px 8px 0 0;font-family:\'Consolas\',\'Courier New\',monospace;z-index:9999;box-shadow:0 -4px 20px rgba(0,0,0,.5);}
+.eu-con-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#161b22;border-bottom:1px solid #30363d;border-radius:8px 8px 0 0;cursor:pointer;user-select:none;}
+.eu-con-title{color:#58a6ff;font-weight:700;font-size:.82em;letter-spacing:.5px;white-space:nowrap;}
+.eu-con-acts{display:flex;gap:10px;align-items:center;font-size:.76em;color:#8b949e;flex-shrink:0;}
+.eu-con-acts button{background:none;border:none;color:#8b949e;cursor:pointer;padding:0;font-family:inherit;font-size:1em;}
+.eu-con-acts button:hover{color:#c9d1d9;}
+.eu-con-sep{color:#30363d;}
+.eu-con-body{height:260px;overflow-y:auto;padding:8px 14px;scroll-behavior:smooth;}
+.eu-log-line{display:flex;gap:8px;margin-bottom:2px;font-size:.76em;line-height:1.5;}
+.eu-log-time{color:#484f58;min-width:56px;flex-shrink:0;}
+.eu-log-pfx{color:#58a6ff;flex-shrink:0;}
+.eu-log-s{color:#3fb950;} .eu-log-e{color:#f85149;} .eu-log-w{color:#d29922;} .eu-log-i{color:#c9d1d9;}
+.hide-ok .eu-log-line:has(.eu-log-s) { display: none !important; }
+.hide-ko .eu-log-line:has(.eu-log-e) { display: none !important; }
+</style>
+<div class="eu-console-popup" id="eu-cp">
+  <div class="eu-con-hd" onclick="jQuery(\'#eu-cb\').toggle();">
+    <span style="display:flex;align-items:center;min-width:0;overflow:hidden;">
+      <span class="eu-con-title">&gt;_ CONSOLE</span>
+    </span>
+    <span class="eu-con-acts" onclick="event.stopPropagation()">
+      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ok\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ok\') ? \'0.4\' : \'1\');" style="color:#3fb950;font-weight:bold;" title="Afficher / Masquer les OK"><span id="eu-count-ok">0</span> OK</button> / 
+      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ko\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ko\') ? \'0.4\' : \'1\');" style="color:#f85149;font-weight:bold;" title="Afficher / Masquer les KO"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</button>
+      <span class="eu-con-sep">|</span>
+      <select onchange="var url=new URL(window.location.href);url.searchParams.set(\'history_lines\', this.value);window.location.href=url.href;" style="background:transparent;color:#8b949e;border:1px solid #30363d;border-radius:4px;padding:0 2px;">
+        <option value="50" ' . ($historyLines==50?'selected':'') . '>50 lignes</option>
+        <option value="200" ' . ($historyLines==200?'selected':'') . '>200 lignes</option>
+        <option value="500" ' . ($historyLines==500?'selected':'') . '>500 lignes</option>
+      </select>
+      <span class="eu-con-sep">|</span>
+      <button onclick="window.open(document.URL.substring(0, document.URL.indexOf(\'/custom/easyurl/\')) + \'/document.php?modulepart=easyurl&file=logs/generation_errors.log\', \'_blank\')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
+      <button onclick="jQuery(\'#eu-cb\').empty(); jQuery(\'#eu-count-ok\').text(\'0\'); jQuery(\'#eu-count-ko\').text(\'0\');">Vider</button><span class="eu-con-sep">|</span>
+      <button onclick="jQuery(\'#eu-cb\').toggle()" title="Ouvrir / Fermer">&#9650;</button>
+    </span>
+  </div>
+  <div class="eu-con-body" id="eu-cb" style="display:none">' . $consoleInitialContent . '</div>
+</div>';
 
 // End of page
 llxFooter();

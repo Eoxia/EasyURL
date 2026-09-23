@@ -77,14 +77,16 @@ GetEasyURLErrors     = Erreur : URL raccourcie non trouvée
 GenerateUrlManagement           = Gestion de la génération des raccourcissements d'URLs
 GeneratedExport                 = Export déjà générés
 NbUrl                           = Nombre d'URL
-NbUrlDescription                = Cette option permet de choisir le nombre d'URL à générer
-OriginalUrl                     = URL cible
-OriginalUrlDescription          = Cette option permet de choisir l'URL d'origine
-OriginalUrlMoreDescription      = <br> (par défaut si aucune URL n'est renseignée alors l'URL par défaut est : <b>%s</b>)
-UrlParameters                   = Paramètre d'URL supplémentaire
-UrlParametersDescription        = Cette option permet d'ajouter des paramètres d'URLs supplémentaires <br> (exemple : un tiret/une valeur)
-UrlMethode                      = Méthode d'API URL
-UrlMethodeDescription           = Cette option permet de choisir la méthode d'API URL utilisée dans le raccourcissement des URLs <br> (deux valeurs possibles : YOURLS ou WordPress)
+NbUrlDescription                = Choisissez le nombre d'URL à générer
+OriginalUrl                     = Long URL
+OriginalUrlDescription          = Lien d'origine à raccourcir
+OriginalUrlMoreDescription      = <br><span style="color: #888; font-size: 0.9em;">URL par défaut : <b>%s</b></span>
+UrlParameters                   = Short URL
+UrlParametersDescription        = Paramètres des URL raccourcies <br><span style="color: #888; font-size: 0.9em;">(ex: {texte}-{AAAAMMJJ}-{0000})</span>
+EasyUrlTitle                    = Titre
+EasyUrlTitleDescription         = Titre de l'URL <br><span style="color: #888; font-size: 0.9em;">(ex: {texte}-{AAAAMMJJ}-{0000})</span>
+UrlMethode                      = Raccourcisseur d'API
+UrlMethodeDescription           = Choisissez votre fournisseur d'URL raccourcies
 GenerateUrlSuccess              = Génération réussie des %d raccourcissements d'URLs
 OriginalUrlFail                 = Erreur(s) possible(s) : <br> - Nombre d'URL est vide <br> - l'URL d'origine est vide <br> - l'URL d'origine par défaut n'as pas été configurée
 DefaultOriginalUrlConfiguration = Vous n'avez pas configuré d'URL d'origine par défaut, veuillez cliquer ici pour vous rendre sur la page de configuration
