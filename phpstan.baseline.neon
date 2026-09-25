@@ -1,0 +1,523 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Parameter \#3 \$value of function curl_setopt expects bool, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: admin/setup.php
+
+		-
+			message: '#^Property Shortener\:\:\$type \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: class/actions_easyurl.class.php
+
+		-
+			message: '#^Variable \$output might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: class/actions_easyurl.class.php
+
+		-
+			message: '#^Method ExportShortenerDocument\:\:generateFile\(\) has no return type specified\.$#'
+			identifier: missingType.return
+			count: 1
+			path: class/exportshortenerdocument.class.php
+
+		-
+			message: '#^PHPDoc type array of property Shortener\:\:\$fields is not covariant with PHPDoc type array\<string, array\{type\: string, label\: string, langfile\?\: string, enabled\: int\<0, 2\>\|string, position\: int, notnull\?\: int, visible\: int\<\-6, 6\>\|string, alwayseditable\?\: int\<0, 1\>\|string, \.\.\.\}\> of overridden property CommonObject\:\:\$fields\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: class/shortener.class.php
+
+		-
+			message: '#^PHPDoc type int of property Shortener\:\:\$isextrafieldmanaged is not covariant with PHPDoc type int\<0, 1\> of overridden property SaturneObject\:\:\$isextrafieldmanaged\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: class/shortener.class.php
+
+		-
+			message: '#^PHPDoc type int of property Shortener\:\:\$ismultientitymanaged is not covariant with PHPDoc type int\<0, 1\>\|string of overridden property SaturneObject\:\:\$ismultientitymanaged\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: class/shortener.class.php
+
+		-
+			message: '#^PHPDoc type int\|string of property Shortener\:\:\$date_creation is not covariant with PHPDoc type ''''\|int\|null of overridden property CommonObject\:\:\$date_creation\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: class/shortener.class.php
+
+		-
+			message: '#^PHPDoc type int\|string of property Shortener\:\:\$tms is not covariant with PHPDoc type int of overridden property CommonObject\:\:\$tms\.$#'
+			identifier: property.phpDocType
+			count: 1
+			path: class/shortener.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$boxes\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$config_page_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$conflictwith\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$const\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$const_name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$cronjobs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$db\.$#'
+			identifier: property.notFound
+			count: 4
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$depends\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$description\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$descriptionlong\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$dictionaries\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$dirs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$editor_url\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$error\.$#'
+			identifier: property.notFound
+			count: 2
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$errors\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_TypeFields_array\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_code\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_enabled\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_entities_array\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_fields_array\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_icon\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_label\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_permission\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_sql_end\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$export_sql_start\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$family\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$familyinfo\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$hidden\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$langfiles\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$menu\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$module_parts\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$module_position\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$need_dolibarr_version\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$phpmin\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$picto\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$requiredby\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$rights\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$rights_class\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$tabs\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$warnings_activation\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Access to an undefined property modEasyURL\:\:\$warnings_activation_ext\.$#'
+			identifier: property.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Call to an undefined method modEasyURL\:\:_init\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Call to an undefined method modEasyURL\:\:_load_tables\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Call to an undefined method modEasyURL\:\:_remove\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#10 \$alwayseditable of method ExtraFields\:\:update\(\) expects int\<0, 1\>, '''' given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#11 \$alwayseditable of method ExtraFields\:\:addExtraField\(\) expects int\<0, 1\>, '''' given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#12 \$list of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#13 \$list of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:addExtraField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#16 \$entity of method ExtraFields\:\:update\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#8 \$pos of method ExtraFields\:\:update\(\) expects int\<0, 1\>, 2000 given\.$#'
+			identifier: argument.type
+			count: 5
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#8 \$pos of method ExtraFields\:\:update\(\) expects int\<0, 1\>, 2100 given\.$#'
+			identifier: argument.type
+			count: 1
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Parameter \#9 \$param of method ExtraFields\:\:update\(\) expects array\<string, mixed\>, string given\.$#'
+			identifier: argument.type
+			count: 6
+			path: core/modules/modEasyURL.class.php
+
+		-
+			message: '#^Call to an undefined method Translate\:\:load\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: core/substitutions/functions_easyurl.lib.php
+
+		-
+			message: '#^Property DolibarrTriggers\:\:\$version \(''''\|''development''\|''dolibarr''\|''experimental''\) does not accept ''23\.1\.0''\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: core/triggers/interface_99_modEasyurl_EasyurlTriggers.class.php
+
+		-
+			message: '#^Access to undefined constant CommonObject\:\:STATUS_VALIDATED\.$#'
+			identifier: classConstant.notFound
+			count: 1
+			path: lib/easyurl_function.lib.php
+
+		-
+			message: '#^Parameter \#3 \$value of function curl_setopt expects bool, int given\.$#'
+			identifier: argument.type
+			count: 2
+			path: lib/easyurl_function.lib.php
+
+		-
+			message: '#^Parameter \#10 \$disabled of static method Form\:\:selectarray\(\) expects int\<0, 1\>, bool given\.$#'
+			identifier: argument.type
+			count: 2
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$db might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$entity might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$langs might not be defined\.$#'
+			identifier: variable.undefined
+			count: 6
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$linkableElementObjects might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$objectId might not be defined\.$#'
+			identifier: variable.undefined
+			count: 2
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$user might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Call to function is_object\(\) with object will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
+			path: public/shortener/public_shortener.php
+
+		-
+			message: '#^Class Productlot referenced with incorrect case\: ProductLot\.$#'
+			identifier: class.nameCase
+			count: 2
+			path: public/shortener/public_shortener.php
+
+		-
+			message: '#^Property Shortener\:\:\$type \(string\|null\) does not accept int\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: public/shortener/public_shortener.php
+
+		-
+			message: '#^Parameter \#5 \$visible of function saturne_show_notice expects bool, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/easyurltools.php
+
+		-
+			message: '#^Parameter \#6 \$closeButton of function saturne_show_notice expects bool, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/easyurltools.php
+
+		-
+			message: '#^Parameter \#2 \$noTrigger of method SaturneObject\:\:update\(\) expects int\<0, 1\>, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/shortener/shortener_card.php
+
+		-
+			message: '#^Property Shortener\:\:\$fk_element \(int\|string\) does not accept null\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: view/shortener/shortener_card.php
+
+		-
+			message: '#^Unreachable statement \- code above always terminates\.$#'
+			identifier: deadCode.unreachable
+			count: 1
+			path: view/shortener/shortener_card.php
+
+		-
+			message: '#^Parameter \#2 \$array of method Form\:\:multiSelectArrayWithCheckbox\(\) expects array\<string, array\{label\: string, checked\?\: string, enabled\?\: string, type\?\: string, langfile\?\: string, position\?\: int, help\?\: string\}\>, array\<non\-falsy\-string, array\{label\: mixed, checked\: 0\|1, enabled\: bool, position\: mixed, help\: mixed\}\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/shortener/shortener_list.php
+
+		-
+			message: '#^Parameter \#2 \$noTrigger of method SaturneObject\:\:update\(\) expects int\<0, 1\>, true given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/shortener/shortener_list.php
+
+		-
+			message: '#^Parameter \#3 \$value of method CommonObject\:\:showOutputField\(\) expects string, int given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/shortener/shortener_list.php
+
+		-
+			message: '#^Parameter \#4 \$filter of method FormAdmin\:\:select_language\(\) expects array\<string\>, null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: view/shortener/shortener_list.php
+
+		-
+			message: '#^Right side of \|\| is always true\.$#'
+			identifier: booleanOr.rightAlwaysTrue
+			count: 1
+			path: view/shortener/shortener_list.php
