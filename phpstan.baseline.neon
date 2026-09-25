@@ -391,12 +391,6 @@ parameters:
 			path: core/substitutions/functions_easyurl.lib.php
 
 		-
-			message: '#^Property DolibarrTriggers\:\:\$version \(''''\|''development''\|''dolibarr''\|''experimental''\) does not accept ''23\.1\.0''\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: core/triggers/interface_99_modEasyurl_EasyurlTriggers.class.php
-
-		-
 			message: '#^Access to undefined constant CommonObject\:\:STATUS_VALIDATED\.$#'
 			identifier: classConstant.notFound
 			count: 1

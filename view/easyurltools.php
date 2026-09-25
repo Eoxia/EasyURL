@@ -158,7 +158,7 @@ if ($action == 'generate_export' && $permissionToAdd) {
 
     $exportShortenerDocument->create($user);
 
-    $nbUrl      = GETPOST('nb_url');
+    $nbUrl      = GETPOSTINT('nb_url');
     $shorteners = $shortener->fetchAll('DESC', 'rowid', $nbUrl);
     if (is_array($shorteners) && !empty($shorteners)) {
         $data = [
