@@ -250,39 +250,3 @@ parameters:
 			identifier: assign.propertyType
 			count: 1
 			path: core/modules/modEasyURL.class.php
-
-		-
-			message: '#^Parameter \#3 \$limit of method SaturneObject\:\:fetchAll\(\) expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: view/easyurltools.php
-
-		-
-			message: '#^Binary operation "\-" between string and 1 results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 1
-			path: view/shortener/shortener_list.php
-
-		-
-			message: '#^Parameter \#1 \$id of method SaturneObject\:\:fetch\(\) expects int, string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: view/shortener/shortener_list.php
-
-		-
-			message: '#^Parameter \#4 \$month of function dol_mktime expects int, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: view/shortener/shortener_list.php
-
-		-
-			message: '#^Parameter \#5 \$day of function dol_mktime expects int, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: view/shortener/shortener_list.php
-
-		-
-			message: '#^Parameter \#6 \$year of function dol_mktime expects int, string given\.$#'
-			identifier: argument.type
-			count: 2
-			path: view/shortener/shortener_list.php
