@@ -103,6 +103,10 @@ $linkableElement = [];
 if (is_object($linkedObject)) {
     $linkableElements = saturne_get_objects_metadata();
     $linkableElement  = $linkableElements[$linkedObject->element];
+
+    if ($objectId > 0) {
+        $linkedObject->fetch($objectId);
+    }
 }
 
 $permissionToAssign = $user->hasRight('easyurl', 'shortener', 'assign');
@@ -118,6 +122,15 @@ if ($resHook < 0) {
 }
 
 if (empty($resHook)) {
+    // Display of the image of the QR codes instead of their icon, saved for the user
+    if ($action == 'show_qrcode' && !empty($user->id)) {
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        dol_set_user_param($db, $conf, $user, ['EASYURL_SHOW_QRCODE' => $data['showQRCode'] ?? 0]);
+    }
+
     if ($action == 'assign_qrcode' && $permissionToAssign && is_object($linkedObject)) {
         $fkElementID = GETPOSTINT('fk_element');
         $shortenerID = GETPOSTINT('shortenerId');
@@ -144,10 +157,10 @@ if (empty($resHook)) {
 
                 setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($linkableElement['langs']), $linkedObject->{$linkableElement['name_field']}), []);
             } else {
-                setEventMessages('AssignQRCodeErrors', [], 'errors');
+                setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
             }
         } else {
-            setEventMessages('AssignQRCodeErrors', [], 'errors');
+            setEventMessages($langs->transnoentities('AssignQRCodeErrors'), [], 'errors');
         }
 
         header('Location: ' . $_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' .  $trackId . '&' : '?') . 'entity=' . $entity);
@@ -159,14 +172,21 @@ if (empty($resHook)) {
  * View
  */
 
-$title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssignShortener')) . '</a>';
+$title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssignShortener'));
 
 $conf->dol_hide_topmenu  = 1;
 $conf->dol_hide_leftmenu = 1;
 
-saturne_header(1, '', $title,  '', '', 0, 0, [], [], '', 'page-public-card page-public-shortener');
+saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'easyurl-public-page');
 
-require_once __DIR__ . '/../frontend/assign_qrcode_view.tpl.php';
+$publicHeaderTitle = $langs->transnoentities('AssignQRCode');
+require_once __DIR__ . '/../frontend/public_header.tpl.php'; ?>
+
+<div class="easyurl-public-page__container">
+    <div class="easyurl-public-page__sheet">
+        <?php require_once __DIR__ . '/../frontend/assign_qrcode_view.tpl.php'; ?>
+    </div>
+</div><?php
 
 llxFooter('', 'public');
 $db->close();

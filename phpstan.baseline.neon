@@ -121,15 +121,15 @@ parameters:
 			path: lib/easyurl_function.lib.php
 
 		-
-			message: '#^Parameter \#10 \$disabled of static method Form\:\:selectarray\(\) expects int\<0, 1\>, bool given\.$#'
-			identifier: argument.type
-			count: 2
+			message: '#^Variable \$conf might not be defined\.$#'
+			identifier: variable.undefined
+			count: 3
 			path: public/frontend/assign_qrcode_view.tpl.php
 
 		-
 			message: '#^Variable \$db might not be defined\.$#'
 			identifier: variable.undefined
-			count: 1
+			count: 3
 			path: public/frontend/assign_qrcode_view.tpl.php
 
 		-
@@ -141,26 +141,32 @@ parameters:
 		-
 			message: '#^Variable \$langs might not be defined\.$#'
 			identifier: variable.undefined
-			count: 6
+			count: 22
 			path: public/frontend/assign_qrcode_view.tpl.php
 
 		-
-			message: '#^Variable \$linkableElementObjects might not be defined\.$#'
+			message: '#^Variable \$linkableElement might not be defined\.$#'
 			identifier: variable.undefined
 			count: 1
 			path: public/frontend/assign_qrcode_view.tpl.php
 
 		-
-			message: '#^Variable \$objectId might not be defined\.$#'
+			message: '#^Variable \$linkedObject might not be defined\.$#'
 			identifier: variable.undefined
-			count: 2
+			count: 1
 			path: public/frontend/assign_qrcode_view.tpl.php
 
 		-
 			message: '#^Variable \$user might not be defined\.$#'
 			identifier: variable.undefined
-			count: 1
+			count: 2
 			path: public/frontend/assign_qrcode_view.tpl.php
+
+		-
+			message: '#^Variable \$publicHeaderTitle might not be defined\.$#'
+			identifier: variable.undefined
+			count: 1
+			path: public/frontend/public_header.tpl.php
 
 		-
 			message: '#^Call to function is_object\(\) with object will always evaluate to true\.$#'

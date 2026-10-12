@@ -1,4 +1,4 @@
-/* Copyright (C) 2025 EVARISK <technique@evarisk.com>
+/* Copyright (C) 2025-2026 EVARISK <technique@evarisk.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,36 +40,14 @@ window.easyurl.publicinterface = {};
  * @memberof EasyURL_PublicInterface
  *
  * @since   1.1.0
- * @version 1.1.0
+ * @version 23.2.0
  *
  * @returns {void}
  */
 window.easyurl.publicinterface.init = function() {
   window.easyurl.publicinterface.event();
 
-  $(document).ready(function() {
-    $('.page-public-shortener #shortener').select2({
-      matcher: function(params, data) {
-        if ($.trim(params.term) === '') {
-          return data;
-        }
-        let term = params.term.replace(/^https?:\/\//, '').split('/').pop().toLowerCase();
-        term = term.replace(/-/g, ' ').replace(/ /g, '');
-
-        let normalizedText = data.text.replace(/-/g, ' ').replace(/ /g, '').toLowerCase();
-
-        if (!term) {
-          return null;
-        }
-
-        if (normalizedText.includes(term)) {
-          return data;
-        }
-
-        return null;
-      }
-    });
-  });
+  $(document).ready(window.easyurl.publicinterface.initAssignForm);
 };
 
 /**
@@ -78,8 +56,109 @@ window.easyurl.publicinterface.init = function() {
  * @memberof EasyURL_PublicInterface
  *
  * @since   1.1.0
- * @version 1.1.0
+ * @version 23.2.0
  *
  * @returns {void}
  */
-window.easyurl.publicinterface.event = function() {};
+window.easyurl.publicinterface.event = function() {
+  $(document).on('change', '.easyurl-assign__form select', window.easyurl.publicinterface.updateAssignButton);
+  $(document).on('click', '.easyurl-assign__unassign', window.easyurl.publicinterface.confirmUnassign);
+};
+
+/**
+ * Init the QR code search of the assign form
+ *
+ * @memberof EasyURL_PublicInterface
+ *
+ * @since   23.2.0
+ * @version 23.2.0
+ *
+ * @returns {void}
+ */
+window.easyurl.publicinterface.initAssignForm = function() {
+  const $form = $('.easyurl-assign__form');
+  if (!$form.length) {
+    return;
+  }
+
+  const $shortenerSelect = $form.find('#shortenerId');
+  if ($shortenerSelect.length && typeof $.fn.select2 !== 'undefined') {
+    $shortenerSelect.select2({
+      width: '100%',
+      // The empty choice of Form::selectarray has the value -1
+      placeholder: { id: '-1', text: $shortenerSelect.find('option[value="-1"]').text() },
+      language: typeof select2arrayoflanguage !== 'undefined' ? select2arrayoflanguage : undefined,
+      matcher: window.easyurl.publicinterface.matchQRCode
+    });
+  }
+
+  window.easyurl.publicinterface.updateAssignButton();
+};
+
+/**
+ * Find a QR code from its number or from the URL read on its label
+ *
+ * @memberof EasyURL_PublicInterface
+ *
+ * @since   23.2.0
+ * @version 23.2.0
+ *
+ * @param  {Object}      params Search parameters of select2
+ * @param  {Object}      data   Option to match
+ * @returns {Object|null}       The option when it matches, null otherwise
+ */
+window.easyurl.publicinterface.matchQRCode = function(params, data) {
+  if ($.trim(params.term) === '') {
+    return data;
+  }
+
+  // Of a pasted URL only its last part is the number of the QR code
+  const term = params.term.replace(/^https?:\/\//, '').split('/').pop().toLowerCase().replace(/[-\s]/g, '');
+  if (!term) {
+    return null;
+  }
+
+  const normalizedText = data.text.toLowerCase().replace(/[-\s]/g, '');
+
+  return normalizedText.includes(term) ? data : null;
+};
+
+/**
+ * Enable the assign button once every choice of the form is made
+ *
+ * @memberof EasyURL_PublicInterface
+ *
+ * @since   23.2.0
+ * @version 23.2.0
+ *
+ * @returns {void}
+ */
+window.easyurl.publicinterface.updateAssignButton = function() {
+  const $form = $('.easyurl-assign__form');
+
+  let isComplete = true;
+  $form.find('select').each(function() {
+    if (!(parseInt($(this).val()) > 0)) {
+      isComplete = false;
+    }
+  });
+
+  $form.find('.easyurl-assign__submit').prop('disabled', !isComplete);
+};
+
+/**
+ * Ask a confirmation before unassigning a QR code
+ *
+ * @memberof EasyURL_PublicInterface
+ *
+ * @since   23.2.0
+ * @version 23.2.0
+ *
+ * @param  {Event} event Click event
+ * @returns {void}
+ */
+window.easyurl.publicinterface.confirmUnassign = function(event) {
+  if (!window.confirm($(this).data('confirm'))) {
+    event.preventDefault();
+  }
+};
