@@ -133,7 +133,7 @@ class ActionsEasyurl
             }
         }
 
-        require_once __DIR__ . '/../../saturne/lib/object.lib.php';
+        dol_include_once('/saturne/lib/object.lib.php');
 
         $objectsMetadata = saturne_get_objects_metadata();
         if (!empty($objectsMetadata)) {
@@ -200,7 +200,7 @@ class ActionsEasyurl
             }
         }
 
-        require_once __DIR__ . '/../../saturne/lib/object.lib.php';
+        dol_include_once('/saturne/lib/object.lib.php');
 
         $objectsMetadata = saturne_get_objects_metadata();
         if (!empty($objectsMetadata)) {
