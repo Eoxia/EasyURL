@@ -93,7 +93,7 @@ window.easyurl.shortener.toggleObjectInfo = function () {
  * @memberof EasyURL_Shortener
  *
  * @since   1.1.0
- * @version 1.1.0
+ * @version 23.2.0
  *
  * @return {void}
  */
@@ -101,8 +101,9 @@ window.easyurl.shortener.showQRCode = function() {
   let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
   let token          = window.saturne.toolbox.getToken();
 
+  // The public pages put the class on a wrapper of the switch and its label
   let showQRCode;
-  if ($(this).hasClass('fa-toggle-off')) {
+  if ($(this).hasClass('fa-toggle-off') || $(this).find('.fa-toggle-off').length > 0) {
     showQRCode = 1;
   } else {
     showQRCode = 0;
