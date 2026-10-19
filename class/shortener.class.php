@@ -56,7 +56,7 @@ class Shortener extends SaturneObject
     public $isextrafieldmanaged = 0;
 
     /**
-     * @var int Does object support category module ? 0 = No, 1 = Yes
+     * @var int<0,1> Does object support category module ? 0 = No, 1 = Yes
      */
     public int $isCategoryManaged = 0;
 
