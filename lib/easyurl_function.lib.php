@@ -46,8 +46,6 @@ function init_easy_url_curl(array $curlPostFields, string $urlMethod = 'yourls')
             $curlPostFields = array_merge($curlPostFields, $defaultCurlPostFields);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPostFields);
             break;
-        case 'wordpress' :
-            break;
     }
 
     return $ch;

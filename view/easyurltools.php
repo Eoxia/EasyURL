@@ -243,7 +243,7 @@ print '<td>' . $langs->trans('Description') . '</td>';
 print '<td>' . $langs->trans('Value') . '</td>';
 print '</tr>';
 
-$urlMethode = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne'), 'wordpress' => 'WordPress'];
+$urlMethode = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne')];
 print '<tr class="oddeven"><td>';
 print $langs->trans('UrlMethode');
 print '</td><td>';
