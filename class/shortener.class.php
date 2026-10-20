@@ -56,6 +56,11 @@ class Shortener extends SaturneObject
     public $isextrafieldmanaged = 0;
 
     /**
+     * @var int<0,1> Does object support category module ? 0 = No, 1 = Yes
+     */
+    public int $isCategoryManaged = 0;
+
+    /**
      * @var string Name of icon for shortener. Must be a 'fa-xxx' fontawesome code (or 'fa-xxx_fa_color_size') or 'shortener@easyurl' if picto is file 'img/object_shortener.png'
      */
     public string $picto = 'fontawesome_fa-link_fas_#63ACC9';
