@@ -35,6 +35,7 @@ require_once DOL_DOCUMENT_ROOT . '/core/lib/admin.lib.php';
 
 // Load EasyURL libraries
 require_once __DIR__ . '/../lib/easyurl.lib.php';
+require_once __DIR__ . '/../lib/easyurl_function.lib.php';
 
 // Global variables definitions
 global $conf, $db, $langs, $user;
@@ -49,6 +50,9 @@ $backtopage = GETPOST('backtopage', 'alpha');
 // Initialize view objects
 $form = new Form($db);
 
+// Shortening methods : Saturne short URLs need no server, YOURLS needs the API below
+$urlMethods = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne')];
+
 // Security check - Protection if external user
 $permissionToRead = $user->rights->easyurl->adminpage->read;
 saturne_check_access($permissionToRead);
@@ -61,6 +65,11 @@ if ($action == 'set_config') {
     $URLYourlsAPI            = GETPOST('url_yourls_api');
     $signatureTokenYourlsAPI = GETPOST('signature_token_yourls_api');
     $defaultOriginalURL      = GETPOST('default_original_url');
+    $urlMethod               = GETPOST('url_methode', 'aZ09');
+
+    if (array_key_exists($urlMethod, $urlMethods)) {
+        dolibarr_set_const($db, 'EASYURL_URL_METHOD', $urlMethod, 'chaine', 0, '', $conf->entity);
+    }
 
     if (dol_strlen($URLYourlsAPI) > 0) {
         dolibarr_set_const($db, 'EASYURL_URL_YOURLS_API', $URLYourlsAPI, 'chaine', 0, '', $conf->entity);
@@ -129,6 +138,11 @@ print '<tr class="liste_titre">';
 print '<td>' . $langs->trans('Parameters') . '</td>';
 print '<td>' . $langs->trans('Description') . '</td>';
 print '<td>' . $langs->trans('Value') . '</td>';
+print '</tr>';
+
+print '<tr class="oddeven"><td><label for="url_methode">' . $langs->trans('DefaultUrlMethode') . '</label></td>';
+print '<td>' . $langs->trans('DefaultUrlMethodeDescription') . '</td>';
+print '<td>' . $form::selectarray('url_methode', $urlMethods, easy_url_method()) . '</td>';
 print '</tr>';
 
 print '<tr class="oddeven"><td><label for="url_yourls_api">' . $langs->trans('URLYourlsAPI') . '</label></td>';
