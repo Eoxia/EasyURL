@@ -1,0 +1,78 @@
+/* EasyURL modern theme: admin pages. The public interface tab (admin/publicinterface.php) only
+   holds the link to the public assignment page and its copy button: a single card row. */
+
+#{$eu-scope} {
+  .easyurl-public-interface {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+    padding: 14px 18px;
+    @include eu-card;
+
+    > a {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-right: 0;
+      color: $eu-text;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color $eu-transition;
+
+      &:hover {
+        color: $eu-primary-strong;
+      }
+
+      /* External link picto as a tinted tile, like the titles of the theme */
+      .pictofixedwidth {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        margin-right: 0;
+        border-radius: $eu-radius;
+        background: $eu-primary-soft;
+        color: $eu-primary;
+        font-size: 13px;
+        opacity: 1;
+      }
+    }
+
+    /* Copy button pushed to the right, as a small bordered icon button */
+    .clipboardCP {
+      display: inline-flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .clipboardCPButton,
+    .clipboardCPTick {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      box-sizing: border-box;
+      border: 1px solid $eu-border;
+      border-radius: $eu-radius-sm;
+      background: $eu-surface;
+      color: $eu-text-soft;
+      opacity: 1;
+      cursor: pointer;
+      transition: border-color $eu-transition, color $eu-transition;
+
+      &:hover {
+        border-color: $eu-primary;
+        color: $eu-primary;
+      }
+    }
+
+    .clipboardCPTick.hidden {
+      display: none;
+    }
+  }
+}
