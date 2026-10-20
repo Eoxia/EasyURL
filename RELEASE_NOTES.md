@@ -1,37 +1,49 @@
-# [EasyURL] [23.1.1] - Compatibilité déclarée et chaîne qualité
+# [EasyURL] [23.2.0] - Méthode Saturne : des URL courtes sans serveur
 
-Description : Version de maintenance. Elle corrige neuf paramètres de requête lus sans type — filtres de date de la liste, pagination, export de raccourcis — aligne les bornes de compatibilité Dolibarr du module sur la ligne réellement livrée, et place le code sous analyse statique à chaque modification.
+Description : EasyURL raccourcit désormais vos liens sans serveur YOURLS. La nouvelle méthode « Saturne » sert les URL courtes depuis votre propre Dolibarr : rien à installer, aucune clé d'API.
 
-**Cette version demande Saturne 23.2.1 ou supérieur.**
+**Cette version s'utilise avec Saturne 23.5.0**, qui fournit les URL courtes. Avec un Saturne plus ancien, seule la méthode YOURLS est disponible.
+
+## 🎬 La nouveauté en vidéo
+
+[![Des URL courtes sans serveur, en vidéo (31 s)](https://raw.githubusercontent.com/nicolas-eoxia/EasyURL/refs/heads/assets/release-23.2.0/video_poster_23.2.0.jpeg)](https://github.com/Eoxia/EasyURL/releases/download/23.2.0/easyurl-23.2.0.mp4)
+
+*Cliquez sur l'image pour voir la vidéo (31 s).*
+
+## Nouvelles fonctionnalités et innovations
+
+### Méthode de raccourcissement Saturne
+
+* **Des URL courtes sans serveur YOURLS.** La méthode « Saturne (URL courte interne, sans serveur) » s'appuie sur les URL courtes de Saturne : `https://mon-dolibarr.fr/custom/saturne/s/?k7m2xp`, ou plus court encore avec la racine courte de Saturne.
+* **Méthode par défaut réglable.** Dans la configuration, choisissez YOURLS ou Saturne : la méthode s'applique aux liens générés automatiquement (paiement, signature) et est proposée par défaut dans l'outil de génération. Sans réglage, rien ne change : YOURLS reste la méthode par défaut.
+* **Génération en masse.** L'outil de génération crée des lots d'URL courtes Saturne, prêtes à imprimer en QR codes et à affecter plus tard à vos objets.
+* **Le QR imprimé reste valable.** Affecter ou réaffecter un lien Saturne change seulement sa destination : le code, et donc le QR code déjà imprimé, ne bougent pas.
+* **Vos liens YOURLS ne bougent pas.** La méthode d'un lien se déduit de son adresse : les liens déjà créés continuent de passer par YOURLS, même si la configuration passe à Saturne.
+
+![Outil de génération en méthode Saturne](https://raw.githubusercontent.com/nicolas-eoxia/EasyURL/refs/heads/assets/release-23.2.0/tools.png)
+
+![Configuration : méthode de raccourcissement par défaut](https://raw.githubusercontent.com/nicolas-eoxia/EasyURL/refs/heads/assets/release-23.2.0/setup.png)
 
 ## Améliorations & corrections
 
-### Liste et export des raccourcis
+### Raccourcis
 
-* **Neuf paramètres de requête étaient lus sans être convertis en entiers** avant d'être passés à des fonctions du cœur qui en attendent : filtres de date de la liste des raccourcis, numéro de page, identifiant d'enregistrement à l'édition du libellé, et nombre de lignes de l'export. Un paramètre inattendu produisait un résultat silencieusement faux plutôt qu'une erreur.
+* **L'enregistrement d'une fiche de raccourci ne s'arrête plus sur une erreur technique.** Le module cherchait une table de catégories qui n'existe pas pour les raccourcis : chaque enregistrement affichait « Dolibarr a détecté une erreur technique ».
+* **La méthode WordPress est retirée** : proposée dans les listes, elle n'avait jamais été implémentée et ne produisait aucun lien.
 
-### Compatibilité
+### Affectation d'un QR code
 
-* Le module déclare **Dolibarr 23 au minimum et 24 au maximum**. Il annonçait la 16 comme plancher, une ligne qu'il ne sait plus faire fonctionner : **sur un Dolibarr antérieur à la 23, il refusera désormais de s'activer** plutôt que de s'installer pour tomber en erreur ensuite.
+* **Compatible avec les liens signés de DigiQuali 23.2.0** : le lien de l'historique public affecté à un QR code porte la signature de DigiQuali, et la page d'affectation lit les deux formes de lien.
+* **Seuls des objets Dolibarr peuvent être ouverts depuis l'adresse** de la page publique d'affectation.
 
-### Documentation du module
+## Testez les nouveautés maintenant
 
-* Le changelog reprend le nom attendu par Dolibarr, `ChangeLog.md`. Le cœur le lit pour l'injecter dans la documentation générée du module ; sous l'ancien nom, il ne le trouvait pas sur un serveur Linux.
+**Allez tester la méthode Saturne sur la démo : [https://demodoli.digirisk.com/](https://demodoli.digirisk.com/)**
 
-### Intégration continue
+## Comparaison des versions [23.1.1](https://github.com/Eoxia/EasyURL/compare/23.1.1...23.2.0) et 23.2.0
 
-* Les pull requests passent désormais **PHPStan**, un **lint PHP** et un contrôle de **parité des fichiers de langue** français / anglais : une clé ajoutée d'un côté et oubliée de l'autre arrête la chaîne.
-* Les bouchons de test du socle sortent du périmètre analysé : ils masquaient les vraies classes du cœur et rendaient l'analyse plus verte qu'elle ne l'était. Ce sont les neuf erreurs révélées par ce garde-fou qui sont corrigées ci-dessus, plutôt que gelées.
-
-## Comparaison des versions [23.1.0](https://github.com/Eoxia/EasyURL/compare/23.1.0...23.1.1) et 23.1.1
-
-* #165 [Mod] fix: renommer le changelog en ChangeLog.md [`259eeb9`](https://github.com/Eoxia/EasyURL/commit/259eeb9)
-* #162 [CI] rework: élaguer les entrées mortes de la baseline [`2781fa7`](https://github.com/Eoxia/EasyURL/commit/2781fa7)
-* #159 [CI] rework: scanner le socle par dossier plutôt que l'exclure par morceaux [`8724b14`](https://github.com/Eoxia/EasyURL/commit/8724b14)
-* #155 [CI] fix: exclure les bouchons phan de Saturne de l'analyse [`6517eda`](https://github.com/Eoxia/EasyURL/commit/6517eda)
-* #151 [CI] fix: deux garde-fous PHPStan, et les neuf erreurs qu'ils révèlent [`f7f75c5`](https://github.com/Eoxia/EasyURL/commit/f7f75c5)
-* #147 [CI] rework: aligner phpstan.neon sur le gabarit commun [`8ed6f4e`](https://github.com/Eoxia/EasyURL/commit/8ed6f4e)
-* [CI] fix: compléter les dossiers du coeur vus par PHPStan [`b2e8ee8`](https://github.com/Eoxia/EasyURL/commit/b2e8ee8)
-* [CI] rework: aligner phpstan.neon sur le gabarit commun [`74fc172`](https://github.com/Eoxia/EasyURL/commit/74fc172)
-* #145 [CI] feat: PHPStan, lint PHP et parité des langues [`76e1592`](https://github.com/Eoxia/EasyURL/commit/76e1592)
-* #143 [Module] rework: bornes de version Dolibarr 23 minimum, 24 maximum [`f3599a4`](https://github.com/Eoxia/EasyURL/commit/f3599a4)
+* #178 [Shortener] feat: méthode Saturne, URL courtes internes sans serveur YOURLS [`#179`](https://github.com/Eoxia/EasyURL/pull/179)
+* #180 [Shortener] fix: pas de gestion des catégories, la table llx_categorie_shortener n'existe pas [`#181`](https://github.com/Eoxia/EasyURL/pull/181)
+* #182 [Shortener] fix: suivre le déplacement de l'entrée des URL courtes Saturne (public/s → s) [`#183`](https://github.com/Eoxia/EasyURL/pull/183)
+* #184 [PublicShortener] fix: track_id signé de DigiQuali à l'affectation, décodage des deux formes [`#185`](https://github.com/Eoxia/EasyURL/pull/185)
+* #186 [Shortener] fix: retirer la méthode WordPress, jamais implémentée [`#187`](https://github.com/Eoxia/EasyURL/pull/187)
