@@ -67,11 +67,11 @@ function easy_url_method(string $urlMethod = ''): string
 /**
  * Load the Saturne short URL class
  *
- * @return bool True if Saturne provides short URLs (public/s/ entry point), false if it is too old
+ * @return bool True if Saturne provides short URLs (s/ entry point), false if it is too old
  */
 function easy_url_load_saturne(): bool
 {
-    if (!is_file(__DIR__ . '/../../saturne/public/s/index.php')) {
+    if (!is_file(__DIR__ . '/../../saturne/s/index.php')) {
         return false;
     }
 
