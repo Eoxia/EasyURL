@@ -54,7 +54,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
         $this->description = 'EasyURL triggers';
-        $this->version     = '23.1.1';
+        $this->version     = '23.2.0';
         $this->picto       = 'easyurl@easyurl';
     }
 

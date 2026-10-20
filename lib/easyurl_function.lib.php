@@ -46,11 +46,70 @@ function init_easy_url_curl(array $curlPostFields, string $urlMethod = 'yourls')
             $curlPostFields = array_merge($curlPostFields, $defaultCurlPostFields);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $curlPostFields);
             break;
-        case 'wordpress' :
-            break;
     }
 
     return $ch;
+}
+
+/**
+ * Get the url method to use : the one asked, else the one set in the module setup
+ *
+ * @param  string $urlMethod Url method asked, empty for the default one
+ * @return string            Url method (yourls, saturne)
+ */
+function easy_url_method(string $urlMethod = ''): string
+{
+    return dol_strlen($urlMethod) > 0 ? $urlMethod : getDolGlobalString('EASYURL_URL_METHOD', 'yourls');
+}
+
+/**
+ * Load the Saturne short URL class
+ *
+ * @return bool True if Saturne provides short URLs (s/ entry point), false if it is too old
+ */
+function easy_url_load_saturne(): bool
+{
+    if (!is_file(__DIR__ . '/../../saturne/s/index.php')) {
+        return false;
+    }
+
+    require_once __DIR__ . '/../../saturne/class/saturneredirection.class.php';
+
+    return true;
+}
+
+/**
+ * Shorten an url with the Saturne short URL, answer shaped as the YOURLS API one
+ *
+ * @param  string   $url     Original url
+ * @param  string   $keyword Wanted code, a random one is used when empty, invalid or already used
+ * @return stdClass          {status: success, shorturl} or {status: fail, message}
+ * @throws Exception
+ */
+function easy_url_saturne_shorten(string $url, string $keyword = ''): stdClass
+{
+    global $db, $langs, $user;
+
+    $saturneRedirection = new SaturneRedirection($db);
+
+    $shortUrl = '';
+    if (dol_strlen($keyword) > 0) {
+        $shortUrl = $saturneRedirection->createShortUrl($url, $user, $keyword);
+    }
+    if ($shortUrl === '') {
+        $shortUrl = $saturneRedirection->createShortUrl($url, $user);
+    }
+
+    $data = new stdClass();
+    if ($shortUrl === '') {
+        $data->status  = 'fail';
+        $data->message = $langs->trans($saturneRedirection->error ?: 'Error');
+    } else {
+        $data->status   = 'success';
+        $data->shorturl = $shortUrl;
+    }
+
+    return $data;
 }
 
 /**
@@ -58,16 +117,21 @@ function init_easy_url_curl(array $curlPostFields, string $urlMethod = 'yourls')
  *
  * @param  CommonObject $object       Object
  * @param  string       $urlType      Url type
- * @param  string       $urlMethod    Url method
+ * @param  string       $urlMethod    Url method, empty for the one set in the module setup
  * @param  string       $errorMessage Error detail, filled when the call fails (transport or API)
  * @return int                        1 on success, 0 if nothing attempted (method not configured), < 0 on error
  */
-function set_easy_url_link(CommonObject $object, string $urlType, string $urlMethod = 'yourls', string &$errorMessage = '')
+function set_easy_url_link(CommonObject $object, string $urlType, string $urlMethod = '', string &$errorMessage = '')
 {
     global $conf, $langs, $user;
 
+    $urlMethod        = easy_url_method($urlMethod);
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
-    $checkConf        = getDolGlobalString('EASYURL_URL_' . dol_strtoupper($urlMethod) . '_API') && getDolGlobalString('EASYURL_SIGNATURE_TOKEN_' . dol_strtoupper($urlMethod) . '_API');
+    if ($urlMethod == 'saturne') {
+        $checkConf = easy_url_load_saturne();
+    } else {
+        $checkConf = getDolGlobalString('EASYURL_URL_' . dol_strtoupper($urlMethod) . '_API') && getDolGlobalString('EASYURL_SIGNATURE_TOKEN_' . dol_strtoupper($urlMethod) . '_API');
+    }
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature' || $urlType == 'none') && $checkConf) {
         // Load Dolibarr libraries
         require_once DOL_DOCUMENT_ROOT . '/core/lib/payments.lib.php';
@@ -120,30 +184,40 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
             $title = $keyword;
         }
 
-        $curlPostFields = [
-            'action'  => 'shorturl',
-            'title'   => $title,
-            'keyword' => $keyword,
-            'url'     => $onlineUrl
-        ];
-        $ch = init_easy_url_curl($curlPostFields, $urlMethod);
+        if ($urlMethod == 'saturne') {
+            // Only a keyword chosen by the user becomes the code,
+            // the default one would lengthen the QR code for nothing
+            $hasCustomKeyword = property_exists($object, 'custom_easyurl_keyword') && !empty($object->custom_easyurl_keyword);
+            $customKeyword    = $hasCustomKeyword ? $keyword : '';
 
-        // Fetch and return content
-        $rawData = curl_exec($ch);
-        $errno   = curl_errno($ch);
-        $error   = curl_error($ch);
-        curl_close($ch);
+            $rawData = '';
+            $data    = easy_url_saturne_shorten($onlineUrl, $customKeyword);
+        } else {
+            $curlPostFields = [
+                'action'  => 'shorturl',
+                'title'   => $title,
+                'keyword' => $keyword,
+                'url'     => $onlineUrl
+            ];
+            $ch = init_easy_url_curl($curlPostFields, $urlMethod);
 
-        // Transport failure (network, DNS, timeout, ...): curl_exec() returns false. Must NOT be treated as a success
-        if ($rawData === false || $errno) {
-            $errorMessage = $error;
-            dol_syslog('set_easy_url_link: cURL transport error (errno=' . $errno . ', error=' . $error . ')', LOG_ERR);
-            setEventMessages($langs->trans('SetEasyURLErrors'), [$errorMessage], 'errors');
-            return -1;
+            // Fetch and return content
+            $rawData = curl_exec($ch);
+            $errno   = curl_errno($ch);
+            $error   = curl_error($ch);
+            curl_close($ch);
+
+            // Transport failure (network, DNS, timeout, ...): curl_exec() returns false. Must NOT be treated as a success
+            if ($rawData === false || $errno) {
+                $errorMessage = $error;
+                dol_syslog('set_easy_url_link: cURL transport error (errno=' . $errno . ', error=' . $error . ')', LOG_ERR);
+                setEventMessages($langs->trans('SetEasyURLErrors'), [$errorMessage], 'errors');
+                return -1;
+            }
+
+            // Do something with the result
+            $data = json_decode($rawData);
         }
-
-        // Do something with the result
-        $data = json_decode($rawData);
 
         if (is_object($data) && isset($data->status) && $data->status == 'success') {
             if ($urlType != 'none') {
@@ -193,6 +267,18 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
  */
 function get_easy_url_link(CommonObject $object, string $urlType)
 {
+    // Saturne short URLs have no click statistics : an existing one is a valid one
+    $shortUrl = (string) ($object->array_options['options_easy_url_' . $urlType . '_link'] ?? '');
+    $isSaturneUrl = dol_strlen($shortUrl) > 0 && easy_url_load_saturne() && SaturneRedirection::getCodeFromShortUrl($shortUrl) !== '';
+    if ($isSaturneUrl) {
+        $data               = new stdClass();
+        $data->statusCode   = 200;
+        $data->link         = new stdClass();
+        $data->link->clicks = 0;
+
+        return $data;
+    }
+
     $useOnlinePayment = (isModEnabled('paypal') || isModEnabled('stripe') || isModEnabled('paybox'));
     $checkConf        = getDolGlobalString('EASYURL_URL_YOURLS_API') && getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API');
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature' || $urlType == 'all') && $checkConf) {
@@ -223,6 +309,24 @@ function get_easy_url_link(CommonObject $object, string $urlType)
  */
 function update_easy_url_link(CommonObject $object): int
 {
+    global $db, $langs, $user;
+
+    // A Saturne short URL keeps its code, only its target changes : a printed QR code stays valid
+    if (easy_url_load_saturne()) {
+        $code = SaturneRedirection::getCodeFromShortUrl((string) $object->short_url);
+        if ($code !== '') {
+            $saturneRedirection = new SaturneRedirection($db);
+            if ($saturneRedirection->updateTargetUrl($code, (string) $object->original_url, $user) > 0) {
+                return 1;
+            }
+
+            $object->error    = $langs->trans($saturneRedirection->error ?: 'Error');
+            $object->errors[] = $object->error;
+
+            return 0;
+        }
+    }
+
     $curlPostFields = [
         'action'   => 'update',
         'shorturl' => $object->short_url,

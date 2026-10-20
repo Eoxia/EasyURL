@@ -195,7 +195,7 @@ if (!getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) : ?>
         </div>
     </div>
 <?php endif;
-if (!getDolGlobalString('EASYURL_URL_YOURLS_API') || !getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API')) : ?>
+if (easy_url_method() == 'yourls' && (!getDolGlobalString('EASYURL_URL_YOURLS_API') || !getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API'))) : ?>
     <div class="wpeo-notice notice-warning">
         <div class="notice-content">
             <div class="notice-title">
@@ -243,13 +243,13 @@ print '<td>' . $langs->trans('Description') . '</td>';
 print '<td>' . $langs->trans('Value') . '</td>';
 print '</tr>';
 
-$urlMethode = ['yourls' => 'YOURLS', 'wordpress' => 'WordPress'];
+$urlMethode = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne')];
 print '<tr class="oddeven"><td>';
 print $langs->trans('UrlMethode');
 print '</td><td>';
 print $langs->trans('UrlMethodeDescription');
 print '<td>';
-print $form::selectarray('url_methode', $urlMethode, 'yourls');
+print $form::selectarray('url_methode', $urlMethode, easy_url_method());
 print '</td></tr>';
 
 print '<tr class="oddeven"><td class="fieldrequired"><label for="nb_url">' . $langs->trans('NbUrl') . '</label></td>';

@@ -72,12 +72,12 @@ $object = new Shortener($db);
 
 $objectId = 0;
 if (!empty($trackId)) {
-    $objectDataJson = base64_decode($trackId);
-    $objectData     = json_decode($objectDataJson);
-    $linkedObject   = null;
-    if (!empty($objectData)) {
-        $objectType = $objectData->type;
-        $objectId   = $objectData->id;
+    // The track id comes from the URL of a public page: decoded defensively, and only a Dolibarr object can be
+    // instantiated from it. Signed track ids of DigiQuali are base64 "URL safe" (- and _), the former ones plain base64
+    $objectData   = json_decode((string) base64_decode(strtr($trackId, '-_', '+/'), true));
+    $objectType   = (is_object($objectData) && isset($objectData->type) && is_string($objectData->type)) ? $objectData->type : '';
+    if ($objectType !== '' && class_exists($objectType) && is_subclass_of($objectType, 'CommonObject')) {
+        $objectId = (int) ($objectData->id ?? 0);
 
         $linkedObject = new $objectType($db);
     } else {
@@ -99,11 +99,8 @@ $conf->setEntityValues($db, $entity);
 
 //@todo notice d'erreur pour le track_id
 // Load linkable elements
-$linkableElement = [];
-if (is_object($linkedObject)) {
-    $linkableElements = saturne_get_objects_metadata();
-    $linkableElement  = $linkableElements[$linkedObject->element];
-}
+$linkableElements = saturne_get_objects_metadata();
+$linkableElement  = $linkableElements[$linkedObject->element] ?? [];
 
 $permissionToAssign = $user->hasRight('easyurl', 'shortener', 'assign');
 
@@ -118,7 +115,7 @@ if ($resHook < 0) {
 }
 
 if (empty($resHook)) {
-    if ($action == 'assign_qrcode' && $permissionToAssign && is_object($linkedObject)) {
+    if ($action == 'assign_qrcode' && $permissionToAssign) {
         $fkElementID = GETPOSTINT('fk_element');
         $shortenerID = GETPOSTINT('shortenerId');
 
@@ -131,7 +128,16 @@ if (empty($resHook)) {
             $object->status       = Shortener::STATUS_ASSIGN;
             $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-            $trackId                   = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
+            // Signed track id when DigiQuali provides it, like the links of its own public page
+            $digiQualiControlLib = __DIR__ . '/../../../digiquali/lib/digiquali_control.lib.php';
+            if (is_file($digiQualiControlLib)) {
+                require_once $digiQualiControlLib;
+            }
+            if (function_exists('digiquali_public_control_track_id')) {
+                $trackId = digiquali_public_control_track_id($linkedObject);
+            } else {
+                $trackId = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
+            }
             $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $trackId . '&entity=' . $conf->entity, 3);
             $object->original_url      = $publicControlInterfaceUrl;
 
