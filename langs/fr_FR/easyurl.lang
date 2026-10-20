@@ -87,6 +87,9 @@ EasyUrlTitle                    = Titre
 EasyUrlTitleDescription         = Titre de l'URL <br><span style="color: #888; font-size: 0.9em;">(ex: {texte}-{AAAAMMJJ}-{0000})</span>
 UrlMethode                      = Raccourcisseur d'API
 UrlMethodeDescription           = Choisissez votre fournisseur d'URL raccourcies
+UrlMethodeSaturne               = Saturne (URL courte interne, sans serveur)
+DefaultUrlMethode               = Méthode de raccourcissement par défaut
+DefaultUrlMethodeDescription    = Méthode des liens générés automatiquement (paiement, signature) et proposée dans l'outil de génération. Saturne ne demande aucun serveur : les URL courtes sont servies par cette instance, sans statistiques de clics.
 GenerateUrlSuccess              = Génération réussie des %d raccourcissements d'URLs
 OriginalUrlFail                 = Erreur(s) possible(s) : <br> - Nombre d'URL est vide <br> - l'URL d'origine est vide <br> - l'URL d'origine par défaut n'as pas été configurée
 DefaultOriginalUrlConfiguration = Vous n'avez pas configuré d'URL d'origine par défaut, veuillez cliquer ici pour vous rendre sur la page de configuration
