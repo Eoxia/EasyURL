@@ -1,0 +1,50 @@
+/* EasyURL modern theme: design tokens.
+
+   The generic restyle of the back office (titles, tabs, lists, cards, forms, buttons, dashboards)
+   is the shared theme of Saturne. saturne_header() puts its saturne-theme class on the logged-in
+   pages only: the public shortener page and the PWAs, which have their own design, never get it.
+   The EasyURL components below aim at the same scope. */
+$eu-scope: 'body#mainbody.saturne-theme';
+
+/* The stylesheet is compiled apart from Saturne: the tokens are read from the CSS custom
+   properties that the shared theme exposes on its scope */
+$eu-surface: var(--saturne-surface);
+$eu-surface-soft: var(--saturne-surface-soft);
+$eu-border: var(--saturne-border);
+$eu-border-soft: var(--saturne-border-soft);
+$eu-border-strong: var(--saturne-border-strong);
+$eu-text: var(--saturne-text);
+$eu-text-soft: var(--saturne-text-soft);
+$eu-muted: var(--saturne-muted);
+$eu-faint: var(--saturne-faint);
+$eu-primary: var(--saturne-primary);
+$eu-primary-strong: var(--saturne-primary-strong);
+$eu-primary-soft: var(--saturne-primary-soft);
+$eu-radius-lg: var(--saturne-radius-lg);
+$eu-radius: var(--saturne-radius);
+$eu-radius-sm: var(--saturne-radius-sm);
+$eu-shadow-sm: var(--saturne-shadow-sm);
+$eu-shadow-lg: var(--saturne-shadow-lg);
+$eu-font: var(--saturne-font);
+
+/* Generation console of the tools page: it stays a dark terminal, on the slate greys of the
+   theme (Tailwind slate 900 / 800 / 700) instead of the GitHub dark palette */
+$eu-console-bg: #0f172a;
+$eu-console-head: #1e293b;
+$eu-console-border: #334155;
+$eu-console-text: #cbd5e1;
+$eu-console-muted: #94a3b8;
+$eu-console-faint: #64748b;
+$eu-console-accent: #60a5fa;
+$eu-console-success: #4ade80;
+$eu-console-danger: #f87171;
+$eu-console-warning: #fbbf24;
+$eu-transition: 0.15s ease;
+
+/* White rounded surface */
+@mixin eu-card {
+  background: $eu-surface;
+  border: 1px solid $eu-border;
+  border-radius: $eu-radius-lg;
+  box-shadow: $eu-shadow-sm;
+}

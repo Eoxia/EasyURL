@@ -1,3 +1,6 @@
 @import "variable/variable";
 @import "element/element";
 @import "page/page";
+
+// Modern back office theme, imported last so that it wins over the legacy rules above
+@import "theme/theme";
