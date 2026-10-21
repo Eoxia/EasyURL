@@ -284,9 +284,15 @@ function get_easy_url_link(CommonObject $object, string $urlType)
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature' || $urlType == 'all') && $checkConf) {
         $object->fetch($object->id);
 
+        // No short URL yet on this object: nothing to ask the API about
+        $shortUrl = (string) ($object->array_options['options_easy_url_' . $urlType . '_link'] ?? '');
+        if (dol_strlen($shortUrl) == 0) {
+            return -1;
+        }
+
         $curlPostFields = [
             'action'   => 'url-stats',
-            'shorturl' => $object->array_options['options_easy_url_' . $urlType . '_link']
+            'shorturl' => $shortUrl
         ];
         $ch = init_easy_url_curl($curlPostFields);
 
