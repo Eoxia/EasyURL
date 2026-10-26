@@ -374,7 +374,10 @@ class modEasyURL extends DolibarrModules
         $keyforelement   = 'shortener';
         $keyforalias     = 't';
 
-        require DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+        // The Shortener class this loads is built on Saturne : without it, admin/modules.php would end on a fatal error
+        if (function_exists('saturne_load_langs')) {
+            require DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+        }
 
         $this->export_sql_start[$r] = 'SELECT DISTINCT ';
 
@@ -394,7 +397,13 @@ class modEasyURL extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf;
+        global $conf, $langs;
+
+        // Saturne provides the functions used below : refuse the activation rather than a fatal error when it is missing
+        if (!function_exists('saturne_load_langs')) {
+            $this->error = $langs->trans('activateModuleDependNotSatisfied', $this->name, 'modSaturne', $this->name);
+            return -1;
+        }
 
         // Permissions
         $this->remove($options);
