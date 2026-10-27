@@ -6,9 +6,9 @@ Description : EasyURL raccourcit désormais vos liens sans serveur YOURLS. La no
 
 ## 🎬 La nouveauté en vidéo
 
-[![Des URL courtes sans serveur, en vidéo (31 s)](https://raw.githubusercontent.com/nicolas-eoxia/EasyURL/refs/heads/assets/release-23.2.0/video_poster_23.2.0.jpeg)](https://github.com/Eoxia/EasyURL/releases/download/23.2.0/easyurl-23.2.0.mp4)
+[![Des URL courtes sans serveur, en vidéo (31 s)](https://raw.githubusercontent.com/nicolas-eoxia/EasyURL/refs/heads/assets/release-23.2.0/video_poster_23.2.0.jpeg)](https://youtu.be/Tn4OVWn18H0)
 
-*Cliquez sur l'image pour voir la vidéo (31 s).*
+*Cliquez sur l'image pour voir la vidéo sur YouTube (31 s).*
 
 ## Nouvelles fonctionnalités et innovations
 
