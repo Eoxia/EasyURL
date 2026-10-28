@@ -166,6 +166,12 @@ print '<td>';
 print ajax_constantonoff('EASYURL_USE_SHA_URL');
 print '</td></tr>';
 
+print '<tr class="oddeven"><td>' . $langs->trans('KeywordWithoutRefPrefix') . '</td>';
+print '<td>' . $langs->trans('KeywordWithoutRefPrefixDescription') . '</td>';
+print '<td>';
+print ajax_constantonoff('EASYURL_KEYWORD_WITHOUT_REF_PREFIX');
+print '</td></tr>';
+
 print '<tr class="oddeven"><td>' . $langs->trans('ShowAPIInfos') . '</td>';
 print '<td>' . $langs->trans('ShowAPIInfosDescription') . '</td>';
 print '<td>';
