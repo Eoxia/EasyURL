@@ -113,6 +113,33 @@ function easy_url_saturne_shorten(string $url, string $keyword = ''): stdClass
 }
 
 /**
+ * Get the object ref used in the default keyword of a short url
+ *
+ * With EASYURL_KEYWORD_WITHOUT_REF_PREFIX, a short url ref loses the prefix of its numbering model (EU2504-0001 -> 2504-0001).
+ * Other objects keep theirs: it tells apart refs with the same number (PR2504-0001, FA2504-0001)
+ *
+ * @param  CommonObject $object Object
+ * @return string               Ref to put in the keyword
+ */
+function easy_url_keyword_ref(CommonObject $object): string
+{
+    if (!getDolGlobalInt('EASYURL_KEYWORD_WITHOUT_REF_PREFIX') || $object->element != 'shortener') {
+        return $object->ref;
+    }
+
+    dol_include_once('/saturne/lib/object.lib.php');
+
+    $numberingModules         = ['shortener' => getDolGlobalString('EASYURL_SHORTENER_ADDON', 'mod_shortener_standard')];
+    list($objNumberingModule) = saturne_require_objects_mod($numberingModules, 'easyurl');
+    $prefix                   = is_object($objNumberingModule) ? (string) $objNumberingModule->prefix : '';
+    if (dol_strlen($prefix) > 0 && strpos($object->ref, $prefix) === 0) {
+        return substr($object->ref, strlen($prefix));
+    }
+
+    return $object->ref;
+}
+
+/**
  * Set easy url link
  *
  * @param  CommonObject $object       Object
@@ -175,7 +202,7 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
         if (property_exists($object, 'custom_easyurl_keyword') && !empty($object->custom_easyurl_keyword)) {
             $keyword = dol_sanitizeFileName($object->custom_easyurl_keyword);
         } else {
-            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . easy_url_keyword_ref($object)) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
         }
         
         if (property_exists($object, 'custom_easyurl_title') && !empty($object->custom_easyurl_title)) {
