@@ -69,11 +69,11 @@ function easy_url_method(string $urlMethod = ''): string
  */
 function easy_url_load_saturne(): bool
 {
-    if (!is_file(__DIR__ . '/../../saturne/s/index.php')) {
+    if (!is_file(dol_buildpath('/saturne/s/index.php'))) {
         return false;
     }
 
-    require_once __DIR__ . '/../../saturne/class/saturneredirection.class.php';
+    dol_include_once('/saturne/class/saturneredirection.class.php');
 
     return true;
 }

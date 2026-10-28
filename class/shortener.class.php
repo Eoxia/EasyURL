@@ -22,7 +22,7 @@
  */
 
 // Load Saturne libraries
-require_once __DIR__ . '/../../saturne/class/saturneobject.class.php';
+dol_include_once('/saturne/class/saturneobject.class.php');
 
 /**
  * Class for Shortener
@@ -507,7 +507,7 @@ class Shortener extends SaturneObject
      */
     public function displayObjectDetails(CommonObject $object, string $trackId = ''): string
     {
-        require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+        dol_include_once('/saturne/lib/medias.lib.php');
 
         global $conf, $form, $langs, $user;
 
