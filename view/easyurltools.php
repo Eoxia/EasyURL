@@ -357,32 +357,17 @@ if (file_exists($logFile)) {
     }
 }
 
-print '<style>
-.eu-console-popup{position:fixed;bottom:0;right:24px;width:660px;max-width:calc(100vw - 48px);background:#0d1117;border:1px solid #30363d;border-bottom:none;border-radius:8px 8px 0 0;font-family:\'Consolas\',\'Courier New\',monospace;z-index:9999;box-shadow:0 -4px 20px rgba(0,0,0,.5);}
-.eu-con-hd{display:flex;align-items:center;justify-content:space-between;padding:7px 14px;background:#161b22;border-bottom:1px solid #30363d;border-radius:8px 8px 0 0;cursor:pointer;user-select:none;}
-.eu-con-title{color:#58a6ff;font-weight:700;font-size:.82em;letter-spacing:.5px;white-space:nowrap;}
-.eu-con-acts{display:flex;gap:10px;align-items:center;font-size:.76em;color:#8b949e;flex-shrink:0;}
-.eu-con-acts button{background:none;border:none;color:#8b949e;cursor:pointer;padding:0;font-family:inherit;font-size:1em;}
-.eu-con-acts button:hover{color:#c9d1d9;}
-.eu-con-sep{color:#30363d;}
-.eu-con-body{height:260px;overflow-y:auto;padding:8px 14px;scroll-behavior:smooth;}
-.eu-log-line{display:flex;gap:8px;margin-bottom:2px;font-size:.76em;line-height:1.5;}
-.eu-log-time{color:#484f58;min-width:56px;flex-shrink:0;}
-.eu-log-pfx{color:#58a6ff;flex-shrink:0;}
-.eu-log-s{color:#3fb950;} .eu-log-e{color:#f85149;} .eu-log-w{color:#d29922;} .eu-log-i{color:#c9d1d9;}
-.hide-ok .eu-log-line:has(.eu-log-s) { display: none !important; }
-.hide-ko .eu-log-line:has(.eu-log-e) { display: none !important; }
-</style>
-<div class="eu-console-popup" id="eu-cp">
+// The console styles live in css/scss/page/_tools.scss
+print '<div class="eu-console-popup" id="eu-cp">
   <div class="eu-con-hd" onclick="jQuery(\'#eu-cb\').toggle();">
-    <span style="display:flex;align-items:center;min-width:0;overflow:hidden;">
+    <span class="eu-con-heading">
       <span class="eu-con-title">&gt;_ CONSOLE</span>
     </span>
     <span class="eu-con-acts" onclick="event.stopPropagation()">
-      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ok\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ok\') ? \'0.4\' : \'1\');" style="color:#3fb950;font-weight:bold;" title="Afficher / Masquer les OK"><span id="eu-count-ok">0</span> OK</button> / 
-      <button onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ko\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ko\') ? \'0.4\' : \'1\');" style="color:#f85149;font-weight:bold;" title="Afficher / Masquer les KO"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</button>
+      <button class="eu-con-count eu-con-count--ok" onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ok\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ok\') ? \'0.4\' : \'1\');" title="Afficher / Masquer les OK"><span id="eu-count-ok">0</span> OK</button> /
+      <button class="eu-con-count eu-con-count--ko" onclick="jQuery(\'#eu-cp\').toggleClass(\'hide-ko\'); jQuery(this).css(\'opacity\', jQuery(\'#eu-cp\').hasClass(\'hide-ko\') ? \'0.4\' : \'1\');" title="Afficher / Masquer les KO"><span id="eu-count-ko">' . $historyKoCount . '</span> KO</button>
       <span class="eu-con-sep">|</span>
-      <select onchange="var url=new URL(window.location.href);url.searchParams.set(\'history_lines\', this.value);window.location.href=url.href;" style="background:transparent;color:#8b949e;border:1px solid #30363d;border-radius:4px;padding:0 2px;">
+      <select class="eu-con-lines" onchange="var url=new URL(window.location.href);url.searchParams.set(\'history_lines\', this.value);window.location.href=url.href;">
         <option value="50" ' . ($historyLines==50?'selected':'') . '>50 lignes</option>
         <option value="200" ' . ($historyLines==200?'selected':'') . '>200 lignes</option>
         <option value="500" ' . ($historyLines==500?'selected':'') . '>500 lignes</option>

@@ -1,0 +1,143 @@
+/* Tools page (view/easyurltools.php): console of the URL generation, docked at the bottom right.
+   Moved from the <style> block and the style attributes of the page. */
+
+.eu-console-popup {
+  position: fixed;
+  bottom: 0;
+  right: 24px;
+  width: 660px;
+  max-width: calc(100vw - 48px);
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  font-family: 'Consolas', 'Courier New', monospace;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.eu-con-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 14px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  border-radius: 8px 8px 0 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.eu-con-heading {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.eu-con-title {
+  color: #58a6ff;
+  font-weight: 700;
+  font-size: 0.82em;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.eu-con-acts {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 0.76em;
+  color: #8b949e;
+  flex-shrink: 0;
+
+  button {
+    background: none;
+    border: none;
+    color: #8b949e;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: 1em;
+
+    &:hover {
+      color: #c9d1d9;
+    }
+  }
+
+  button.eu-con-count {
+    font-weight: bold;
+  }
+
+  button.eu-con-count--ok {
+    color: #3fb950;
+  }
+
+  button.eu-con-count--ko {
+    color: #f85149;
+  }
+}
+
+/* Id selector: the select used to carry its style inline, it must still win over the generic
+   select rules of the theme */
+#eu-cp .eu-con-lines {
+  padding: 0 2px;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  background: transparent;
+  color: #8b949e;
+}
+
+.eu-con-sep {
+  color: #30363d;
+}
+
+.eu-con-body {
+  height: 260px;
+  overflow-y: auto;
+  padding: 8px 14px;
+  scroll-behavior: smooth;
+}
+
+.eu-log-line {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 2px;
+  font-size: 0.76em;
+  line-height: 1.5;
+}
+
+.eu-log-time {
+  color: #484f58;
+  min-width: 56px;
+  flex-shrink: 0;
+}
+
+.eu-log-pfx {
+  color: #58a6ff;
+  flex-shrink: 0;
+}
+
+.eu-log-s {
+  color: #3fb950;
+}
+
+.eu-log-e {
+  color: #f85149;
+}
+
+.eu-log-w {
+  color: #d29922;
+}
+
+.eu-log-i {
+  color: #c9d1d9;
+}
+
+.hide-ok .eu-log-line:has(.eu-log-s) {
+  display: none !important;
+}
+
+.hide-ko .eu-log-line:has(.eu-log-e) {
+  display: none !important;
+}
