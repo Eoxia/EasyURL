@@ -1,0 +1,399 @@
+/* EasyURL — QR code assignment (public/frontend/assign_qrcode_view.tpl.php), in the PWA design of the DigiQuali
+   public pages. The screen lies in a white sheet: the one of the DigiQuali public control page, or the one of
+   public_shortener.php below */
+
+$public-header-height: 60px;
+
+/* ----- Shell of public_shortener.php ----- */
+body.easyurl-public-page {
+  padding: $public-header-height 0 0 !important;
+  margin: 0 !important;
+  background: $color__pwa-bg;
+  color: $color__pwa-text;
+
+  .fiche,
+  #id-right,
+  #id-container {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* The header has no user part: a three columns grid keeps the title centered whatever the logo width */
+.easyurl-public-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 999;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+  height: $public-header-height;
+  padding: 0 15px;
+  border-bottom: 2px solid $color__primary;
+  background: $color__pwa-card-bg;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.easyurl-public-header__logo {
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  img {
+    max-width: 140px;
+    max-height: 40px;
+    object-fit: contain;
+  }
+
+  i {
+    font-size: 26px;
+    color: $color__primary;
+  }
+}
+
+.easyurl-public-header__indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 14px;
+  background: $color__pwa-border;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.easyurl-public-page__container {
+  box-sizing: border-box;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 15px;
+}
+
+.easyurl-public-page__sheet {
+  padding: 14px;
+  border-radius: 14px;
+  background: $color__pwa-card-bg;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* ----- Screen ----- */
+.easyurl-assign {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 14px;
+  color: $color__pwa-text;
+}
+
+.easyurl-assign__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+  color: $color__pwa-text;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  i {
+    color: $color__pwa-muted;
+  }
+}
+
+/* A section title with its actions on the right */
+.easyurl-assign__section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 12px 0 2px;
+
+  .easyurl-assign__section-title {
+    margin: 0;
+  }
+}
+
+.easyurl-assign__section-actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 8px;
+}
+
+.easyurl-assign__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color__pwa-muted;
+  cursor: pointer;
+  user-select: none;
+
+  .fas {
+    font-size: 20px;
+  }
+}
+
+.easyurl-assign__list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.easyurl-assign__object,
+.easyurl-assign__item {
+  padding: 12px;
+  border-radius: 12px;
+  background: $color__pwa-bg;
+}
+
+.easyurl-assign__object,
+.easyurl-assign__item-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.easyurl-assign__item {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.easyurl-assign__qrcode {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 80px;
+  height: 80px;
+  padding: 4px;
+  border-radius: 8px;
+  background: $color__pwa-card-bg;
+  object-fit: contain;
+}
+
+.easyurl-assign__icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: $color__pwa-card-bg;
+  color: $color__pwa-muted;
+  font-size: 18px;
+
+  &--qrcode {
+    background: rgba($color__primary, 0.1);
+    color: $color__primary;
+  }
+}
+
+.easyurl-assign__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.easyurl-assign__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: $color__pwa-muted;
+}
+
+.easyurl-assign__title {
+  font-size: 15px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+.easyurl-assign__muted {
+  font-size: 12px;
+  color: $color__pwa-muted;
+}
+
+.easyurl-assign__link {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &,
+  &:link,
+  &:visited {
+    color: $color__primary;
+    text-decoration: none;
+  }
+}
+
+/* Round buttons: edit, unassign, assign in the back office window */
+.easyurl-assign__action {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: $color__pwa-card-bg;
+  font-size: 15px;
+
+  &,
+  &:link,
+  &:visited {
+    color: $color__primary;
+    text-decoration: none;
+  }
+
+  &--danger {
+    &,
+    &:link,
+    &:visited {
+      color: $color__red;
+    }
+  }
+
+  /* Dolibarr greys the icons of the links */
+  i {
+    color: inherit;
+  }
+}
+
+.easyurl-assign__section-actions .easyurl-assign__action {
+  background: $color__pwa-bg;
+}
+
+.easyurl-assign__details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 8px;
+  border-top: 1px solid $color__pwa-border;
+}
+
+.easyurl-assign__detail {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.easyurl-assign__detail-label {
+  flex: 0 0 34%;
+  font-weight: 600;
+  color: $color__pwa-muted;
+}
+
+.easyurl-assign__detail-value {
+  flex: 1;
+  min-width: 0;
+}
+
+.easyurl-assign__notice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  background: $color__pwa-bg;
+  font-size: 13px;
+  line-height: 1.35;
+  color: $color__pwa-muted;
+
+  i {
+    flex-shrink: 0;
+    font-size: 16px;
+  }
+}
+
+/* ----- Assign form ----- */
+.easyurl-assign__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+}
+
+.easyurl-assign__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    font-weight: 700;
+    color: $color__pwa-text;
+  }
+
+  select,
+  .select2-container {
+    width: 100% !important;
+  }
+
+  /* A finger sized field */
+  .select2-container--default .select2-selection--single {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    border: 1px solid $color__pwa-border;
+    border-radius: 10px;
+    background: $color__pwa-card-bg;
+
+    .select2-selection__rendered {
+      padding-left: 12px;
+      font-size: 15px;
+      line-height: normal;
+      color: $color__pwa-text;
+    }
+
+    .select2-selection__placeholder {
+      color: $color__pwa-muted;
+    }
+
+    .select2-selection__arrow {
+      height: 100%;
+    }
+  }
+}
+
+.easyurl-assign__help {
+  font-size: 12px;
+  color: $color__pwa-muted;
+}
+
+.easyurl-assign__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+  padding: 13px;
+  border: none;
+  border-radius: 12px;
+  background: $color__primary;
+  color: $color__primary-text;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+}

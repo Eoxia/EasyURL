@@ -97,6 +97,9 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
             return 0; // If module is not enabled, we do nothing
         }
 
+        // Saturne's own trigger loads this lib, but only while its constants are set: during a Saturne
+        // re-init, a concurrent request reaches this point without it.
+        dol_include_once('/saturne/lib/saturne_functions.lib.php');
         saturne_load_langs();
 
         // Data and type of action are stored into $object and $action.
