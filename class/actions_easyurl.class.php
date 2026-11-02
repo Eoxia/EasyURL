@@ -74,16 +74,16 @@ class ActionsEasyurl
     {
         if (isModEnabled('digiquali') && strpos($parameters['currentcontext'], 'publiccontrol') !== false) {
             $resourcesRequired = [
-                'css' => '/custom/easyurl/css/easyurl.min.css',
-                'js'  => '/custom/easyurl/js/easyurl.min.js?v=2'
+                'css' => '/easyurl/css/easyurl.min.css',
+                'js'  => '/easyurl/js/easyurl.min.js'
             ];
 
-
+            // The date of the file makes the browsers load the new assets after an update of the module
             $out  = '<!-- Includes CSS added by module easyurl -->';
-            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '">';
+            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '?v=' . filemtime(dol_buildpath($resourcesRequired['css'])) . '">';
 
             $out .= '<!-- Includes JS added by module easyurl -->';
-            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '"></script>';
+            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '?v=' . filemtime(dol_buildpath($resourcesRequired['js'])) . '"></script>';
 
             $this->resprints = $out;
         }
@@ -259,7 +259,7 @@ class ActionsEasyurl
                         setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
                     }
                 } else {
-                    setEventMessages('AssignQRCodeErrors', [], 'errors');
+                    setEventMessages($langs->transnoentities('AssignQRCodeErrors'), [], 'errors');
                 }
 
                 header('Location: ' . $_SERVER['PHP_SELF'] . (!empty($parameters['trackId']) ? '?track_id=' .  $parameters['trackId'] . '&' : '?') . 'entity=' . $parameters['entity'] . '&route=assignQRCode');
@@ -296,7 +296,7 @@ class ActionsEasyurl
 
             $out  = '<div class="tab switch-public-control-view' . ($parameters['route'] == 'assignQRCode' ? ' tab-active' : '') . '" data-route="assignQRCode">';
             $out .= '<i class="fas fa-qrcode"></i>';
-            $out .= '<span>' . $langs->transnoentities('AssignQRCode') . '</span>';
+            $out .= '<span>' . $langs->transnoentities('QRCodeTab') . '</span>';
             $out .= '</div>';
             $parameters['routes']['assignQRCode'] = '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
             $parameters['externals'][]            = 'assignQRCode';
