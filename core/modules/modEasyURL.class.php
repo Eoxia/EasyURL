@@ -42,8 +42,8 @@ class modEasyURL extends DolibarrModules
         global $langs, $conf;
         $this->db = $db;
 
-        if (file_exists(__DIR__ . '/../../../saturne/lib/saturne_functions.lib.php')) {
-            require_once __DIR__ . '/../../../saturne/lib/saturne_functions.lib.php';
+        if (file_exists(dol_buildpath('/saturne/lib/saturne_functions.lib.php'))) {
+            dol_include_once('/saturne/lib/saturne_functions.lib.php');
             saturne_load_langs(['easyurl@easyurl']);
         } else {
             $this->error++;
@@ -78,7 +78,7 @@ class modEasyURL extends DolibarrModules
         $this->editor_url  = 'https://eoxia.com';
 
         // Possible values for version are: 'development', 'experimental', 'dolibarr', 'dolibarr_deprecated' or a version string like 'x.y.z'
-        $this->version = '23.1.1';
+        $this->version = '23.2.0';
 
         // Url to the file with your last numberversion of this module
         //$this->url_last_version = 'http://www.example.com/versionmodule.txt';
@@ -374,7 +374,10 @@ class modEasyURL extends DolibarrModules
         $keyforelement   = 'shortener';
         $keyforalias     = 't';
 
-        require DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+        // The Shortener class this loads is built on Saturne : without it, admin/modules.php would end on a fatal error
+        if (function_exists('saturne_load_langs')) {
+            require DOL_DOCUMENT_ROOT . '/core/commonfieldsinexport.inc.php';
+        }
 
         $this->export_sql_start[$r] = 'SELECT DISTINCT ';
 
@@ -394,7 +397,13 @@ class modEasyURL extends DolibarrModules
      */
     public function init($options = ''): int
     {
-        global $conf;
+        global $conf, $langs;
+
+        // Saturne provides the functions used below : refuse the activation rather than a fatal error when it is missing
+        if (!function_exists('saturne_load_langs')) {
+            $this->error = $langs->trans('activateModuleDependNotSatisfied', $this->name, 'modSaturne', $this->name);
+            return -1;
+        }
 
         // Permissions
         $this->remove($options);
