@@ -89,7 +89,8 @@ if ($permissionToAssign) {
     $shorteners = $shortener->fetchAll('ASC', 't.label', 0, 0, ['customsql' => 't.status = ' . Shortener::STATUS_VALIDATED]);
     if (is_array($shorteners)) {
         foreach ($shorteners as $availableShortener) {
-            $availableShorteners[$availableShortener->id] = $availableShortener->label;
+            // The short URL is the one read on the label of the QR code, searched by publicinterface.js
+            $availableShorteners[$availableShortener->id] = ['label' => $availableShortener->label, 'data-short-url' => $availableShortener->short_url];
         }
     }
 

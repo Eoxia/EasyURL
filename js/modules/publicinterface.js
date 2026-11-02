@@ -112,15 +112,24 @@ window.easyurl.publicinterface.matchQRCode = function(params, data) {
     return data;
   }
 
+  const normalize = function(text) {
+    return text.toLowerCase().replace(/^https?:\/\//, '').replace(/[-\s]/g, '');
+  };
+
+  // The URL read on the label is the short URL of the QR code, whatever its method: a Saturne code, random or
+  // chosen, comes after "?" and is not in the number of the QR code
+  const shortUrl = data.element && data.element.dataset.shortUrl ? normalize(data.element.dataset.shortUrl) : '';
+  if (shortUrl && normalize($.trim(params.term)) === shortUrl) {
+    return data;
+  }
+
   // Of a pasted URL only its last part is the number of the QR code
-  const term = params.term.replace(/^https?:\/\//, '').split('/').pop().toLowerCase().replace(/[-\s]/g, '');
+  const term = normalize(params.term.replace(/^https?:\/\//, '').split(/[/?]/).pop());
   if (!term) {
     return null;
   }
 
-  const normalizedText = data.text.toLowerCase().replace(/[-\s]/g, '');
-
-  return normalizedText.includes(term) ? data : null;
+  return normalize(data.text).includes(term) ? data : null;
 };
 
 /**
