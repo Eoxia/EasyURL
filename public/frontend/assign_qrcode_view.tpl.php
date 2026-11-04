@@ -69,7 +69,7 @@ if ($showQRCode && !empty($assignedShorteners)) {
         $qrCodeFiles = dol_dir_list($conf->easyurl->multidir_output[$conf->entity] . '/' . $qrCodeDir, 'files', 0, '\.png$');
         if (!empty($qrCodeFiles)) {
             // Same image wrapper as the object card, which also serves the public pages
-            $qrCodeImageUrls[$assignedShortener->id] = DOL_URL_ROOT . '/custom/saturne/utils/viewimage.php?modulepart=easyurl&entity=' . $conf->entity . '&file=' . urlencode($qrCodeDir . '/' . $qrCodeFiles[0]['name']);
+            $qrCodeImageUrls[$assignedShortener->id] = dol_buildpath('/saturne/utils/viewimage.php', 1) . '?modulepart=easyurl&entity=' . $conf->entity . '&file=' . urlencode($qrCodeDir . '/' . $qrCodeFiles[0]['name']);
         }
     }
 }
