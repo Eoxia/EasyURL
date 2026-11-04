@@ -547,7 +547,9 @@ class Shortener extends SaturneObject
             $out .= '<td>' . $langs->trans('NbClick') . '</td>';
         }
         if ($user->hasRight('easyurl', 'shortener', 'write')) {
-            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign', '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
+            // The popup helper prefixes DOL_URL_ROOT itself: hand it the card URL without it, as resolved in the root holding the module
+            $assignShortenerUrl = substr(dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1), strlen(DOL_URL_ROOT));
+            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', $assignShortenerUrl . '?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign', '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
         }
         $out .= '</thead></tr>';
         $out .= '<tbody>';
