@@ -69,7 +69,7 @@ if ($showQRCode && !empty($assignedShorteners)) {
         $qrCodeFiles = dol_dir_list($conf->easyurl->multidir_output[$conf->entity] . '/' . $qrCodeDir, 'files', 0, '\.png$');
         if (!empty($qrCodeFiles)) {
             // Same image wrapper as the object card, which also serves the public pages
-            $qrCodeImageUrls[$assignedShortener->id] = DOL_URL_ROOT . '/custom/saturne/utils/viewimage.php?modulepart=easyurl&entity=' . $conf->entity . '&file=' . urlencode($qrCodeDir . '/' . $qrCodeFiles[0]['name']);
+            $qrCodeImageUrls[$assignedShortener->id] = dol_buildpath('/saturne/utils/viewimage.php', 1) . '?modulepart=easyurl&entity=' . $conf->entity . '&file=' . urlencode($qrCodeDir . '/' . $qrCodeFiles[0]['name']);
         }
     }
 }
@@ -133,7 +133,9 @@ if ($permissionToAssign) {
                         </span>
                     <?php endif;
                     if ($permissionToWrite) {
-                        print dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<i class="fas fa-link"></i>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $fixedObject->element . '&fk_element=' . $fixedObject->id . '&from_element=1&action=edit_assign', '', 'easyurl-assign__action', 'window.saturne.toolbox.checkIframeCreation();');
+                        // The popup helper prefixes DOL_URL_ROOT itself: hand it the card URL without it, as resolved in the root holding the module
+                        $assignShortenerUrl = substr(dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1), strlen(DOL_URL_ROOT));
+                        print dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<i class="fas fa-link"></i>', $assignShortenerUrl . '?element_type=' . $fixedObject->element . '&fk_element=' . $fixedObject->id . '&from_element=1&action=edit_assign', '', 'easyurl-assign__action', 'window.saturne.toolbox.checkIframeCreation();');
                     } ?>
                 </div>
             </div>

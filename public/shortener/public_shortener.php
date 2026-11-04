@@ -152,7 +152,7 @@ if (empty($resHook)) {
             } else {
                 $trackId = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
             }
-            $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $trackId . '&entity=' . $conf->entity, 3);
+            $publicControlInterfaceUrl = dol_buildpath('/digiquali/public/control/public_control_history.php', 3) . '?track_id=' . $trackId . '&entity=' . $conf->entity;
             $object->original_url      = $publicControlInterfaceUrl;
 
             $result = update_easy_url_link($object);

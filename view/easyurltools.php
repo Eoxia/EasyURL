@@ -190,7 +190,7 @@ if (!getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) : ?>
     <div class="wpeo-notice notice-warning">
         <div class="notice-content">
             <div class="notice-title">
-                <a href="<?php echo dol_buildpath('/custom/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('DefaultOriginalUrlConfiguration'); ?></strong></a>
+                <a href="<?php echo dol_buildpath('/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('DefaultOriginalUrlConfiguration'); ?></strong></a>
             </div>
         </div>
     </div>
@@ -199,7 +199,7 @@ if (easy_url_method() == 'yourls' && (!getDolGlobalString('EASYURL_URL_YOURLS_AP
     <div class="wpeo-notice notice-warning">
         <div class="notice-content">
             <div class="notice-title">
-                <a href="<?php echo dol_buildpath('/custom/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('ApiCredentialsNotCongirate'); ?></strong></a>
+                <a href="<?php echo dol_buildpath('/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('ApiCredentialsNotCongirate'); ?></strong></a>
             </div>
         </div>
     </div>
@@ -373,7 +373,7 @@ print '<div class="eu-console-popup" id="eu-cp">
         <option value="500" ' . ($historyLines==500?'selected':'') . '>500 lignes</option>
       </select>
       <span class="eu-con-sep">|</span>
-      <button onclick="window.open(document.URL.substring(0, document.URL.indexOf(\'/custom/easyurl/\')) + \'/document.php?modulepart=easyurl&file=logs/generation_errors.log\', \'_blank\')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
+      <button onclick="window.open(\'' . DOL_URL_ROOT . '/document.php?modulepart=easyurl&file=logs/generation_errors.log\', \'_blank\')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
       <button onclick="jQuery(\'#eu-cb\').empty(); jQuery(\'#eu-count-ok\').text(\'0\'); jQuery(\'#eu-count-ko\').text(\'0\');">Vider</button><span class="eu-con-sep">|</span>
       <button onclick="jQuery(\'#eu-cb\').toggle()" title="Ouvrir / Fermer">&#9650;</button>
     </span>

@@ -547,7 +547,9 @@ class Shortener extends SaturneObject
             $out .= '<td>' . $langs->trans('NbClick') . '</td>';
         }
         if ($user->hasRight('easyurl', 'shortener', 'write')) {
-            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign', '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
+            // The popup helper prefixes DOL_URL_ROOT itself: hand it the card URL without it, as resolved in the root holding the module
+            $assignShortenerUrl = substr(dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1), strlen(DOL_URL_ROOT));
+            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', $assignShortenerUrl . '?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign', '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
         }
         $out .= '</thead></tr>';
         $out .= '<tbody>';
@@ -566,8 +568,8 @@ class Shortener extends SaturneObject
                 if ($user->hasRight('easyurl', 'shortener', 'write')) {
                     $backToPage = urlencode($_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' . $trackId . '&entity=' . GETPOSTINT('entity') . '&route=' . GETPOST('route') : '?id=' . $object->id));
                     $out .= '<td class="center">';
-                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . $backToPage, 1) . '">' . img_edit($langs->trans('Modify')) . '</a>';
-                    $out .= '<a class="editfielda" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&action=unassign&backtopage=' . $backToPage, 1) . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
+                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1) . '?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . $backToPage . '">' . img_edit($langs->trans('Modify')) . '</a>';
+                    $out .= '<a class="editfielda" href="' . dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1) . '?id=' . $shortener->id . '&action=unassign&backtopage=' . $backToPage . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
                     $out .= '</td>';
                 }
                 $out .= '</tr>';
