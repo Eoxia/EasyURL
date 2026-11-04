@@ -244,7 +244,7 @@ class ActionsEasyurl
                     $object->status       = Shortener::STATUS_ASSIGN;
                     $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-                    $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $parameters['trackId'] . '&entity=' . $conf->entity, 3);
+                    $publicControlInterfaceUrl = dol_buildpath('/digiquali/public/control/public_control_history.php', 3) . '?track_id=' . $parameters['trackId'] . '&entity=' . $conf->entity;
                     $object->original_url      = $publicControlInterfaceUrl;
 
                     $result = update_easy_url_link($object);

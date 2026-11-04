@@ -190,7 +190,7 @@ if (!getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) : ?>
     <div class="wpeo-notice notice-warning">
         <div class="notice-content">
             <div class="notice-title">
-                <a href="<?php echo dol_buildpath('/custom/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('DefaultOriginalUrlConfiguration'); ?></strong></a>
+                <a href="<?php echo dol_buildpath('/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('DefaultOriginalUrlConfiguration'); ?></strong></a>
             </div>
         </div>
     </div>
@@ -199,7 +199,7 @@ if (easy_url_method() == 'yourls' && (!getDolGlobalString('EASYURL_URL_YOURLS_AP
     <div class="wpeo-notice notice-warning">
         <div class="notice-content">
             <div class="notice-title">
-                <a href="<?php echo dol_buildpath('/custom/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('ApiCredentialsNotCongirate'); ?></strong></a>
+                <a href="<?php echo dol_buildpath('/easyurl/admin/setup.php', 1); ?>"><strong><?php echo $langs->trans('ApiCredentialsNotCongirate'); ?></strong></a>
             </div>
         </div>
     </div>
