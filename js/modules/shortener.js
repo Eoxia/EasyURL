@@ -219,6 +219,8 @@ window.easyurl.shortener.createShortener = function(form, current, nbUrl, succes
   let querySeparator = window.saturne.toolbox.getQuerySeparator(document.URL);
   
   if ($('#eu-cp').length === 0) {
+      // Dolibarr URL root given by Saturne: the page URL does not hold /custom/easyurl/ when the module lives in another root
+      let logsUrl = ((window.saturne.config && window.saturne.config.urlRoot) ? window.saturne.config.urlRoot : '') + '/document.php?modulepart=easyurl&file=logs/generation_errors.log';
       let consoleHtml = `
 <style>
 .eu-console-popup{position:fixed;bottom:0;right:24px;width:660px;max-width:calc(100vw - 48px);background:#0d1117;border:1px solid #30363d;border-bottom:none;border-radius:8px 8px 0 0;font-family:'Consolas','Courier New',monospace;z-index:9999;box-shadow:0 -4px 20px rgba(0,0,0,.5);}
@@ -240,7 +242,7 @@ window.easyurl.shortener.createShortener = function(form, current, nbUrl, succes
       <span class="eu-con-title">&gt;_ CONSOLE</span>
     </span>
     <span class="eu-con-acts" onclick="event.stopPropagation()">
-      <button onclick="window.open(document.URL.substring(0, document.URL.indexOf('/custom/easyurl/')) + '/document.php?modulepart=easyurl&file=logs/generation_errors.log', '_blank')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
+      <button onclick="window.open('${logsUrl}', '_blank')" title="Télécharger les logs d\'erreurs">&#11015; Logs</button><span class="eu-con-sep">|</span>
       <button onclick="$('#eu-cb').empty()">Vider</button><span class="eu-con-sep">|</span>
       <button onclick="$('#eu-cb').toggle()" title="Ouvrir / Fermer">&#9650;</button>
     </span>
