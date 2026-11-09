@@ -22,7 +22,7 @@
  */
 
 // Load Saturne libraries
-require_once __DIR__ . '/../../saturne/class/saturneobject.class.php';
+dol_include_once('/saturne/class/saturneobject.class.php');
 
 /**
  * Class for Shortener
@@ -54,6 +54,11 @@ class Shortener extends SaturneObject
      * @var int Does object support extrafields ? 0 = No, 1 = Yes
      */
     public $isextrafieldmanaged = 0;
+
+    /**
+     * @var int<0,1> Does object support category module ? 0 = No, 1 = Yes
+     */
+    public int $isCategoryManaged = 0;
 
     /**
      * @var string Name of icon for shortener. Must be a 'fa-xxx' fontawesome code (or 'fa-xxx_fa_color_size') or 'shortener@easyurl' if picto is file 'img/object_shortener.png'
@@ -119,7 +124,7 @@ class Shortener extends SaturneObject
         'short_url'           => ['type' => 'url',                                'label' => 'ShortUrl',         'enabled' => 1, 'position' => 80,  'notnull' => 0, 'visible' => 1, 'noteditable' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx nowrap'],
         'original_url'        => ['type' => 'url',                                'label' => 'OriginalUrl',      'enabled' => 1, 'position' => 90,  'notnull' => 0, 'visible' => 1, 'copytoclipboard' => 1, 'css' => 'minwidth100 maxwidth300 widthcentpercentminusxx nowrap'],
         'type'                => ['type' => 'sellist:c_shortener_url_type:label', 'label' => 'UrlType',          'enabled' => 1, 'position' => 100, 'notnull' => 0, 'visible' => 1, 'css' => 'maxwidth150 widthcentpercentminusxx'],
-        'methode'             => ['type' => 'select',                             'label' => 'UrlMethode',       'enabled' => 1, 'position' => 110, 'notnull' => 0, 'visible' => 5, 'arrayofkeyval' => ['' => '', 'yourls' => 'YOURLS', 'wordpress' => 'WordPress'], 'css' => 'maxwidth200 widthcentpercentminusxx', 'csslist' => 'minwidth150 center', 'help' => 'UrlMethodeDescription'],
+        'methode'             => ['type' => 'select',                             'label' => 'UrlMethode',       'enabled' => 1, 'position' => 110, 'notnull' => 0, 'visible' => 5, 'arrayofkeyval' => ['' => '', 'yourls' => 'YOURLS', 'saturne' => 'Saturne'], 'css' => 'maxwidth200 widthcentpercentminusxx', 'csslist' => 'minwidth150 center', 'help' => 'UrlMethodeDescription'],
         'element_type'        => ['type' => 'select',                             'label' => 'ElementType',      'enabled' => 1, 'position' => 120, 'notnull' => 0, 'visible' => 1, 'arrayofkeyval' => ['' => ''], 'css' => 'maxwidth150 widthcentpercentminusxx'],
         'fk_element'          => ['type' => 'integer',                            'label' => 'FkElement',        'enabled' => 1, 'position' => 130, 'notnull' => 0, 'visible' => 1, 'index' => 1, 'css' => 'minwidth200 maxwidth300 widthcentpercentminusxx'],
         'fk_user_creat'       => ['type' => 'integer:User:user/class/user.class.php', 'label' => 'UserAuthor', 'picto' => 'user', 'enabled' => 1, 'position' => 140, 'notnull' => 1, 'visible' => 0, 'foreignkey' => 'user.rowid'],
@@ -502,7 +507,7 @@ class Shortener extends SaturneObject
      */
     public function displayObjectDetails(CommonObject $object, string $trackId = ''): string
     {
-        require_once __DIR__ . '/../../saturne/lib/medias.lib.php';
+        dol_include_once('/saturne/lib/medias.lib.php');
 
         global $conf, $form, $langs, $user;
 
@@ -542,7 +547,9 @@ class Shortener extends SaturneObject
             $out .= '<td>' . $langs->trans('NbClick') . '</td>';
         }
         if ($user->hasRight('easyurl', 'shortener', 'write')) {
-            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', '/custom/easyurl/view/shortener/shortener_card.php?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign&token=' . newToken(), '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
+            // The popup helper prefixes DOL_URL_ROOT itself: hand it the card URL without it, as resolved in the root holding the module
+            $assignShortenerUrl = substr(dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1), strlen(DOL_URL_ROOT));
+            $out .= '<td class="center">' . dolButtonToOpenUrlInDialogPopup('assignShortener', $langs->transnoentities('AssignShortener'), '<span class="fas fa-link fa-2x valignmiddle btnTitle-icon" title="' . $langs->trans('Assign') . '"></span>', $assignShortenerUrl . '?element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&action=edit_assign&token=' . newToken(), '', 'btnTitle', 'window.saturne.toolbox.checkIframeCreation();') . '</td>';
         }
         $out .= '</thead></tr>';
         $out .= '<tbody>';
@@ -561,8 +568,8 @@ class Shortener extends SaturneObject
                 if ($user->hasRight('easyurl', 'shortener', 'write')) {
                     $backToPage = urlencode($_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' . $trackId . '&entity=' . GETPOSTINT('entity') . '&route=' . GETPOST('route') : '?id=' . $object->id));
                     $out .= '<td class="center">';
-                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . $backToPage, 1) . '">' . img_edit($langs->trans('Modify')) . '</a>';
-                    $out .= '<a class="editfielda" href="' . dol_buildpath('custom/easyurl/view/shortener/shortener_card.php?id=' . $shortener->id . '&action=unassign&token=' . newToken() . '&backtopage=' . $backToPage, 1) . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
+                    $out .= '<a class="editfielda paddingright" href="' . dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1) . '?id=' . $shortener->id . '&element_type=' . $element_type . '&fk_element=' . $object->id . '&from_element=1&token=' . newToken() . '&action=edit&backtopage=' . $backToPage . '">' . img_edit($langs->trans('Modify')) . '</a>';
+                    $out .= '<a class="editfielda" href="' . dol_buildpath('/easyurl/view/shortener/shortener_card.php', 1) . '?id=' . $shortener->id . '&action=unassign&token=' . newToken() . '&backtopage=' . $backToPage . '">' . img_picto($langs->transnoentities('Unassign'), 'unlink') . '</a>';
                     $out .= '</td>';
                 }
                 $out .= '</tr>';

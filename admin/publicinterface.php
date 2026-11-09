@@ -62,9 +62,11 @@ print load_fiche_titre($title, $linkBack, 'title_setup');
 $head = easyurl_admin_prepare_head();
 print dol_get_fiche_head($head, 'publicinterface', $title, -1, 'easyurl_color@easyurl');
 
-$publicInterfaceUrl = dol_buildpath('custom/easyurl/public/shortener/public_shortener.php?entity=' . $conf->entity, 3);
+$publicInterfaceUrl = dol_buildpath('/easyurl/public/shortener/public_shortener.php', 3) . '?entity=' . $conf->entity;
+print '<div class="easyurl-public-interface">';
 print '<a class="marginrightonly" href="' . $publicInterfaceUrl . '" target="_blank">' . img_picto('', 'url', 'class="pictofixedwidth"') . $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssignShortener')) . '</a>';
 print showValueWithClipboardCPButton($publicInterfaceUrl, 0, 'none');
+print '</div>';
 
 // Page end
 print dol_get_fiche_end();

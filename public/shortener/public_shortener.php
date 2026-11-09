@@ -72,12 +72,12 @@ $object = new Shortener($db);
 
 $objectId = 0;
 if (!empty($trackId)) {
-    $objectDataJson = base64_decode($trackId);
-    $objectData     = json_decode($objectDataJson);
-    $linkedObject   = null;
-    if (!empty($objectData)) {
-        $objectType = $objectData->type;
-        $objectId   = $objectData->id;
+    // The track id comes from the URL of a public page: decoded defensively, and only a Dolibarr object can be
+    // instantiated from it. Signed track ids of DigiQuali are base64 "URL safe" (- and _), the former ones plain base64
+    $objectData   = json_decode((string) base64_decode(strtr($trackId, '-_', '+/'), true));
+    $objectType   = (is_object($objectData) && isset($objectData->type) && is_string($objectData->type)) ? $objectData->type : '';
+    if ($objectType !== '' && class_exists($objectType) && is_subclass_of($objectType, 'CommonObject')) {
+        $objectId = (int) ($objectData->id ?? 0);
 
         $linkedObject = new $objectType($db);
     } else {
@@ -99,10 +99,12 @@ $conf->setEntityValues($db, $entity);
 
 //@todo notice d'erreur pour le track_id
 // Load linkable elements
-$linkableElement = [];
-if (is_object($linkedObject)) {
-    $linkableElements = saturne_get_objects_metadata();
-    $linkableElement  = $linkableElements[$linkedObject->element];
+$linkableElements = saturne_get_objects_metadata();
+$linkableElement  = $linkableElements[$linkedObject->element] ?? [];
+
+// Only an object EasyURL can link is loaded, never any Dolibarr object named by the URL of this public page
+if ($objectId > 0 && !empty($linkableElement)) {
+    $linkedObject->fetch($objectId);
 }
 
 $permissionToAssign = $user->hasRight('easyurl', 'shortener', 'assign');
@@ -118,7 +120,16 @@ if ($resHook < 0) {
 }
 
 if (empty($resHook)) {
-    if ($action == 'assign_qrcode' && $permissionToAssign && is_object($linkedObject)) {
+    // Display of the image of the QR codes instead of their icon, saved for the user
+    if ($action == 'show_qrcode' && !empty($user->id)) {
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        dol_set_user_param($db, $conf, $user, ['EASYURL_SHOW_QRCODE' => $data['showQRCode'] ?? 0]);
+    }
+
+    if ($action == 'assign_qrcode' && $permissionToAssign) {
         $fkElementID = GETPOSTINT('fk_element');
         $shortenerID = GETPOSTINT('shortenerId');
 
@@ -131,8 +142,17 @@ if (empty($resHook)) {
             $object->status       = Shortener::STATUS_ASSIGN;
             $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-            $trackId                   = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
-            $publicControlInterfaceUrl = dol_buildpath('custom/digiquali/public/control/public_control_history.php?track_id=' . $trackId . '&entity=' . $conf->entity, 3);
+            // Signed track id when DigiQuali provides it, like the links of its own public page
+            $digiQualiControlLib = __DIR__ . '/../../../digiquali/lib/digiquali_control.lib.php';
+            if (is_file($digiQualiControlLib)) {
+                require_once $digiQualiControlLib;
+            }
+            if (function_exists('digiquali_public_control_track_id')) {
+                $trackId = digiquali_public_control_track_id($linkedObject);
+            } else {
+                $trackId = base64_encode(json_encode(['type' => $linkedObject->element, 'id' => (int) $linkedObject->id]));
+            }
+            $publicControlInterfaceUrl = dol_buildpath('/digiquali/public/control/public_control_history.php', 3) . '?track_id=' . $trackId . '&entity=' . $conf->entity;
             $object->original_url      = $publicControlInterfaceUrl;
 
             $result = update_easy_url_link($object);
@@ -144,10 +164,10 @@ if (empty($resHook)) {
 
                 setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($linkableElement['langs']), $linkedObject->{$linkableElement['name_field']}), []);
             } else {
-                setEventMessages('AssignQRCodeErrors', [], 'errors');
+                setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
             }
         } else {
-            setEventMessages('AssignQRCodeErrors', [], 'errors');
+            setEventMessages($langs->transnoentities('AssignQRCodeErrors'), [], 'errors');
         }
 
         header('Location: ' . $_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' .  $trackId . '&' : '?') . 'entity=' . $entity);
@@ -159,14 +179,21 @@ if (empty($resHook)) {
  * View
  */
 
-$title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssignShortener')) . '</a>';
+$title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssignShortener'));
 
 $conf->dol_hide_topmenu  = 1;
 $conf->dol_hide_leftmenu = 1;
 
-saturne_header(1, '', $title,  '', '', 0, 0, [], [], '', 'page-public-card page-public-shortener');
+saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'easyurl-public-page');
 
-require_once __DIR__ . '/../frontend/assign_qrcode_view.tpl.php';
+$publicHeaderTitle = $langs->transnoentities('AssignQRCode');
+require_once __DIR__ . '/../frontend/public_header.tpl.php'; ?>
+
+<div class="easyurl-public-page__container">
+    <div class="easyurl-public-page__sheet">
+        <?php require_once __DIR__ . '/../frontend/assign_qrcode_view.tpl.php'; ?>
+    </div>
+</div><?php
 
 llxFooter('', 'public');
 $db->close();
