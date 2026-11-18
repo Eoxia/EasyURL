@@ -40,14 +40,45 @@ window.easyurl.publicinterface = {};
  * @memberof EasyURL_PublicInterface
  *
  * @since   1.1.0
- * @version 23.2.0
+ * @version 23.3.0
  *
  * @returns {void}
  */
 window.easyurl.publicinterface.init = function() {
   window.easyurl.publicinterface.event();
 
-  $(document).ready(window.easyurl.publicinterface.initAssignForm);
+  $(document).ready(function() {
+    window.easyurl.publicinterface.initAssignForm();
+    window.easyurl.publicinterface.watchAssignForm();
+  });
+};
+
+/**
+ * Init the assign form when a page puts it in place after loading: the public page of DigiQuali loads its
+ * QR code tab in AJAX and replaces its content, without any event to listen to
+ *
+ * @memberof EasyURL_PublicInterface
+ *
+ * @since   23.3.0
+ * @version 23.3.0
+ *
+ * @returns {void}
+ */
+window.easyurl.publicinterface.watchAssignForm = function() {
+  if (typeof MutationObserver === 'undefined' || !document.body) {
+    return;
+  }
+
+  new MutationObserver(function(mutations) {
+    const added = mutations.some(function(mutation) {
+      return Array.prototype.some.call(mutation.addedNodes, function(node) {
+        return node.nodeType === 1 && (node.matches('.easyurl-assign__form') || node.querySelector('.easyurl-assign__form'));
+      });
+    });
+    if (added) {
+      window.easyurl.publicinterface.initAssignForm();
+    }
+  }).observe(document.body, { childList: true, subtree: true });
 };
 
 /**
@@ -71,7 +102,7 @@ window.easyurl.publicinterface.event = function() {
  * @memberof EasyURL_PublicInterface
  *
  * @since   23.2.0
- * @version 23.2.0
+ * @version 23.3.0
  *
  * @returns {void}
  */
@@ -81,8 +112,9 @@ window.easyurl.publicinterface.initAssignForm = function() {
     return;
   }
 
+  // Called again each time the form is put back in place: a select already turned into a select2 is kept
   const $shortenerSelect = $form.find('#shortenerId');
-  if ($shortenerSelect.length && typeof $.fn.select2 !== 'undefined') {
+  if ($shortenerSelect.length && typeof $.fn.select2 !== 'undefined' && !$shortenerSelect.hasClass('select2-hidden-accessible')) {
     $shortenerSelect.select2({
       width: '100%',
       // The empty choice of Form::selectarray has the value -1
