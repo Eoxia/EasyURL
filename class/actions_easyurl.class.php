@@ -298,7 +298,11 @@ class ActionsEasyurl
             $out .= '<i class="fas fa-qrcode"></i>';
             $out .= '<span>' . $langs->transnoentities('QRCodeTab') . '</span>';
             $out .= '</div>';
-            $parameters['routes']['assignQRCode'] = '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
+            // DigiQuali includes the view with __DIR__ . $route, from its public/control directory: the route goes from
+            // there to this module, which may sit in another root. The former route remains when there is no such path
+            $route = easy_url_relative_path(dol_buildpath('/digiquali/public/control', 0), dol_buildpath('/easyurl/public/frontend/assign_qrcode_view.tpl.php', 0));
+
+            $parameters['routes']['assignQRCode'] = $route !== '' ? $route : '/../../../easyurl/public/frontend/assign_qrcode_view.tpl.php';
             $parameters['externals'][]            = 'assignQRCode';
 
             $this->resprints = $out;

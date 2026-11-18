@@ -142,8 +142,9 @@ if (empty($resHook)) {
             $object->status       = Shortener::STATUS_ASSIGN;
             $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-            // Signed track id when DigiQuali provides it, like the links of its own public page
-            $digiQualiControlLib = __DIR__ . '/../../../digiquali/lib/digiquali_control.lib.php';
+            // Signed track id when DigiQuali provides it, like the links of its own public page. DigiQuali may sit in
+            // another root than EasyURL: dol_buildpath() looks for it in all of them
+            $digiQualiControlLib = dol_buildpath('/digiquali/lib/digiquali_control.lib.php', 0);
             if (is_file($digiQualiControlLib)) {
                 require_once $digiQualiControlLib;
             }
