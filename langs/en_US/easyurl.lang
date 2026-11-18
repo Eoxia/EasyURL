@@ -1,0 +1,158 @@
+# Copyright (C) 2023 EVARISK <technique@evarisk.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Générique
+#
+
+# Data - Donnée
+ModuleEasyURLName      = EasyURL
+ModuleEasyURLDesc      = Short URLs for YOURLS and Dolibarr
+EasyURLDescription     = Short URLs for YOURLS and Dolibarr
+EasyURLDescriptionLong = Short URLs for YOURLS and Dolibarr
+
+
+
+#
+# Config page - Page d'administration
+#
+
+# Data - Donnée
+URLYourlsAPI                          = YOURLS API URL
+URLYourlsAPIDescription               = URL of the YOURLS API
+SignatureTokenYourlsAPI               = Signature token
+SignatureTokenYourlsAPIDescription    = Signature token of the YOURLS API
+DefaultOriginalUrl                    = Default original URL
+DefaultOriginalUrlDescription         = Original URL used when none is given
+UseShaUrl                             = SHA in the short URL
+UseShaUrlDescription                  = Adds a SHA (8 characters) to the short URLs
+KeywordWithoutRefPrefix               = Keyword without reference prefix
+KeywordWithoutRefPrefixDescription    = Removes the numbering prefix of the reference from the default keyword of the short URLs (EU2504-0001 becomes 2504-0001). A keyword typed by hand is not changed
+ShowAPIInfos                          = Show more API information
+ShowAPIInfosDescription               = Shows more information from the API <br> (number of clicks, etc.)
+AutomaticEasyUrlGeneration            = Automatic short URL generation
+AutomaticEasyUrlGenerationDescription = Creates the short URL when an object is validated <br> (proposal, order, invoice)
+ManualEasyUrlGeneration               = Manual short URL generation
+ManualEasyUrlGenerationDescription    = Adds a button to create a short URL on an object <br> (proposal, order, invoice)
+WarningApiCredentialsIncorrect        = The API credentials are incorrect
+
+# Public interface - Interface publique
+OfAssignShortener = for short URL assignment
+
+
+
+#
+# EasyURL - EasyURL
+#
+
+# Data - Donnée
+EasyUrlPaymentLink   = EasyURL-payment
+EasyUrlSignatureLink = EasyURL-signature
+EasyUrlAllLink       = EasyURL-link
+EasyUrlLinkHelp      = Turns a URL into a short URL (payment link, signature link)
+EasyUrlAllLinkHelp   = Turns a URL into a short URL (any kind of link)
+SetEasyURLLink       = Create short URL
+SetEasyURLSuccess    = Short URL created
+SetEasyURLErrors     = Error: short URL not created
+GetEasyURLErrors     = Error: short URL not found
+
+
+
+#
+# Tools - Outils
+#
+
+# Data - Donnée
+GenerateUrlManagement           = Short URL generation
+GeneratedExport                 = Exports already generated
+NbUrl                           = Number of URLs
+NbUrlDescription                = Number of URLs to generate
+OriginalUrl                     = Long URL
+OriginalUrlDescription          = Original link to shorten
+OriginalUrlMoreDescription      = <br><span style="color: #888; font-size: 0.9em;">Default URL: <b>%s</b></span>
+UrlParameters                   = Short URL
+UrlParametersDescription        = Parameters of the short URLs <br><span style="color: #888; font-size: 0.9em;">(e.g. {text}-{AAAAMMJJ}-{0000})</span>
+EasyUrlTitle                    = Title
+EasyUrlTitleDescription         = Title of the URL <br><span style="color: #888; font-size: 0.9em;">(e.g. {text}-{AAAAMMJJ}-{0000})</span>
+UrlMethode                      = API shortener
+UrlMethodeDescription           = Provider of the short URLs
+UrlMethodeSaturne               = Saturne (internal short URL, no server)
+DefaultUrlMethode               = Default shortening method
+DefaultUrlMethodeDescription    = Method of the links generated automatically (payment, signature) and offered in the generation tool. Saturne needs no server: the short URLs are served by this instance, without click statistics.
+GenerateUrlSuccess              = %d short URLs generated
+OriginalUrlFail                 = Possible error(s): <br> - the number of URLs is empty <br> - the original URL is empty <br> - the default original URL is not set
+DefaultOriginalUrlConfiguration = No default original URL is set, click here to go to the setup page
+ApiCredentialsNotCongirate      = No API is set, click here to go to the setup page
+Success                         = Success
+ExportId                        = Export id
+ExportNumber                    = Number of URLs generated
+ExportStart                     = First URL id
+ExportEnd                       = Last URL id
+ExportDate                      = Export date
+ExportOrigin                    = Original URL
+ExportConsume                   = Number of URLs used
+ExportGenerating                = Generating
+ExportSuccess                   = URL(s) exported!
+YouGenerated                    = You generated
+UrlWithSuccess                  = URL(s)
+ExportError                     = Error while generating the URL
+
+#
+# Shortener - Raccourcissement d'URL
+#
+
+# Right - Droit
+AssignShorteners = Assign short URLs
+
+# Trigger - Déclencheur
+ObjectUnAssignTrigger = %s %s unassigned
+
+# Data - Donnée
+Shortener                 = Short URL
+TheShortener              = the short URL
+Shorteners                = short URLs
+ShortenerList             = Short URL list
+ModifyShortener           = Edit the short URL
+AssignShortener           = Assign the short URL
+ValidatePendingAssignment = Validated (awaiting assignment)
+Assign                    = Assign
+Assigned                  = Assigned
+Unassign                  = Unassign
+UnassignShortenerSuccess  = Short URL <strong>%s</strong> unassigned
+NoLinkedElement           = No linked element
+ShortenerRepartition      = Short URLs by %s
+ShortenerUrlType          = URL types
+ShowQRCode                = Show the QR code of the short URL
+NbClick                   = Number of clicks
+
+# Fiels - Champ
+ShortUrl = Short URL
+UrlType  = URL type
+
+# Public interface - Interface publique
+AssignQRCode        = QR code assignment
+NumProductLot       = Lot/serial number
+NumQRCode           = QR code number
+AssignQRCodeSuccess = QR code <strong>%s</strong> assigned to %s <strong>%s</strong>
+AssignQRCodeErrors  = Error: QR code not assigned
+QRCodeTab                = QR code
+AssignedQRCodes          = Assigned QR codes
+NoQRCodeAssigned         = No QR code is assigned yet.
+AssignNewQRCode          = Assign a QR code
+AssignQRCodeNoPermission = You are not allowed to assign a QR code.
+NoQRCodeAvailable        = No QR code available: generate some from the EasyURL module.
+AssignQRCodeSearchHelp   = Type its number or paste the URL read on its label.
+ConfirmUnassignQRCode    = Unassign QR code %s?
+ShowQRCodeImage          = Image

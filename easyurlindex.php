@@ -30,4 +30,4 @@ if (file_exists('easyurl.main.inc.php')) {
     die('Include of easyurl main fails');
 }
 
-require_once __DIR__ . '/../saturne/core/tpl/index/index_view.tpl.php';
+require_once dol_buildpath('/saturne/core/tpl/index/index_view.tpl.php');
