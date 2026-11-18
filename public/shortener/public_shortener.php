@@ -184,7 +184,8 @@ $title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssig
 $conf->dol_hide_topmenu  = 1;
 $conf->dol_hide_leftmenu = 1;
 
-saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'easyurl-public-page');
+// page-public-shortener: Saturne keeps its back office theme away from the public pages through their page-public* class
+saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'page-public-shortener easyurl-public-page');
 
 $publicHeaderTitle = $langs->transnoentities('AssignQRCode');
 require_once __DIR__ . '/../frontend/public_header.tpl.php'; ?>
