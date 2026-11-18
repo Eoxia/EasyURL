@@ -1,0 +1,95 @@
+/* EasyURL modern theme: tools page (view/easyurltools.php), generation console docked at the
+   bottom right. It stays a dark terminal, redrawn with the slate greys and the radii of the theme. */
+
+#{$eu-scope} {
+  #eu-cp.eu-console-popup {
+    border-color: $eu-console-border;
+    border-radius: $eu-radius-lg $eu-radius-lg 0 0;
+    background: $eu-console-bg;
+    box-shadow: $eu-shadow-lg;
+    overflow: hidden;
+
+    .eu-con-hd {
+      padding: 9px 16px;
+      border-bottom-color: $eu-console-border;
+      border-radius: 0;
+      background: $eu-console-head;
+    }
+
+    .eu-con-title {
+      color: $eu-console-accent;
+      letter-spacing: 0.06em;
+    }
+
+    .eu-con-acts,
+    .eu-con-acts button {
+      color: $eu-console-muted;
+      transition: color $eu-transition;
+    }
+
+    .eu-con-acts button:hover {
+      color: #ffffff;
+    }
+
+    .eu-con-acts button.eu-con-count--ok {
+      color: $eu-console-success;
+    }
+
+    .eu-con-acts button.eu-con-count--ko {
+      color: $eu-console-danger;
+    }
+
+    .eu-con-sep {
+      color: $eu-console-border;
+    }
+
+    .eu-con-lines {
+      padding: 1px 4px;
+      border: 1px solid $eu-console-border;
+      border-radius: 6px;
+      background: transparent;
+      color: $eu-console-muted;
+      font-family: inherit;
+      font-size: 1em;
+      box-shadow: none;
+
+      &:focus {
+        border-color: $eu-console-accent;
+        outline: none;
+      }
+
+      option {
+        background: $eu-console-head;
+        color: $eu-console-text;
+      }
+    }
+
+    .eu-con-body {
+      padding: 10px 16px;
+    }
+
+    .eu-log-time {
+      color: $eu-console-faint;
+    }
+
+    .eu-log-pfx {
+      color: $eu-console-accent;
+    }
+
+    .eu-log-s {
+      color: $eu-console-success;
+    }
+
+    .eu-log-e {
+      color: $eu-console-danger;
+    }
+
+    .eu-log-w {
+      color: $eu-console-warning;
+    }
+
+    .eu-log-i {
+      color: $eu-console-text;
+    }
+  }
+}

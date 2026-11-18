@@ -6,9 +6,6 @@ $color__primary-text: #fff;
 $color__secondary: #263C5C;
 $color__secondary-text: #fff;
 
-$color__public-primary: #002475;
-$color__public-secondary: #BDCEEA;
-
 $color__red: #e05353;
 $color__yellow: #e9ad4f;
 $color__orange: #ff6900;
@@ -16,3 +13,10 @@ $color__dark: #2b2b2b;
 $color__grey: #ececec;
 $color__blue: #0d8aff;
 $color__green: #47e58e;
+
+// Same values as the PWA of DigiQuali, whose public pages show the EasyURL screens
+$color__pwa-bg: #f1f5f9;
+$color__pwa-card-bg: #ffffff;
+$color__pwa-text: #1e293b;
+$color__pwa-muted: #64748b;
+$color__pwa-border: #e2e8f0;

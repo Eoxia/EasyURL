@@ -69,11 +69,11 @@ function easy_url_method(string $urlMethod = ''): string
  */
 function easy_url_load_saturne(): bool
 {
-    if (!is_file(__DIR__ . '/../../saturne/s/index.php')) {
+    if (!is_file(dol_buildpath('/saturne/s/index.php'))) {
         return false;
     }
 
-    require_once __DIR__ . '/../../saturne/class/saturneredirection.class.php';
+    dol_include_once('/saturne/class/saturneredirection.class.php');
 
     return true;
 }
@@ -110,6 +110,33 @@ function easy_url_saturne_shorten(string $url, string $keyword = ''): stdClass
     }
 
     return $data;
+}
+
+/**
+ * Get the object ref used in the default keyword of a short url
+ *
+ * With EASYURL_KEYWORD_WITHOUT_REF_PREFIX, a short url ref loses the prefix of its numbering model (EU2504-0001 -> 2504-0001).
+ * Other objects keep theirs: it tells apart refs with the same number (PR2504-0001, FA2504-0001)
+ *
+ * @param  CommonObject $object Object
+ * @return string               Ref to put in the keyword
+ */
+function easy_url_keyword_ref(CommonObject $object): string
+{
+    if (!getDolGlobalInt('EASYURL_KEYWORD_WITHOUT_REF_PREFIX') || $object->element != 'shortener') {
+        return $object->ref;
+    }
+
+    dol_include_once('/saturne/lib/object.lib.php');
+
+    $numberingModules         = ['shortener' => getDolGlobalString('EASYURL_SHORTENER_ADDON', 'mod_shortener_standard')];
+    list($objNumberingModule) = saturne_require_objects_mod($numberingModules, 'easyurl');
+    $prefix                   = is_object($objNumberingModule) ? (string) $objNumberingModule->prefix : '';
+    if (dol_strlen($prefix) > 0 && strpos($object->ref, $prefix) === 0) {
+        return substr($object->ref, strlen($prefix));
+    }
+
+    return $object->ref;
 }
 
 /**
@@ -175,7 +202,7 @@ function set_easy_url_link(CommonObject $object, string $urlType, string $urlMet
         if (property_exists($object, 'custom_easyurl_keyword') && !empty($object->custom_easyurl_keyword)) {
             $keyword = dol_sanitizeFileName($object->custom_easyurl_keyword);
         } else {
-            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . $object->ref) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
+            $keyword = dol_sanitizeFileName(dol_strtolower($conf->global->MAIN_INFO_SOCIETE_NOM . '-' . easy_url_keyword_ref($object)) . (getDolGlobalInt('EASYURL_USE_SHA_URL') ? '-' . generate_random_id(8) : ''));
         }
         
         if (property_exists($object, 'custom_easyurl_title') && !empty($object->custom_easyurl_title)) {
@@ -284,9 +311,15 @@ function get_easy_url_link(CommonObject $object, string $urlType)
     if ((($urlType == 'payment' && $useOnlinePayment) || $urlType == 'signature' || $urlType == 'all') && $checkConf) {
         $object->fetch($object->id);
 
+        // No short URL yet on this object: nothing to ask the API about
+        $shortUrl = (string) ($object->array_options['options_easy_url_' . $urlType . '_link'] ?? '');
+        if (dol_strlen($shortUrl) == 0) {
+            return -1;
+        }
+
         $curlPostFields = [
             'action'   => 'url-stats',
-            'shorturl' => $object->array_options['options_easy_url_' . $urlType . '_link']
+            'shorturl' => $shortUrl
         ];
         $ch = init_easy_url_curl($curlPostFields);
 
