@@ -79,6 +79,41 @@ function easy_url_load_saturne(): bool
 }
 
 /**
+ * Get the relative path from a directory to a file, both resolved as PHP resolves __DIR__ (links followed)
+ *
+ * Two modules may sit in different roots ($dolibarr_main_document_root_alt): a path relative to the other module,
+ * such as the route handed to the public control page of DigiQuali, is computed from where both really are
+ *
+ * @param  string $fromDir Directory the path starts from
+ * @param  string $toFile  File the path leads to
+ * @return string          Path starting with a slash ("/../../../easyurl/..."), empty if one of them does not exist or
+ *                         if they are on different Windows drives
+ */
+function easy_url_relative_path(string $fromDir, string $toFile): string
+{
+    $fromDir = realpath($fromDir);
+    $toFile  = realpath($toFile);
+    if ($fromDir === false || $toFile === false) {
+        return '';
+    }
+
+    $fromParts = explode('/', trim(str_replace('\\', '/', $fromDir), '/'));
+    $toParts   = explode('/', trim(str_replace('\\', '/', $toFile), '/'));
+
+    // No relative path from one Windows drive to another
+    if ($fromParts[0] !== $toParts[0] && (strpos($fromParts[0], ':') !== false || strpos($toParts[0], ':') !== false)) {
+        return '';
+    }
+
+    $common = 0;
+    while (isset($fromParts[$common], $toParts[$common]) && $fromParts[$common] === $toParts[$common]) {
+        $common++;
+    }
+
+    return str_repeat('/..', count($fromParts) - $common) . '/' . implode('/', array_slice($toParts, $common));
+}
+
+/**
  * Shorten an url with the Saturne short URL, answer shaped as the YOURLS API one
  *
  * @param  string   $url     Original url
