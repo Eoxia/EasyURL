@@ -53,7 +53,7 @@ $backtopageforcancel = GETPOST('backtopageforcancel', 'alpha');
 
 // Initialize technical objects
 $object      = new Shortener($db);
-$extraFields = new ExtraFields($db);
+$extrafields = new ExtraFields($db);
 
 // Initialize view objects
 $form = new Form($db);
@@ -61,9 +61,9 @@ $form = new Form($db);
 $hookmanager->initHooks(['shortenercard', 'globalcard']); // Note that conf->hooks_modules contains array
 
 // Fetch optionals attributes and labels
-$extraFields->fetch_name_optionals_label($object->table_element);
+$extrafields->fetch_name_optionals_label($object->table_element);
 
-$search_array_options = $extraFields->getOptionalsFromPost($object->table_element, '', 'search_');
+$search_array_options = $extrafields->getOptionalsFromPost($object->table_element, '', 'search_');
 
 // Initialize array of search criterias
 $searchAll = GETPOST('search_all', 'alpha');
