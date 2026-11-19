@@ -335,6 +335,38 @@ function get_easy_url_link(CommonObject $object, string $urlType)
 }
 
 /**
+ * Get the number of clicks of a short url, the one of a QR code for example
+ *
+ * Unlike get_easy_url_link(), which reads the link stored on an object, it gives the clicks of any short url: each
+ * QR code of an object has its own
+ *
+ * @param  string $shortUrl Short url
+ * @return int              Number of clicks, 0 for a Saturne short url (no click statistics), without API or answer
+ */
+function get_easy_url_clicks(string $shortUrl): int
+{
+    if (dol_strlen($shortUrl) == 0) {
+        return 0;
+    }
+
+    if (easy_url_load_saturne() && SaturneRedirection::getCodeFromShortUrl($shortUrl) !== '') {
+        return 0;
+    }
+
+    if (!getDolGlobalString('EASYURL_URL_YOURLS_API') || !getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API')) {
+        return 0;
+    }
+
+    $ch   = init_easy_url_curl(['action' => 'url-stats', 'shorturl' => $shortUrl]);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    $data = is_string($data) ? json_decode($data) : null;
+
+    return (is_object($data) && isset($data->link->clicks)) ? (int) $data->link->clicks : 0;
+}
+
+/**
  * Update easy url link
  *
  * @param  CommonObject $object Object
