@@ -464,7 +464,16 @@ class modEasyURL extends DolibarrModules
             $extraFields->addExtraField('easy_url_all_link', 'EasyUrlAllLink', 'url', 2100, '', $objectMetadata['table_element'], 0, 0, '', '', '', '', 5, 'EasyUrlAllLinkHelp', '', 0, 'easyurl@easyurl');
         }
 
-        return $this->_init($sql, $options);
+        $result = $this->_init($sql, $options);
+
+        // Files of the shorteners validated while they stayed under (PROVn) : moved back once the module is enabled,
+        // from Home > Modules as well, where nothing else does it (Saturne#1939). A Saturne without the function
+        // leaves them
+        if ($result > 0 && function_exists('saturne_recover_prov_directories')) {
+            saturne_recover_prov_directories($this->name);
+        }
+
+        return $result;
     }
 
     /**
