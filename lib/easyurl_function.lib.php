@@ -79,6 +79,41 @@ function easy_url_load_saturne(): bool
 }
 
 /**
+ * Get the relative path from a directory to a file, both resolved as PHP resolves __DIR__ (links followed)
+ *
+ * Two modules may sit in different roots ($dolibarr_main_document_root_alt): a path relative to the other module,
+ * such as the route handed to the public control page of DigiQuali, is computed from where both really are
+ *
+ * @param  string $fromDir Directory the path starts from
+ * @param  string $toFile  File the path leads to
+ * @return string          Path starting with a slash ("/../../../easyurl/..."), empty if one of them does not exist or
+ *                         if they are on different Windows drives
+ */
+function easy_url_relative_path(string $fromDir, string $toFile): string
+{
+    $fromDir = realpath($fromDir);
+    $toFile  = realpath($toFile);
+    if ($fromDir === false || $toFile === false) {
+        return '';
+    }
+
+    $fromParts = explode('/', trim(str_replace('\\', '/', $fromDir), '/'));
+    $toParts   = explode('/', trim(str_replace('\\', '/', $toFile), '/'));
+
+    // No relative path from one Windows drive to another
+    if ($fromParts[0] !== $toParts[0] && (strpos($fromParts[0], ':') !== false || strpos($toParts[0], ':') !== false)) {
+        return '';
+    }
+
+    $common = 0;
+    while (isset($fromParts[$common], $toParts[$common]) && $fromParts[$common] === $toParts[$common]) {
+        $common++;
+    }
+
+    return str_repeat('/..', count($fromParts) - $common) . '/' . implode('/', array_slice($toParts, $common));
+}
+
+/**
  * Shorten an url with the Saturne short URL, answer shaped as the YOURLS API one
  *
  * @param  string   $url     Original url
@@ -335,6 +370,38 @@ function get_easy_url_link(CommonObject $object, string $urlType)
 }
 
 /**
+ * Get the number of clicks of a short url, the one of a QR code for example
+ *
+ * Unlike get_easy_url_link(), which reads the link stored on an object, it gives the clicks of any short url: each
+ * QR code of an object has its own
+ *
+ * @param  string $shortUrl Short url
+ * @return int              Number of clicks, 0 for a Saturne short url (no click statistics), without API or answer
+ */
+function get_easy_url_clicks(string $shortUrl): int
+{
+    if (dol_strlen($shortUrl) == 0) {
+        return 0;
+    }
+
+    if (easy_url_load_saturne() && SaturneRedirection::getCodeFromShortUrl($shortUrl) !== '') {
+        return 0;
+    }
+
+    if (!getDolGlobalString('EASYURL_URL_YOURLS_API') || !getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API')) {
+        return 0;
+    }
+
+    $ch   = init_easy_url_curl(['action' => 'url-stats', 'shorturl' => $shortUrl]);
+    $data = curl_exec($ch);
+    curl_close($ch);
+
+    $data = is_string($data) ? json_decode($data) : null;
+
+    return (is_object($data) && isset($data->link->clicks)) ? (int) $data->link->clicks : 0;
+}
+
+/**
  * Update easy url link
  *
  * @param  CommonObject $object Object
@@ -400,4 +467,55 @@ function update_easy_url_link(CommonObject $object): int
     $object->errors[] = $object->error;
 
     return 0;
+}
+
+/**
+ * Update the EasyURL link of an object once one of its QR codes is unassigned
+ *
+ * The easy_url_all_link extrafield of an object holds the short url of the last QR code assigned to it. When it is the
+ * QR code unassigned, the link moves to another QR code still assigned to the object, the last modified one, or is emptied
+ *
+ * @param  Shortener $shortener   QR code just unassigned
+ * @param  string    $elementType Element type of the object it was assigned to, as stored on the QR code
+ * @param  int       $elementId   ID of this object
+ * @return int                    1 if the link was updated, 0 if there was nothing to update, < 0 on error
+ * @throws Exception
+ */
+function easy_url_unassign_object_link(Shortener $shortener, string $elementType, int $elementId): int
+{
+    global $db;
+
+    if (dol_strlen($elementType) == 0 || $elementId <= 0 || dol_strlen((string) $shortener->short_url) == 0) {
+        return 0;
+    }
+
+    $objectMetadata = saturne_get_objects_metadata($elementType);
+    $className      = $objectMetadata['class_name'] ?? '';
+    if (!empty($className) && !class_exists($className) && !empty($objectMetadata['class_path'])) {
+        dol_include_once('/' . $objectMetadata['class_path']);
+    }
+    if (empty($className) || !class_exists($className)) {
+        return 0;
+    }
+
+    $linkedObject = new $className($db);
+    if ($linkedObject->fetch($elementId) <= 0) {
+        return 0;
+    }
+    if (empty($linkedObject->array_options)) {
+        $linkedObject->fetch_optionals();
+    }
+
+    // The link of the object shows another QR code: it stays as it is
+    if (($linkedObject->array_options['options_easy_url_all_link'] ?? '') !== $shortener->short_url) {
+        return 0;
+    }
+
+    $assignedShortener  = new Shortener($db);
+    $assignedShorteners = $assignedShortener->fetchAll('DESC', 't.tms', 1, 0, ['customsql' => "t.element_type = '" . $db->escape($elementType) . "' AND t.fk_element = " . $elementId . ' AND t.status = ' . Shortener::STATUS_ASSIGN . ' AND t.rowid <> ' . ((int) $shortener->id)]);
+    $lastShortener      = (is_array($assignedShorteners) && !empty($assignedShorteners)) ? reset($assignedShorteners) : null;
+
+    $linkedObject->array_options['options_easy_url_all_link'] = is_object($lastShortener) ? $lastShortener->short_url : '';
+
+    return $linkedObject->updateExtraField('easy_url_all_link') > 0 ? 1 : -1;
 }

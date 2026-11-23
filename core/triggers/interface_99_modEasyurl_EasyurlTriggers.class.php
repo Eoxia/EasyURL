@@ -54,8 +54,8 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
         $this->description = 'EasyURL triggers';
-        $this->version     = '23.3.0';
-        $this->picto       = 'easyurl@easyurl';
+        $this->version     = '23.3.1';
+        $this->picto       = 'easyurl_color@easyurl';
     }
 
     /**
@@ -76,6 +76,26 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
     public function getDesc(): string
     {
         return parent::getDesc();
+    }
+
+    /**
+     * Set the short URL of an object being validated, without reloading the object of the validation
+     *
+     * set_easy_url_link() reloads the object it is given, to read its final ref. The validation of Dolibarr core runs
+     * its triggers before moving the (PROVn) directory of the object, and decides on $object->ref : reloaded, it is
+     * already the final ref, and the attachments of the draft stay under (PROVn), their index with them. The link is
+     * set on a copy, then carried over to the object for the documents generated right after the validation.
+     *
+     * @param  CommonObject $object  Object being validated
+     * @param  string       $urlType Url type : signature or payment
+     * @return void
+     */
+    private function setLinkOnValidate(CommonObject $object, string $urlType): void
+    {
+        $objectCopy = clone $object;
+        if (set_easy_url_link($objectCopy, $urlType) > 0 && !empty($object->array_options)) {
+            $object->array_options['options_easy_url_' . $urlType . '_link'] = $objectCopy->array_options['options_easy_url_' . $urlType . '_link'] ?? '';
+        }
     }
 
     /**
@@ -128,13 +148,13 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
             case 'CONTRACT_VALIDATE':
             case 'FICHINTER_VALIDATE':
                 if (getDolGlobalInt('EASYURL_AUTOMATIC_GENERATION')) {
-                    set_easy_url_link($object, 'signature');
+                    $this->setLinkOnValidate($object, 'signature');
                 }
                 break;
             case 'ORDER_VALIDATE':
             case 'BILL_VALIDATE':
                 if (getDolGlobalInt('EASYURL_AUTOMATIC_GENERATION')) {
-                    set_easy_url_link($object, 'payment');
+                    $this->setLinkOnValidate($object, 'payment');
                 }
                 break;
 
