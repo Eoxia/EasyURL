@@ -562,8 +562,8 @@ class Shortener extends SaturneObject
                 $out .= '<td>' . (getDolUserInt('EASYURL_SHOW_QRCODE') ? saturne_show_medias_linked('easyurl', $conf->easyurl->multidir_output[$conf->entity] . '/shortener/' . $shortener->ref . '/qrcode/', 'small', 1, 0, 0, 0, 80, 80, 0, 0, 1, 'shortener/'. $shortener->ref . '/qrcode/', $shortener, '', 0, 0) : dol_print_url($shortener->short_url, '_blank', 0, 1)) . '</td>';
                 $out .= '<td>' . $shortener->showOutputField($this->fields['original_url'], 'original_url', $shortener->original_url) . '</td>';
                 if (getDolGlobalInt('EASYURL_SHOW_API_INFOS')) {
-                    $shortenerData = get_easy_url_link($object, 'all');
-                    $out .= '<td>' . (isset($shortenerData->link) && isset($shortenerData->link->clicks) ? $shortenerData->link->clicks : 0) . '</td>';
+                    // The clicks of the QR code of the line, not the ones of the last link stored on the object
+                    $out .= '<td>' . get_easy_url_clicks((string) $shortener->short_url) . '</td>';
                 }
                 if ($user->hasRight('easyurl', 'shortener', 'write')) {
                     $backToPage = urlencode($_SERVER['PHP_SELF'] . (!empty($trackId) ? '?track_id=' . $trackId . '&entity=' . GETPOSTINT('entity') . '&route=' . GETPOST('route') : '?id=' . $object->id));

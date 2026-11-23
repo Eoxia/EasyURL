@@ -89,7 +89,8 @@ if (!empty($trackId)) {
     $linkedObject = new ProductLot($db);
 }
 
-$hookmanager->initHooks(['publicshortener', 'saturnepublicinterface']); // Note that conf->hooks_modules contains array
+// Not the saturnepublicinterface context: Saturne prints the company logo there, already in the header of this page
+$hookmanager->initHooks(['publicshortener']); // Note that conf->hooks_modules contains array
 
 if (!isModEnabled('multicompany')) {
     $entity = $conf->entity;
@@ -142,8 +143,9 @@ if (empty($resHook)) {
             $object->status       = Shortener::STATUS_ASSIGN;
             $object->type         = 0; // TODO : Changer ça pour mettre une vrai valeur du dico ?
 
-            // Signed track id when DigiQuali provides it, like the links of its own public page
-            $digiQualiControlLib = __DIR__ . '/../../../digiquali/lib/digiquali_control.lib.php';
+            // Signed track id when DigiQuali provides it, like the links of its own public page. DigiQuali may sit in
+            // another root than EasyURL: dol_buildpath() looks for it in all of them
+            $digiQualiControlLib = dol_buildpath('/digiquali/lib/digiquali_control.lib.php', 0);
             if (is_file($digiQualiControlLib)) {
                 require_once $digiQualiControlLib;
             }
@@ -184,7 +186,8 @@ $title = $langs->trans('PublicInterfaceObject', $langs->transnoentities('OfAssig
 $conf->dol_hide_topmenu  = 1;
 $conf->dol_hide_leftmenu = 1;
 
-saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'easyurl-public-page');
+// page-public-shortener: Saturne keeps its back office theme away from the public pages through their page-public* class
+saturne_header(0, '', $title,  '', '', 0, 0, [], [], '', 'page-public-shortener easyurl-public-page');
 
 $publicHeaderTitle = $langs->transnoentities('AssignQRCode');
 require_once __DIR__ . '/../frontend/public_header.tpl.php'; ?>
