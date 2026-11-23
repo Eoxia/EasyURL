@@ -184,10 +184,10 @@ class ActionsEasyurl
      *
      * @param  array        $parameters Hook metadatas (context, etc...)
      * @param  CommonObject $object     Current object
-     * @param  string       $action     Current action
+     * @param  string|null  $action     Current action
      * @return int                      0 < on error, 0 on success, 1 to replace standard code
      */
-    public function doActions(array $parameters, $object, string $action): int
+    public function doActions(array $parameters, $object, ?string $action): int
     {
         global $conf, $langs, $user;
 
