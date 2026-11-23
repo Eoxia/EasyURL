@@ -74,12 +74,14 @@ if ($showQRCode && !empty($assignedShorteners)) {
     }
 }
 
-// The clicks are read on the link of the object, as in the object card
+// Each QR code shows the clicks of its own short url, as in the object card
 $shortenerClicks = null;
 if (!empty($assignedShorteners) && getDolGlobalInt('EASYURL_SHOW_API_INFOS')) {
     require_once __DIR__ . '/../../lib/easyurl_function.lib.php';
-    $shortenerData   = get_easy_url_link($fixedObject, 'all');
-    $shortenerClicks = (is_object($shortenerData) && isset($shortenerData->link->clicks)) ? (int) $shortenerData->link->clicks : 0;
+    $shortenerClicks = [];
+    foreach ($assignedShorteners as $assignedShortener) {
+        $shortenerClicks[$assignedShortener->id] = get_easy_url_clicks((string) $assignedShortener->short_url);
+    }
 }
 
 // The lists are only loaded for a user who can assign
@@ -177,7 +179,7 @@ if ($permissionToAssign) {
                                 <?php if ($shortenerClicks !== null) : ?>
                                     <div class="easyurl-assign__detail">
                                         <span class="easyurl-assign__detail-label"><?php echo $langs->transnoentities('NbClick'); ?></span>
-                                        <span class="easyurl-assign__detail-value"><?php echo $shortenerClicks; ?></span>
+                                        <span class="easyurl-assign__detail-value"><?php echo $shortenerClicks[$assignedShortener->id] ?? 0; ?></span>
                                     </div>
                                 <?php endif; ?>
                             </div>
