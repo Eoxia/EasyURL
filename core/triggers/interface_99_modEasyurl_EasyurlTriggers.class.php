@@ -55,7 +55,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         $this->family      = 'demo';
         $this->description = 'EasyURL triggers';
         $this->version     = '23.3.0';
-        $this->picto       = 'easyurl@easyurl';
+        $this->picto       = 'easyurl_color@easyurl';
     }
 
     /**
