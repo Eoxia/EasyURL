@@ -52,8 +52,8 @@ $exportShortenerDocument = new ExportShortenerDocument($db);
 $form = new Form($db);
 
 // Security check - Protection if external user
-$permissionToRead = $user->rights->easyurl->adminpage->read;
-$permissionToAdd  = $user->rights->easyurl->shortener->write;
+$permissionToRead = $user->hasRight('easyurl', 'adminpage', 'read');
+$permissionToAdd  = $user->hasRight('easyurl', 'shortener', 'write');
 saturne_check_access($permissionToRead);
 
 /*

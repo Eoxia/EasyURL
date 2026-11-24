@@ -54,7 +54,7 @@ $form = new Form($db);
 $urlMethods = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne')];
 
 // Security check - Protection if external user
-$permissionToRead = $user->rights->easyurl->adminpage->read;
+$permissionToRead = $user->hasRight('easyurl', 'adminpage', 'read');
 saturne_check_access($permissionToRead);
 
 /*
