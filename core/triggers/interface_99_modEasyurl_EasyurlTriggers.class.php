@@ -54,7 +54,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
         $this->description = 'EasyURL triggers';
-        $this->version     = '23.3.2';
+        $this->version     = '23.3.3';
         $this->picto       = 'easyurl_color@easyurl';
     }
 
@@ -96,6 +96,37 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         if (set_easy_url_link($objectCopy, $urlType) > 0 && !empty($object->array_options)) {
             $object->array_options['options_easy_url_' . $urlType . '_link'] = $objectCopy->array_options['options_easy_url_' . $urlType . '_link'] ?? '';
         }
+    }
+
+    /**
+     * Write the short URL of a QR code on the object it is assigned to (easy_url_all_link extrafield)
+     *
+     * Saturne only describes the objects of the modules enabled in the entity: an object of a type it does not know
+     * there (a product lot without the Lots module, for instance) keeps its link, the QR code is saved all the same
+     *
+     * @param  CommonObject $shortener QR code (Shortener) assigned to an object
+     * @return void
+     * @throws Exception
+     */
+    private function setLinkedObjectLink(CommonObject $shortener): void
+    {
+        $objectMetadata = saturne_get_objects_metadata((string) $shortener->element_type);
+        $className      = $objectMetadata['class_name'] ?? '';
+        if (!empty($className) && !class_exists($className) && !empty($objectMetadata['class_path'])) {
+            dol_include_once('/' . $objectMetadata['class_path']);
+        }
+        if (empty($className) || !class_exists($className)) {
+            dol_syslog('EasyURL: type ' . $shortener->element_type . ' of the object of ' . $shortener->ref . ' unknown in entity, link of the object not updated', LOG_WARNING);
+            return;
+        }
+
+        $linkedObject = new $className($this->db);
+        if ($linkedObject->fetch((int) $shortener->fk_element) <= 0) {
+            return;
+        }
+
+        $linkedObject->array_options['options_easy_url_all_link'] = $shortener->short_url;
+        $linkedObject->updateExtraField('easy_url_all_link');
     }
 
     /**
@@ -174,12 +205,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
             // MODIFY
             case 'SHORTENER_MODIFY' :
                 if (!empty($object->element_type)) {
-                    $objectsMetadata = saturne_get_objects_metadata($object->element_type);
-                    $className       = $objectsMetadata['class_name'];
-                    $objectLinked    = new $className($this->db);
-                    $objectLinked->fetch($object->fk_element);
-                    $objectLinked->array_options['options_easy_url_all_link'] = $object->short_url;
-                    $objectLinked->updateExtraField('easy_url_all_link');
+                    $this->setLinkedObjectLink($object);
 
                     $object->status = Shortener::STATUS_ASSIGN;
                     $object->setValueFrom('status', $object->status, '', null, 'int');
