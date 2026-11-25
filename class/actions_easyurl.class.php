@@ -208,15 +208,7 @@ class ActionsEasyurl
                 if (is_object($object) && ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element)) {
                     if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
                         if ($action == 'show_qrcode') {
-                            require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
-
-                            $data = json_decode(file_get_contents('php://input'), true);
-
-                            $showQRCode = $data['showQRCode'];
-
-                            $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
-
-                            dol_set_user_param($this->db, $conf, $user, $tabParam);
+                            $this->setShowQRCodePreference($user);
                         }
                     }
                 }
@@ -266,19 +258,34 @@ class ActionsEasyurl
                 exit;
             }
             if ($action == 'show_qrcode') {
-                require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
-
-                $data = json_decode(file_get_contents('php://input'), true);
-
-                $showQRCode = $data['showQRCode'];
-
-                $tabParam['EASYURL_SHOW_QRCODE'] = $showQRCode;
-
-                dol_set_user_param($this->db, $conf, $user, $tabParam);
+                $this->setShowQRCodePreference($user);
             }
         }
 
         return 0; // or return 1 to replace standard code
+    }
+
+    /**
+     * Save the choice of the user to show the image of the QR codes instead of their icon
+     *
+     * The choice is a preference of the logged in user, saved for him only, as on the public page of EasyURL
+     *
+     * @param  User $user User who made the choice
+     * @return void
+     */
+    private function setShowQRCodePreference(User $user): void
+    {
+        global $conf;
+
+        if (empty($user->id)) {
+            return;
+        }
+
+        require_once DOL_DOCUMENT_ROOT . '/core/lib/functions2.lib.php';
+
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        dol_set_user_param($this->db, $conf, $user, ['EASYURL_SHOW_QRCODE' => !empty($data['showQRCode']) ? 1 : 0]);
     }
 
     /**
