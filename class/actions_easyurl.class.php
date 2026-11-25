@@ -246,7 +246,11 @@ class ActionsEasyurl
                         $parameters['linkedObject']->array_options['options_easy_url_all_link'] = $object->short_url;
                         $parameters['linkedObject']->updateExtraField('easy_url_all_link');
 
-                        setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $langs->transnoentities($parameters['linkableElement']['langs']), $parameters['linkedObject']->{$parameters['linkableElement']['name_field']}), []);
+                        // A type no module describes in this entity has no metadata: the lot is named by its number
+                        $linkableElement = $parameters['linkableElement'] ?? [];
+                        $typeLabel       = $langs->transnoentities($linkableElement['langs'] ?? 'NumProductLot');
+                        $objectName      = $parameters['linkedObject']->{$linkableElement['name_field'] ?? 'batch'} ?? $parameters['linkedObject']->ref;
+                        setEventMessages($langs->transnoentities('AssignQRCodeSuccess', $object->label, $typeLabel, $objectName), []);
                     } else {
                         setEventMessages($langs->transnoentities('AssignQRCodeErrors') . (dol_strlen($object->error) > 0 ? ' : ' . $object->error : ''), [], 'errors');
                     }

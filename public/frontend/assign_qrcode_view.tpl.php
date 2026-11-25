@@ -118,7 +118,7 @@ if ($permissionToAssign) {
                 <span class="easyurl-assign__icon"><?php echo img_picto('', $linkableElement['picto'] ?? 'generic'); ?></span>
                 <div class="easyurl-assign__body">
                     <span class="easyurl-assign__label"><?php echo $langs->transnoentities('NumProductLot'); ?></span>
-                    <span class="easyurl-assign__title"><?php echo dol_escape_htmltag($fixedObject->{$linkableElement['name_field']} ?? $fixedObject->ref); ?></span>
+                    <span class="easyurl-assign__title"><?php echo dol_escape_htmltag($fixedObject->{$linkableElement['name_field'] ?? 'batch'} ?? $fixedObject->ref); ?></span>
                     <?php if (!empty($fixedObjectProduct)) : ?>
                         <span class="easyurl-assign__muted"><?php echo dol_escape_htmltag($fixedObjectProduct); ?></span>
                     <?php endif; ?>
