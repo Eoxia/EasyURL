@@ -65,7 +65,7 @@ saturne_load_langs();
 // Get parameters
 $trackId = GETPOST('track_id', 'alpha');
 $action  = GETPOST('action', 'aZ09');
-$entity  = GETPOST('entity');
+$entity  = GETPOSTINT('entity');
 
 // Initialize technical objects
 $object = new Shortener($db);
@@ -92,7 +92,8 @@ if (!empty($trackId)) {
 // Not the saturnepublicinterface context: Saturne prints the company logo there, already in the header of this page
 $hookmanager->initHooks(['publicshortener']); // Note that conf->hooks_modules contains array
 
-if (!isModEnabled('multicompany')) {
+// The entity of the link is a number: without one, the page keeps the setup of the current entity
+if (!isModEnabled('multicompany') || $entity <= 0) {
     $entity = $conf->entity;
 }
 
