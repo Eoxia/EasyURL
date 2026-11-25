@@ -54,7 +54,7 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
         $this->name        = preg_replace('/^Interface/i', '', get_class($this));
         $this->family      = 'demo';
         $this->description = 'EasyURL triggers';
-        $this->version     = '23.3.1';
+        $this->version     = '23.3.2';
         $this->picto       = 'easyurl_color@easyurl';
     }
 
@@ -115,6 +115,13 @@ class InterfaceEasyURLTriggers extends DolibarrTriggers
     {
         if (!isModEnabled('easyurl')) {
             return 0; // If module is not enabled, we do nothing
+        }
+
+        // Every event of the instance comes through here, also those another module sends with an object that is not
+        // a CommonObject (ExternalAccess passes its Context on externalAccessInitController): none of them concerns
+        // EasyURL, and the event prepared below reads an id and element that such an object may lack
+        if (!($object instanceof CommonObject)) {
+            return 0;
         }
 
         // Saturne's own trigger loads this lib, but only while its constants are set: during a Saturne

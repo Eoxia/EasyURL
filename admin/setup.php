@@ -54,7 +54,7 @@ $form = new Form($db);
 $urlMethods = ['yourls' => 'YOURLS', 'saturne' => $langs->trans('UrlMethodeSaturne')];
 
 // Security check - Protection if external user
-$permissionToRead = $user->rights->easyurl->adminpage->read;
+$permissionToRead = $user->hasRight('easyurl', 'adminpage', 'read');
 saturne_check_access($permissionToRead);
 
 /*
@@ -147,18 +147,18 @@ print '</tr>';
 
 print '<tr class="oddeven"><td><label for="url_yourls_api">' . $langs->trans('URLYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('URLYourlsAPIDescription') . '</td>';
-print '<td><input class="minwidth300" type="text" name="url_yourls_api" value="' . $conf->global->EASYURL_URL_YOURLS_API . '"></td>';
-print '</td></tr>';
+print '<td><input class="minwidth300" type="text" name="url_yourls_api" value="' . dol_escape_htmltag(getDolGlobalString('EASYURL_URL_YOURLS_API')) . '"></td>';
+print '</tr>';
 
 print '<tr class="oddeven"><td><label for="signature_token_yourls_api">' . $langs->trans('SignatureTokenYourlsAPI') . '</label></td>';
 print '<td>' . $langs->trans('SignatureTokenYourlsAPIDescription') . '</td>';
-print '<td><input class="minwidth300" type="password" name="signature_token_yourls_api" value="' . $conf->global->EASYURL_SIGNATURE_TOKEN_YOURLS_API . '"></td>';
-print '</td></tr>';
+print '<td><input class="minwidth300" type="password" name="signature_token_yourls_api" value="' . dol_escape_htmltag(getDolGlobalString('EASYURL_SIGNATURE_TOKEN_YOURLS_API')) . '"></td>';
+print '</tr>';
 
 print '<tr class="oddeven"><td><label for="default_original_url">' . $langs->trans('DefaultOriginalUrl') . '</label></td>';
 print '<td>' . $langs->trans('DefaultOriginalUrlDescription') . '</td>';
-print '<td><input class="minwidth300" type="text" name="default_original_url" value="' . $conf->global->EASYURL_DEFAULT_ORIGINAL_URL . '"></td>';
-print '</td></tr>';
+print '<td><input class="minwidth300" type="text" name="default_original_url" value="' . dol_escape_htmltag(getDolGlobalString('EASYURL_DEFAULT_ORIGINAL_URL')) . '"></td>';
+print '</tr>';
 
 print '<tr class="oddeven"><td>' . $langs->trans('UseShaUrl') . '</td>';
 print '<td>' . $langs->trans('UseShaUrlDescription') . '</td>';
