@@ -190,12 +190,15 @@ if ($action == 'edit_assign') {
     if (dol_strlen($object->element_type) > 0 || GETPOSTISSET('element_type')) {
         $objectsMetadata = saturne_get_objects_metadata(!empty(GETPOST('element_type')) ? GETPOST('element_type') : $object->element_type);
 
-        $object->fields['element_type']['picto']                                       = $objectsMetadata['picto'];
-        $object->fields['element_type']['arrayofkeyval'][$objectsMetadata['tab_type']] = $langs->trans($objectsMetadata['langs']);
+        // A type no module describes in this entity (a lot without the Lots module...) keeps the fields as they are
+        if (!empty($objectsMetadata)) {
+            $object->fields['element_type']['picto']                                       = $objectsMetadata['picto'];
+            $object->fields['element_type']['arrayofkeyval'][$objectsMetadata['tab_type']] = $langs->trans($objectsMetadata['langs']);
 
-        $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
-        $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
-        $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+            $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
+            $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
+            $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+        }
 
         if (GETPOST('from_element', 'int') > 0) {
             $object->fields['fromid']['visible']       = 1;
@@ -244,12 +247,15 @@ if (($id || $ref) && $action == 'edit') {
     if (dol_strlen($object->element_type) > 0 || GETPOSTISSET('element_type')) {
         $objectsMetadata = saturne_get_objects_metadata(!empty(GETPOST('element_type')) ? GETPOST('element_type') : $object->element_type);
 
-        $object->fields['element_type']['picto']                                       = $objectsMetadata['picto'];
-        $object->fields['element_type']['arrayofkeyval'][$objectsMetadata['tab_type']] = $langs->trans($objectsMetadata['langs']);
+        // A type no module describes in this entity (a lot without the Lots module...) keeps the fields as they are
+        if (!empty($objectsMetadata)) {
+            $object->fields['element_type']['picto']                                       = $objectsMetadata['picto'];
+            $object->fields['element_type']['arrayofkeyval'][$objectsMetadata['tab_type']] = $langs->trans($objectsMetadata['langs']);
 
-        $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
-        $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
-        $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+            $object->fields['fk_element']['type']  = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
+            $object->fields['fk_element']['picto'] = $objectsMetadata['picto'];
+            $object->fields['fk_element']['label'] = $langs->trans($objectsMetadata['langs']);
+        }
 
         if (GETPOST('from_element', 'int') > 0) {
             $object->fields['element_type']['noteditable'] = 1;
@@ -312,11 +318,15 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
     unset($object->fields['label']); // Hide field already shown in banner
 
     if (dol_strlen($object->element_type) > 0) {
-        $objectsMetadata                         = saturne_get_objects_metadata($object->element_type);
-        $object->fields['element_type']['picto'] = $objectsMetadata['picto'];
-        $object->fields['fk_element']['type']    = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
-        $object->fields['fk_element']['picto']   = $objectsMetadata['picto'];
-        $object->fields['fk_element']['label']   = $langs->trans($objectsMetadata['langs']);
+        $objectsMetadata = saturne_get_objects_metadata($object->element_type);
+
+        // A type no module describes in this entity keeps its raw values: the link exists, it just can't be shown
+        if (!empty($objectsMetadata)) {
+            $object->fields['element_type']['picto'] = $objectsMetadata['picto'];
+            $object->fields['fk_element']['type']    = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
+            $object->fields['fk_element']['picto']   = $objectsMetadata['picto'];
+            $object->fields['fk_element']['label']   = $langs->trans($objectsMetadata['langs']);
+        }
     } else {
         $object->fields['element_type']['type'] = 'varchar(255)';
         unset($object->fields['element_type']['arrayofkeyval']);

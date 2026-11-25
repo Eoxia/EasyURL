@@ -625,7 +625,8 @@ while ($i < $imaxinloop) {
                 } elseif ($key == 'fk_element') {
                     if (dol_strlen($object->element_type) > 0) {
                         $objectsMetadata = saturne_get_objects_metadata($object->element_type);
-                        $val['type'] = 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'];
+                        // A type no module describes in this entity shows the id of the object, without a link
+                        $val['type'] = !empty($objectsMetadata) ? 'integer:' . $objectsMetadata['class_name'] . ':' . $objectsMetadata['class_path'] : 'integer';
                         print $object->showOutputField($val, $key, $object->fk_element);
                     }
                 } elseif ($key == 'rowid') {
