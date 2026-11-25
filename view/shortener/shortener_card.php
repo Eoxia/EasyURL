@@ -85,9 +85,9 @@ if (GETPOST('fromid', 'int')) {
 include DOL_DOCUMENT_ROOT . '/core/actions_fetchobject.inc.php'; // Must be included, not include_once
 
 // Security check - Protection if external user
-$permissionToRead   = $user->rights->easyurl->shortener->read;
-$permissiontoadd    = $user->rights->easyurl->shortener->write;
-$permissiontodelete = $user->rights->easyurl->shortener->delete || ($permissiontoadd && isset($object->status) && $object->status == Shortener::STATUS_DRAFT);
+$permissionToRead   = $user->hasRight('easyurl', 'shortener', 'read');
+$permissiontoadd    = $user->hasRight('easyurl', 'shortener', 'write');
+$permissiontodelete = $user->hasRight('easyurl', 'shortener', 'delete') || ($permissiontoadd && isset($object->status) && $object->status == Shortener::STATUS_DRAFT);
 saturne_check_access($permissionToRead);
 
 /*
