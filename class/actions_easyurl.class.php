@@ -78,12 +78,14 @@ class ActionsEasyurl
                 'js'  => '/easyurl/js/easyurl.min.js'
             ];
 
-            // The date of the file makes the browsers load the new assets after an update of the module
+            // The version id makes the browsers load the new assets after an update of the module
+            dol_include_once('/saturne/lib/asset.lib.php');
+
             $out  = '<!-- Includes CSS added by module easyurl -->';
-            $out .= '<link rel="stylesheet" type="text/css" href="' . dol_buildpath($resourcesRequired['css'], 1) . '?v=' . filemtime(dol_buildpath($resourcesRequired['css'])) . '">';
+            $out .= '<link rel="stylesheet" type="text/css" href="' . saturne_asset_full_url($resourcesRequired['css']) . '">';
 
             $out .= '<!-- Includes JS added by module easyurl -->';
-            $out .= '<script src="' . dol_buildpath($resourcesRequired['js'], 1) . '?v=' . filemtime(dol_buildpath($resourcesRequired['js'])) . '"></script>';
+            $out .= '<script src="' . saturne_asset_full_url($resourcesRequired['js']) . '"></script>';
 
             $this->resprints = $out;
         }
@@ -102,9 +104,12 @@ class ActionsEasyurl
     {
         global $object, $langs;
 
+        // saturne_asset_full_url() for the assets printed below: without a version, the browser keeps serving the previous release
+        dol_include_once('/saturne/lib/asset.lib.php');
+
         if (in_array($parameters['currentcontext'], ['propalcard', 'ordercard', 'invoicecard', 'contractcard', 'interventioncard'])) {
             if ($object->status > $object::STATUS_DRAFT) {
-                $cssPath = dol_buildpath('/saturne/css/saturne.min.css', 1);
+                $cssPath = saturne_asset_full_url('/saturne/css/saturne.min.css');
                 print '<link href="' . $cssPath . '" rel="stylesheet">';
 
                 $pictoPath = dol_buildpath('/easyurl/img/easyurl_color.png', 1);
@@ -141,9 +146,9 @@ class ActionsEasyurl
                 if (is_object($object) && ($objectMetadata['link_name'] == $object->element || $objectMetadata['tab_type'] == $object->element)) {
                     if ($parameters['currentcontext'] == $objectMetadata['hook_name_card']) {
 
-                        $jsPath = dol_buildpath('/saturne/js/saturne.min.js', 1);
+                        $jsPath = saturne_asset_full_url('/saturne/js/saturne.min.js');
                         print '<script src="' . $jsPath . '" ></script>';
-                        $jsPath = dol_buildpath('/easyurl/js/easyurl.min.js', 1) . '?v=2';
+                        $jsPath = saturne_asset_full_url('/easyurl/js/easyurl.min.js');
                         print '<script src="' . $jsPath . '" ></script>';
 
                         require_once __DIR__ . '/shortener.class.php';
